@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.smorzhok.financeapp.MainViewModel
 import com.smorzhok.financeapp.R
 import com.smorzhok.financeapp.domain.ScaffoldItem
 import com.smorzhok.financeapp.navigation.AppNavGraph
@@ -19,7 +20,7 @@ import com.smorzhok.financeapp.navigation.Screen
 import com.smorzhok.financeapp.navigation.rememberNavigationState
 
 @Composable
-fun MainScreen() {
+fun MainScreen(viewModel: MainViewModel) {
 
     val navState = rememberNavigationState()
     val navBackStackEntry by navState.navHostController.currentBackStackEntryAsState()
@@ -81,7 +82,9 @@ fun MainScreen() {
         it
         AppNavGraph(
             navState.navHostController,
-            {},
+            {
+                ExpensesScreen(viewModel, it)
+            },
             {},
             {},
             {},

@@ -18,7 +18,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             FinanceAppTheme {
                 FinanceAppTheme {
-                    MainScreen()
+                    MainScreen(viewModel)
                 }
             }
         }

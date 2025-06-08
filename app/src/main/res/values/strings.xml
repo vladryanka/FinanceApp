@@ -10,4 +10,6 @@
     <string name="my_articles">Мои статьи</string>
     <string name="expenses_today">Расходы сегодня</string>
     <string name="history">История</string>
+    <string name="products_placeholder">Продукты</string>
+    <string name="total">Всего</string>
 </resources>
