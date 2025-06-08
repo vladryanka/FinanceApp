@@ -83,7 +83,7 @@ fun MainScreen(viewModel: MainViewModel) {
         AppNavGraph(
             navState.navHostController,
             {
-                ExpensesScreen(viewModel, it)
+                //ExpensesScreen(viewModel, it)
             },
             {},
             {},
