@@ -1,7 +1,9 @@
 package com.smorzhok.financeapp.domain
 
 data class Expenses (
-    val iconResId: Int,
-    val nameResId: Int,
-    val price: Int
+    val id: Int,
+    val iconLeadingResId: Int,
+    val textLeadingResId: Int,
+    val iconTrailingResId: Int,
+    val priceTrailingResId: Int
 )

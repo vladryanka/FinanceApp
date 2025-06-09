@@ -18,7 +18,7 @@ private val DarkColorScheme = darkColorScheme(
 
 private val LightColorScheme = lightColorScheme(
     primary = Purple40,
-    secondary = PurpleGrey40,
+    secondary = SecondaryColorLight,
     tertiary = Pink40,
 
     surface = SurfaceColorLight,
@@ -26,8 +26,6 @@ private val LightColorScheme = lightColorScheme(
     onSurface = OnSurfaceColorLight,
     outlineVariant = OutlineVariantColorLight,
     background = BackgroundColorLight,
-
-
 )
 
 @Composable
