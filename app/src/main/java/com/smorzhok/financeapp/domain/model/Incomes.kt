@@ -1,8 +1,7 @@
-package com.smorzhok.financeapp.domain
+package com.smorzhok.financeapp.domain.model
 
-data class Expenses (
+data class Incomes(
     val id: Int,
-    val iconLeadingResId: Int,
     val textLeadingResId: Int,
     val iconTrailingResId: Int,
     val priceTrailing: Int

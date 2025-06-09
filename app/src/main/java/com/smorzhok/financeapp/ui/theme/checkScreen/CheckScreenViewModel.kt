@@ -4,9 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.smorzhok.financeapp.R
-import com.smorzhok.financeapp.domain.Balance
-import com.smorzhok.financeapp.domain.Currency
-import com.smorzhok.financeapp.domain.OnCheckScreen
+import com.smorzhok.financeapp.domain.model.Balance
+import com.smorzhok.financeapp.domain.model.Currency
+import com.smorzhok.financeapp.domain.model.OnCheckScreen
 
 class CheckScreenViewModel : ViewModel() {
     private val initialChecksList = mutableListOf<OnCheckScreen>()

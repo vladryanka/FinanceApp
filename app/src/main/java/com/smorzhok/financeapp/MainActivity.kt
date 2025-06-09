@@ -4,8 +4,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModelProvider
 import com.smorzhok.financeapp.ui.theme.FinanceAppTheme
+import com.smorzhok.financeapp.ui.theme.LottieSplashScreen
 import com.smorzhok.financeapp.ui.theme.MainScreen
 import com.smorzhok.financeapp.ui.theme.articlesSreen.ArticlesScreenViewModel
 import com.smorzhok.financeapp.ui.theme.checkScreen.CheckScreenViewModel
@@ -29,8 +34,14 @@ class MainActivity : ComponentActivity() {
         articlesViewModel = ViewModelProvider(this).get(ArticlesScreenViewModel::class.java)
         settingsViewModel = ViewModelProvider(this).get(SettingsScreenViewModel::class.java)
         setContent {
+            var isSplashFinished by remember { mutableStateOf(false) }
+
             FinanceAppTheme {
-                FinanceAppTheme {
+                if (!isSplashFinished) {
+                    LottieSplashScreen {
+                        isSplashFinished = true
+                    }
+                } else {
                     MainScreen(
                         expensesViewModel = expensesViewModel,
                         incomesViewModel = incomesViewModel,

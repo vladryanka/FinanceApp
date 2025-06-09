@@ -28,9 +28,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.smorzhok.financeapp.R
-import com.smorzhok.financeapp.domain.Balance
-import com.smorzhok.financeapp.domain.Currency
-import com.smorzhok.financeapp.domain.OnCheckScreen
+import com.smorzhok.financeapp.domain.model.Balance
+import com.smorzhok.financeapp.domain.model.Currency
+import com.smorzhok.financeapp.domain.model.OnCheckScreen
 import com.smorzhok.financeapp.ui.theme.commonItems.ListItem
 import com.smorzhok.financeapp.ui.theme.commonItems.formatPrice
 

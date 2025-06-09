@@ -1,4 +1,4 @@
-package com.smorzhok.financeapp.domain
+package com.smorzhok.financeapp.domain.model
 
 import com.smorzhok.financeapp.R
 

@@ -22,7 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.smorzhok.financeapp.R
-import com.smorzhok.financeapp.domain.Settings
+import com.smorzhok.financeapp.domain.model.Settings
 import com.smorzhok.financeapp.ui.theme.commonItems.ListItem
 
 @Composable

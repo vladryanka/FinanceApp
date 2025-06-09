@@ -1,5 +1,6 @@
 package com.smorzhok.financeapp.ui.theme.commonItems
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -24,7 +25,8 @@ import com.smorzhok.financeapp.ui.theme.FinanceAppTheme
 @Composable
 fun TopBarTextAndIcon(
     textResId: Int,
-    imageResId: Int?
+    imageResId: Int?,
+    onClick: ()->Unit
 ) {
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
@@ -49,7 +51,10 @@ fun TopBarTextAndIcon(
                         contentDescription = stringResource(R.string.history),
                         modifier = Modifier
                             .padding(end = 18.dp)
-                            .align(alignment = Alignment.CenterEnd),
+                            .align(alignment = Alignment.CenterEnd)
+                            .clickable{
+                                onClick()
+                            },
                         tint = MaterialTheme.colorScheme.onSurface.copy(0.8f)
 
                     )
@@ -64,6 +69,6 @@ fun TopBarTextAndIcon(
 @Composable
 fun TopBarTextAndIconPreview() {
     FinanceAppTheme {
-        TopBarTextAndIcon(R.string.expenses_today, R.drawable.refresh)
+        TopBarTextAndIcon(R.string.expenses_today, R.drawable.refresh,{})
     }
 }

@@ -17,7 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.smorzhok.financeapp.ui.theme.expenseScreen.ExpensesScreenViewModel
 import com.smorzhok.financeapp.R
-import com.smorzhok.financeapp.domain.ScaffoldItem
+import com.smorzhok.financeapp.domain.model.ScaffoldItem
 import com.smorzhok.financeapp.navigation.AppNavGraph
 import com.smorzhok.financeapp.navigation.Screen
 import com.smorzhok.financeapp.navigation.rememberNavigationState
@@ -70,7 +70,7 @@ fun MainScreen(
     Scaffold(
         topBar = {
             topBarContent?.let {
-                TopBarTextAndIcon(it.textResId, it.imageResId)
+                TopBarTextAndIcon(it.textResId, it.imageResId, onClick = {})
             }
         },
         bottomBar = {

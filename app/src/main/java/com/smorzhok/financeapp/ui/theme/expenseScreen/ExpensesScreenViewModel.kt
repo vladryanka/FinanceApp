@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.smorzhok.financeapp.R
-import com.smorzhok.financeapp.domain.Expenses
+import com.smorzhok.financeapp.domain.model.Expenses
 
 class ExpensesScreenViewModel : ViewModel() {
     private val initialExpensesList = mutableListOf<Expenses>()
