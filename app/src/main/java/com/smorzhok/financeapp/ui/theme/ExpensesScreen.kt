@@ -1,5 +1,6 @@
 package com.smorzhok.financeapp.ui.theme
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -29,15 +30,16 @@ import com.smorzhok.financeapp.domain.Expenses
 fun ExpensesScreen(
     expensesList: List<Expenses>?,
     paddingValues: PaddingValues,
-    onClick: (Int) -> Unit
+    onExpenseClicked: (Int) -> Unit
 ) {
     val expensesListState = remember { expensesList }
 
-    val totalPrice = expensesListState?.sumOf { it.priceTrailingResId } ?: 0
+    val totalPrice = expensesListState?.sumOf { it.priceTrailing } ?: 0
 
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(MaterialTheme.colorScheme.surface)
             .padding(
                 top = paddingValues.calculateTopPadding(),
                 bottom = paddingValues.calculateBottomPadding()
@@ -49,7 +51,8 @@ fun ExpensesScreen(
                     stringResource(R.string.total),
                     modifier = Modifier
                         .padding(horizontal = 16.dp),
-                    fontSize = 24.sp
+                    fontSize = 24.sp,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             },
             trailingContent = {
@@ -57,13 +60,14 @@ fun ExpensesScreen(
                     "$totalPrice ₽",
                     modifier = Modifier
                         .padding(horizontal = 16.dp),
-                    fontSize = 24.sp
+                    fontSize = 24.sp,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             },
             upDivider = false,
             downDivider = true,
             onClick = { },
-            backgroundColor = MaterialTheme.colorScheme.secondary, // TODO : что с цветом происходит?
+            backgroundColor = MaterialTheme.colorScheme.secondary,
         )
 
         if (expensesListState != null) {
@@ -73,7 +77,7 @@ fun ExpensesScreen(
                         leadingContent = {
                             Row {
                                 Icon(
-                                    painterResource(R.drawable.emoji_placeholder),
+                                    painterResource(item.iconLeadingResId),
                                     contentDescription = null,
                                     modifier = Modifier
                                         .padding(horizontal = 16.dp)
@@ -81,7 +85,7 @@ fun ExpensesScreen(
                                     tint = Color(0xFFFCE4EB)
                                 )
                                 Text(
-                                    text = "Аренда квартиры",
+                                    text = stringResource(item.textLeadingResId),
                                     fontSize = 24.sp,
                                     maxLines = 1
                                 )
@@ -90,11 +94,11 @@ fun ExpensesScreen(
                         {
                             Row {
                                 Text(
-                                    text = "100 000 Р",
+                                    text = formatPrice(item.priceTrailing),
                                     fontSize = 24.sp,
                                 )
                                 Icon(
-                                    painterResource(R.drawable.more_vert_icon),
+                                    painterResource(item.iconTrailingResId),
                                     contentDescription = null,
                                     modifier = Modifier
                                         .padding(horizontal = 16.dp)
@@ -104,7 +108,7 @@ fun ExpensesScreen(
                         },
                         upDivider = false,
                         downDivider = true,
-                        onClick = { },
+                        onClick = { onExpenseClicked(item.id) },
                         backgroundColor = MaterialTheme.colorScheme.surface,
                     )
                 }
@@ -127,7 +131,7 @@ fun ExpensesScreenPreview() {
                             iconLeadingResId = R.drawable.emoji_placeholder,
                             textLeadingResId = R.string.products_placeholder,
                             iconTrailingResId = R.drawable.more_vert_icon,
-                            priceTrailingResId = R.string.products_placeholder
+                            priceTrailing = 100000
                         )
                     )
                 }
@@ -135,7 +139,7 @@ fun ExpensesScreenPreview() {
         ExpensesScreen(
             expensesList,
             paddingValues = PaddingValues(50.dp),
-            onClick = { 1 }
+            onExpenseClicked = { 1 }
         )
 
     }

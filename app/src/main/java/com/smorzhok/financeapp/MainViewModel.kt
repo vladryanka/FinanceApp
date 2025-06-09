@@ -10,13 +10,15 @@ class MainViewModel : ViewModel() {
     private val initialExpensesList = mutableListOf<Expenses>()
         .apply {
             repeat(15) {
-               // add(
-//                    Expenses(
-//                        iconResId = R.drawable.emoji_placeholder,
-//                        nameResId = R.string.products_placeholder,
-//                        price = 100000
-//                    )
-         //       )
+                add(
+                    Expenses(
+                        id = it,
+                        iconLeadingResId = R.drawable.emoji_placeholder,
+                        textLeadingResId = R.string.products_placeholder,
+                        iconTrailingResId = R.drawable.more_vert_icon,
+                        priceTrailing = 10000
+                    )
+                )
             }
         }
 

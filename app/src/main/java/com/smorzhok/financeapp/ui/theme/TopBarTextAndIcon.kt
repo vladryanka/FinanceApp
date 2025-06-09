@@ -27,7 +27,7 @@ fun TopBarTextAndIcon(
 ) {
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surface
+            containerColor = MaterialTheme.colorScheme.background
         ),
         title = {
             Box(

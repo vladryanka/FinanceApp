@@ -5,5 +5,5 @@ data class Expenses (
     val iconLeadingResId: Int,
     val textLeadingResId: Int,
     val iconTrailingResId: Int,
-    val priceTrailingResId: Int
+    val priceTrailing: Int
 )
