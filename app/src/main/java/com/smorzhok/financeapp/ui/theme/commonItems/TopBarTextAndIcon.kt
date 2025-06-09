@@ -1,4 +1,4 @@
-package com.smorzhok.financeapp.ui.theme
+package com.smorzhok.financeapp.ui.theme.commonItems
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.smorzhok.financeapp.R
+import com.smorzhok.financeapp.ui.theme.FinanceAppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

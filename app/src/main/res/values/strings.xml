@@ -13,4 +13,8 @@
     <string name="products_placeholder">Продукты</string>
     <string name="total">Всего</string>
     <string name="price">"%s ₽"</string>
+    <string name="currency">Валюта</string>
+    <string name="rub">₽</string>
+    <string name="balance">Баланс</string>
+    <string name="find_article">Найти статью</string>
 </resources>

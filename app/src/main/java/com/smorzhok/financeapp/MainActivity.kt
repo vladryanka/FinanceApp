@@ -7,18 +7,34 @@ import androidx.activity.enableEdgeToEdge
 import androidx.lifecycle.ViewModelProvider
 import com.smorzhok.financeapp.ui.theme.FinanceAppTheme
 import com.smorzhok.financeapp.ui.theme.MainScreen
+import com.smorzhok.financeapp.ui.theme.articlesSreen.ArticlesScreenViewModel
+import com.smorzhok.financeapp.ui.theme.checkScreen.CheckScreenViewModel
+import com.smorzhok.financeapp.ui.theme.expenseScreen.ExpensesScreenViewModel
+import com.smorzhok.financeapp.ui.theme.incomeScreen.IncomeScreenViewModel
 
 class MainActivity : ComponentActivity() {
 
-    private lateinit var viewModel: MainViewModel
+    private lateinit var expensesViewModel: ExpensesScreenViewModel
+    private lateinit var incomesViewModel: IncomeScreenViewModel
+    private lateinit var checksViewModel: CheckScreenViewModel
+    private lateinit var articlesViewModel: ArticlesScreenViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        expensesViewModel = ViewModelProvider(this).get(ExpensesScreenViewModel::class.java)
+        incomesViewModel = ViewModelProvider(this).get(IncomeScreenViewModel::class.java)
+        checksViewModel = ViewModelProvider(this).get(CheckScreenViewModel::class.java)
+        articlesViewModel = ViewModelProvider(this).get(ArticlesScreenViewModel::class.java)
         setContent {
             FinanceAppTheme {
                 FinanceAppTheme {
-                    MainScreen(viewModel)
+                    MainScreen(
+                        expensesViewModel = expensesViewModel,
+                        incomesViewModel = incomesViewModel,
+                        checksViewModel = checksViewModel,
+                        articlesViewModel = articlesViewModel,
+
+                    )
                 }
             }
         }

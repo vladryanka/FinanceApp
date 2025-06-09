@@ -1,28 +1,27 @@
-package com.smorzhok.financeapp
-
+package com.smorzhok.financeapp.ui.theme.articlesSreen
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.smorzhok.financeapp.domain.Expenses
+import com.smorzhok.financeapp.R
+import com.smorzhok.financeapp.domain.Articles
 
-class MainViewModel : ViewModel() {
-    private val initialExpensesList = mutableListOf<Expenses>()
+class ArticlesScreenViewModel: ViewModel() {
+    private val initialArticlesList = mutableListOf<Articles>()
         .apply {
             repeat(15) {
                 add(
-                    Expenses(
+                    Articles(
                         id = it,
                         iconLeadingResId = R.drawable.emoji_placeholder,
                         textLeadingResId = R.string.products_placeholder,
                         iconTrailingResId = R.drawable.more_vert_icon,
-                        priceTrailing = 10000
                     )
                 )
             }
         }
 
-    private val _expensesList= MutableLiveData<List<Expenses>>(initialExpensesList)
-    val expensesList: LiveData<List<Expenses>> get() = _expensesList
+    private val _articlesList= MutableLiveData<List<Articles>>(initialArticlesList)
+    val articlesList: LiveData<List<Articles>> get() = _articlesList
 
 }

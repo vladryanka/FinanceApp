@@ -1,5 +1,6 @@
-package com.smorzhok.financeapp.ui.theme
+package com.smorzhok.financeapp.ui.theme.commonItems
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -7,6 +8,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -21,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.smorzhok.financeapp.R
+import com.smorzhok.financeapp.ui.theme.FinanceAppTheme
 
 @Composable
 fun ListItem(
@@ -77,14 +81,22 @@ fun ListItemPreview() {
         ListItem(
             leadingContent = {
                 Row {
-                    Icon(
-                        painterResource(R.drawable.emoji_placeholder),
-                        contentDescription = null,
+                    Box(
                         modifier = Modifier
                             .padding(horizontal = 16.dp)
-                            .align(Alignment.CenterVertically),
-                        tint = Color(0xFFFCE4EB)
-                    )
+                            .size(24.dp)
+                            .background(
+                                color = MaterialTheme.colorScheme.secondary,
+                                shape = CircleShape
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.emoji_placeholder),
+                            contentDescription = null,
+                            tint = Color(0xFFFCE4EB)
+                        )
+                    }
                     Text(
                         text = "Аренда квартиры",
                         fontSize = 24.sp,

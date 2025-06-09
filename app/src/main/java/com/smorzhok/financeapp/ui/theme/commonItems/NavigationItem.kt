@@ -1,4 +1,4 @@
-package com.smorzhok.financeapp.ui.theme
+package com.smorzhok.financeapp.ui.theme.commonItems
 
 import com.smorzhok.financeapp.R
 import com.smorzhok.financeapp.navigation.Screen

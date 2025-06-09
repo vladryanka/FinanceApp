@@ -15,15 +15,29 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.smorzhok.financeapp.MainViewModel
+import com.smorzhok.financeapp.ui.theme.expenseScreen.ExpensesScreenViewModel
 import com.smorzhok.financeapp.R
 import com.smorzhok.financeapp.domain.ScaffoldItem
 import com.smorzhok.financeapp.navigation.AppNavGraph
 import com.smorzhok.financeapp.navigation.Screen
 import com.smorzhok.financeapp.navigation.rememberNavigationState
+import com.smorzhok.financeapp.ui.theme.articlesSreen.ArticlesScreen
+import com.smorzhok.financeapp.ui.theme.articlesSreen.ArticlesScreenViewModel
+import com.smorzhok.financeapp.ui.theme.checkScreen.CheckScreenViewModel
+import com.smorzhok.financeapp.ui.theme.checkScreen.ChecksScreen
+import com.smorzhok.financeapp.ui.theme.commonItems.NavigationItem
+import com.smorzhok.financeapp.ui.theme.commonItems.TopBarTextAndIcon
+import com.smorzhok.financeapp.ui.theme.expenseScreen.ExpensesScreen
+import com.smorzhok.financeapp.ui.theme.incomeScreen.IncomeScreen
+import com.smorzhok.financeapp.ui.theme.incomeScreen.IncomeScreenViewModel
 
 @Composable
-fun MainScreen(viewModel: MainViewModel) {
+fun MainScreen(
+    expensesViewModel: ExpensesScreenViewModel,
+    incomesViewModel: IncomeScreenViewModel,
+    checksViewModel: CheckScreenViewModel,
+    articlesViewModel: ArticlesScreenViewModel
+) {
 
     val navState = rememberNavigationState()
     val navBackStackEntry by navState.navHostController.currentBackStackEntryAsState()
@@ -98,17 +112,24 @@ fun MainScreen(viewModel: MainViewModel) {
     ) {
         it
 
-        val expensesList by viewModel.expensesList.observeAsState()
+        val expensesList by expensesViewModel.expensesList.observeAsState()
+        val incomesList by incomesViewModel.incomesList.observeAsState()
+        val checksList by checksViewModel.checksList.observeAsState()
+        val articlesList by articlesViewModel.articlesList.observeAsState()
         AppNavGraph(
             navState.navHostController,
             {
                 ExpensesScreen(expensesList, it, onExpenseClicked = {})
             },
             {
-
+                IncomeScreen(incomesList, it, onIncomeClicked = {})
             },
-            {},
-            {},
+            {
+                ChecksScreen (checksList, it, onCheckClicked = {})
+            },
+            {
+                ArticlesScreen(articlesList, it, onArticleClicked = {})
+            },
             {}
         )
     }
