@@ -2,7 +2,7 @@ package com.smorzhok.financeapp.ui.theme.commonItems
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -48,8 +48,8 @@ fun TopBarTextAndIcon(
                         painter = painterResource(imageResId),
                         contentDescription = stringResource(R.string.history),
                         modifier = Modifier
-                            .align(Alignment.CenterEnd)
-                            .size(24.dp),
+                            .padding(end = 18.dp)
+                            .align(alignment = Alignment.CenterEnd),
                         tint = MaterialTheme.colorScheme.onSurface.copy(0.8f)
 
                     )

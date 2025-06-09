@@ -11,6 +11,7 @@ import com.smorzhok.financeapp.ui.theme.articlesSreen.ArticlesScreenViewModel
 import com.smorzhok.financeapp.ui.theme.checkScreen.CheckScreenViewModel
 import com.smorzhok.financeapp.ui.theme.expenseScreen.ExpensesScreenViewModel
 import com.smorzhok.financeapp.ui.theme.incomeScreen.IncomeScreenViewModel
+import com.smorzhok.financeapp.ui.theme.settingScreen.SettingsScreenViewModel
 
 class MainActivity : ComponentActivity() {
 
@@ -18,6 +19,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var incomesViewModel: IncomeScreenViewModel
     private lateinit var checksViewModel: CheckScreenViewModel
     private lateinit var articlesViewModel: ArticlesScreenViewModel
+    private lateinit var settingsViewModel: SettingsScreenViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -25,6 +27,7 @@ class MainActivity : ComponentActivity() {
         incomesViewModel = ViewModelProvider(this).get(IncomeScreenViewModel::class.java)
         checksViewModel = ViewModelProvider(this).get(CheckScreenViewModel::class.java)
         articlesViewModel = ViewModelProvider(this).get(ArticlesScreenViewModel::class.java)
+        settingsViewModel = ViewModelProvider(this).get(SettingsScreenViewModel::class.java)
         setContent {
             FinanceAppTheme {
                 FinanceAppTheme {
@@ -33,7 +36,7 @@ class MainActivity : ComponentActivity() {
                         incomesViewModel = incomesViewModel,
                         checksViewModel = checksViewModel,
                         articlesViewModel = articlesViewModel,
-
+                        settingsViewModel = settingsViewModel
                     )
                 }
             }

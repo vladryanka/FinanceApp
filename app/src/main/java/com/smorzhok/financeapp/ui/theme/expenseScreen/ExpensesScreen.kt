@@ -11,7 +11,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -36,97 +40,122 @@ import com.smorzhok.financeapp.ui.theme.commonItems.formatPrice
 fun ExpensesScreen(
     expensesList: List<Expenses>?,
     paddingValues: PaddingValues,
-    onExpenseClicked: (Int) -> Unit
+    onExpenseClicked: (Int) -> Unit,
+    onFabClick: () -> Unit
 ) {
     val expensesListState = remember { expensesList }
 
     val totalPrice = expensesListState?.sumOf { it.priceTrailing } ?: 0
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.surface)
-            .padding(
-                top = paddingValues.calculateTopPadding(),
-                bottom = paddingValues.calculateBottomPadding()
-            )
     ) {
-        ListItem(
-            leadingContent = {
-                Text(
-                    stringResource(R.string.total),
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp),
-                    fontSize = 24.sp,
-                    color = MaterialTheme.colorScheme.onSurface
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(
+                    top = paddingValues.calculateTopPadding(),
+                    bottom = paddingValues.calculateBottomPadding()
                 )
-            },
-            trailingContent = {
-                Text(
-                    formatPrice(totalPrice),
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp),
-                    fontSize = 24.sp,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-            },
-            upDivider = false,
-            downDivider = true,
-            onClick = { },
-            backgroundColor = MaterialTheme.colorScheme.secondary,
-        )
+        ) {
+            ListItem(
+                leadingContent = {
+                    Text(
+                        stringResource(R.string.total),
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp),
+                        fontSize = 24.sp,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                },
+                trailingContent = {
+                    Text(
+                        formatPrice(totalPrice),
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp),
+                        fontSize = 24.sp,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                },
+                upDivider = false,
+                downDivider = true,
+                onClick = { },
+                backgroundColor = MaterialTheme.colorScheme.secondary,
+            )
 
-        if (expensesListState != null) {
-            LazyColumn {
-                itemsIndexed(expensesListState) { index, item ->
-                    ListItem(
-                        leadingContent = {
-                            Row {
-                                Box(
-                                    modifier = Modifier
-                                        .padding(horizontal = 16.dp)
-                                        .size(24.dp)
-                                        .background(
-                                            color = MaterialTheme.colorScheme.secondary,
-                                            shape = CircleShape
-                                        ),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Icon(
-                                        painterResource(item.iconLeadingResId),
-                                        contentDescription = null,
-                                        tint = Color(0xFFFCE4EB)
+            if (expensesListState != null) {
+                LazyColumn {
+                    itemsIndexed(expensesListState) { index, item ->
+                        ListItem(
+                            leadingContent = {
+                                Row {
+                                    Box(
+                                        modifier = Modifier
+                                            .padding(horizontal = 16.dp)
+                                            .size(24.dp)
+                                            .background(
+                                                color = MaterialTheme.colorScheme.secondary,
+                                                shape = CircleShape
+                                            ),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Icon(
+                                            painterResource(item.iconLeadingResId),
+                                            contentDescription = null,
+                                            tint = Color(0xFFFCE4EB)
+                                        )
+                                    }
+                                    Text(
+                                        text = stringResource(item.textLeadingResId),
+                                        fontSize = 24.sp,
+                                        maxLines = 1
                                     )
                                 }
-                                Text(
-                                    text = stringResource(item.textLeadingResId),
-                                    fontSize = 24.sp,
-                                    maxLines = 1
-                                )
-                            }
-                        },
-                        {
-                            Row {
-                                Text(
-                                    text = formatPrice(item.priceTrailing),
-                                    fontSize = 24.sp,
-                                )
-                                Icon(
-                                    painterResource(item.iconTrailingResId),
-                                    contentDescription = null,
-                                    modifier = Modifier
-                                        .padding(horizontal = 16.dp)
-                                        .align(Alignment.CenterVertically)
-                                )
-                            }
-                        },
-                        upDivider = false,
-                        downDivider = true,
-                        onClick = { onExpenseClicked(item.id) },
-                        backgroundColor = MaterialTheme.colorScheme.surface,
-                    )
+                            },
+                            {
+                                Row {
+                                    Text(
+                                        text = formatPrice(item.priceTrailing),
+                                        fontSize = 24.sp,
+                                    )
+                                    Icon(
+                                        painterResource(item.iconTrailingResId),
+                                        contentDescription = null,
+                                        modifier = Modifier
+                                            .padding(horizontal = 16.dp)
+                                            .align(Alignment.CenterVertically)
+                                    )
+                                }
+                            },
+                            upDivider = false,
+                            downDivider = true,
+                            onClick = { onExpenseClicked(item.id) },
+                            backgroundColor = MaterialTheme.colorScheme.surface,
+                        )
+                    }
                 }
             }
+
+        }
+        FloatingActionButton(
+            onClick = onFabClick,
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(
+                    end = 16.dp,
+                    bottom = paddingValues.calculateTopPadding() + 14.dp
+                ),
+            shape = CircleShape,
+            containerColor = MaterialTheme.colorScheme.background,
+            elevation = FloatingActionButtonDefaults.elevation(0.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Add,
+                contentDescription = stringResource(R.string.add_expense),
+                tint = Color.White
+            )
         }
     }
 }
@@ -153,7 +182,8 @@ fun ExpensesScreenPreview() {
         ExpensesScreen(
             expensesList,
             paddingValues = PaddingValues(50.dp),
-            onExpenseClicked = { 1 }
+            onExpenseClicked = { 1 },
+            {}
         )
 
     }

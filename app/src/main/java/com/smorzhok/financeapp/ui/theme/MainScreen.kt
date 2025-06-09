@@ -30,13 +30,16 @@ import com.smorzhok.financeapp.ui.theme.commonItems.TopBarTextAndIcon
 import com.smorzhok.financeapp.ui.theme.expenseScreen.ExpensesScreen
 import com.smorzhok.financeapp.ui.theme.incomeScreen.IncomeScreen
 import com.smorzhok.financeapp.ui.theme.incomeScreen.IncomeScreenViewModel
+import com.smorzhok.financeapp.ui.theme.settingScreen.SettingScreen
+import com.smorzhok.financeapp.ui.theme.settingScreen.SettingsScreenViewModel
 
 @Composable
 fun MainScreen(
     expensesViewModel: ExpensesScreenViewModel,
     incomesViewModel: IncomeScreenViewModel,
     checksViewModel: CheckScreenViewModel,
-    articlesViewModel: ArticlesScreenViewModel
+    articlesViewModel: ArticlesScreenViewModel,
+    settingsViewModel: SettingsScreenViewModel
 ) {
 
     val navState = rememberNavigationState()
@@ -116,21 +119,24 @@ fun MainScreen(
         val incomesList by incomesViewModel.incomesList.observeAsState()
         val checksList by checksViewModel.checksList.observeAsState()
         val articlesList by articlesViewModel.articlesList.observeAsState()
+        val settingsList by settingsViewModel.settingsList.observeAsState()
         AppNavGraph(
             navState.navHostController,
             {
-                ExpensesScreen(expensesList, it, onExpenseClicked = {})
+                ExpensesScreen(expensesList, it, onExpenseClicked = {}, {})
             },
             {
-                IncomeScreen(incomesList, it, onIncomeClicked = {})
+                IncomeScreen(incomesList, it, onIncomeClicked = {}, {})
             },
             {
-                ChecksScreen (checksList, it, onCheckClicked = {})
+                ChecksScreen (checksList, it, onCheckClicked = {}, {})
             },
             {
                 ArticlesScreen(articlesList, it, onArticleClicked = {})
             },
-            {}
+            {
+                SettingScreen(settingsList, it, onSettingClicked = {})
+            }
         )
     }
 }
