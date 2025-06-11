@@ -8,7 +8,7 @@ import java.text.NumberFormat
 import java.util.Locale
 
 @Composable
-fun formatPrice(price: Int): String {
+fun formatPrice(price: Double): String {
     val priceFormat = stringResource(id = R.string.price)
 
     val formattedNumber = remember(price) {

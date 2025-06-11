@@ -3,24 +3,16 @@ package com.smorzhok.financeapp.ui.theme.incomeScreen
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.smorzhok.financeapp.R
-import com.smorzhok.financeapp.domain.model.Incomes
+import com.smorzhok.financeapp.domain.model.IncomeDto
+import com.smorzhok.financeapp.domain.usecase.FinanceRepository
+import com.smorzhok.financeapp.domain.usecase.GetIncomeUseCase
 
-class IncomeScreenViewModel: ViewModel() {
-    private val initialIncomesList = mutableListOf<Incomes>()
-        .apply {
-            repeat(2) {
-                add(
-                    Incomes(
-                        id = it,
-                        textLeadingResId = R.string.products_placeholder,
-                        iconTrailingResId = R.drawable.more_vert_icon,
-                        priceTrailing = 50000
-                    )
-                )
-            }
-        }
+class IncomeScreenViewModel(
+    financeRepository: FinanceRepository
+): ViewModel() {
+    private val getIncomeUseCase = GetIncomeUseCase(financeRepository)
+    private val initialIncomeDtoLists = getIncomeUseCase()
 
-    private val _incomesList= MutableLiveData<List<Incomes>>(initialIncomesList)
-    val incomesList: LiveData<List<Incomes>> get() = _incomesList
+    private val _incomeDtoList= MutableLiveData<List<IncomeDto>>(initialIncomeDtoLists)
+    val incomeDtoList: LiveData<List<IncomeDto>> get() = _incomeDtoList
 }

@@ -1,5 +1,5 @@
 package com.smorzhok.financeapp.data.model
 
-data class TransactionsResponse (
+data class TransactionResponse(
     val transactions: List<Transaction>
 )

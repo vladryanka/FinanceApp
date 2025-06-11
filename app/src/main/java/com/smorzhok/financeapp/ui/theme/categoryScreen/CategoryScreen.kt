@@ -1,4 +1,4 @@
-package com.smorzhok.financeapp.ui.theme.articlesSreen
+package com.smorzhok.financeapp.ui.theme.categoryScreen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -24,16 +24,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.smorzhok.financeapp.R
-import com.smorzhok.financeapp.domain.model.Articles
+import com.smorzhok.financeapp.domain.model.CategoryDto
 import com.smorzhok.financeapp.ui.theme.commonItems.ListItem
 
 @Composable
-fun ArticlesScreen(
-    articlesList: List<Articles>?,
+fun CategoryScreen(
+    categoryDtoList: List<CategoryDto>?,
     paddingValues: PaddingValues,
     onArticleClicked: (Int) -> Unit
 ) {
-    val articlesListState = remember { articlesList }
+    val categoryListState = remember { categoryDtoList }
 
     Column(
         modifier = Modifier
@@ -69,12 +69,12 @@ fun ArticlesScreen(
             backgroundColor = MaterialTheme.colorScheme.surfaceContainerHigh,
         )
 
-        if (articlesListState != null) {
+        if (categoryListState != null) {
             LazyColumn {
-                itemsIndexed(articlesListState) { index, item ->
+                itemsIndexed(categoryListState) { index, item ->
                     ListItem(
                         leadingContent = {
-                            Row {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
                                 Box(
                                     modifier = Modifier
                                         .padding(horizontal = 16.dp)
@@ -85,14 +85,13 @@ fun ArticlesScreen(
                                         ),
                                     contentAlignment = Alignment.Center
                                 ) {
-                                    Icon(
-                                        painterResource(item.iconLeadingResId),
-                                        contentDescription = null,
-                                        tint = Color(0xFFFCE4EB)
+                                    Text(
+                                        text = item.iconLeading,
+                                        color = Color(0xFFFCE4EB)
                                     )
                                 }
                                 Text(
-                                    text = stringResource(item.textLeadingResId),
+                                    text = item.textLeading,
                                     fontSize = 24.sp,
                                     maxLines = 1
                                 )

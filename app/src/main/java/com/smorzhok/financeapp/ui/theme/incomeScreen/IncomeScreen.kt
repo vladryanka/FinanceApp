@@ -27,20 +27,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.smorzhok.financeapp.R
-import com.smorzhok.financeapp.domain.model.Incomes
+import com.smorzhok.financeapp.domain.model.IncomeDto
 import com.smorzhok.financeapp.ui.theme.commonItems.ListItem
 import com.smorzhok.financeapp.ui.theme.commonItems.formatPrice
 
 @Composable
 fun IncomeScreen(
-    incomesList: List<Incomes>?,
+    incomeDtoList: List<IncomeDto>?,
     paddingValues: PaddingValues,
     onIncomeClicked: (Int) -> Unit,
     onFabClick: () -> Unit
 ) {
-    val incomesListState = remember { incomesList }
+    val incomesListState = remember { incomeDtoList }
 
-    val totalPrice = incomesListState?.sumOf { it.priceTrailing } ?: 0
+    val totalPrice = incomesListState?.sumOf { it.priceTrailing } ?: 0.0
 
     Box(
         modifier = Modifier
@@ -87,7 +87,7 @@ fun IncomeScreen(
                         ListItem(
                             leadingContent = {
                                 Text(
-                                    text = stringResource(item.textLeadingResId),
+                                    text = item.textLeading,
                                     fontSize = 24.sp,
                                     modifier = Modifier.padding(horizontal = 16.dp),
                                     maxLines = 1
@@ -97,11 +97,11 @@ fun IncomeScreen(
                             {
                                 Row {
                                     Text(
-                                        text = formatPrice(item.priceTrailing),
+                                        text = formatPrice(item.priceTrailing.toDouble()),
                                         fontSize = 24.sp,
                                     )
                                     Icon(
-                                        painterResource(item.iconTrailingResId),
+                                        painterResource(R.drawable.more_vert_icon),
                                         contentDescription = null,
                                         modifier = Modifier
                                             .padding(horizontal = 16.dp)

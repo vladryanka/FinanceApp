@@ -21,8 +21,8 @@ import com.smorzhok.financeapp.domain.model.ScaffoldItem
 import com.smorzhok.financeapp.navigation.AppNavGraph
 import com.smorzhok.financeapp.navigation.Screen
 import com.smorzhok.financeapp.navigation.rememberNavigationState
-import com.smorzhok.financeapp.ui.theme.articlesSreen.ArticlesScreen
-import com.smorzhok.financeapp.ui.theme.articlesSreen.ArticlesScreenViewModel
+import com.smorzhok.financeapp.ui.theme.categoryScreen.CategoryScreen
+import com.smorzhok.financeapp.ui.theme.categoryScreen.CategoryScreenViewModel
 import com.smorzhok.financeapp.ui.theme.checkScreen.CheckScreenViewModel
 import com.smorzhok.financeapp.ui.theme.checkScreen.ChecksScreen
 import com.smorzhok.financeapp.ui.theme.commonItems.NavigationItem
@@ -38,7 +38,7 @@ fun MainScreen(
     expensesViewModel: ExpensesScreenViewModel,
     incomesViewModel: IncomeScreenViewModel,
     checksViewModel: CheckScreenViewModel,
-    articlesViewModel: ArticlesScreenViewModel,
+    categoryViewModel: CategoryScreenViewModel,
     settingsViewModel: SettingsScreenViewModel
 ) {
 
@@ -115,10 +115,10 @@ fun MainScreen(
     ) {
         it
 
-        val expensesList by expensesViewModel.expensesList.observeAsState()
-        val incomesList by incomesViewModel.incomesList.observeAsState()
+        val expensesList by expensesViewModel.expenseDtoList.observeAsState()
+        val incomesList by incomesViewModel.incomeDtoList.observeAsState()
         val checksList by checksViewModel.checksList.observeAsState()
-        val articlesList by articlesViewModel.articlesList.observeAsState()
+        val categoryList by categoryViewModel.categoryDtoList.observeAsState()
         val settingsList by settingsViewModel.settingsList.observeAsState()
         AppNavGraph(
             navState.navHostController,
@@ -132,7 +132,7 @@ fun MainScreen(
                 ChecksScreen (checksList, it, onCheckClicked = {}, {})
             },
             {
-                ArticlesScreen(articlesList, it, onArticleClicked = {})
+                CategoryScreen(categoryList, it, onArticleClicked = {})
             },
             {
                 SettingScreen(settingsList, it, onSettingClicked = {})

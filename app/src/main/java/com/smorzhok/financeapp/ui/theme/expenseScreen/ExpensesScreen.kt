@@ -30,7 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.smorzhok.financeapp.R
-import com.smorzhok.financeapp.domain.model.Expenses
+import com.smorzhok.financeapp.domain.model.ExpenseDto
 import com.smorzhok.financeapp.ui.theme.FinanceAppTheme
 import com.smorzhok.financeapp.ui.theme.commonItems.ListItem
 import com.smorzhok.financeapp.ui.theme.commonItems.formatPrice
@@ -38,12 +38,12 @@ import com.smorzhok.financeapp.ui.theme.commonItems.formatPrice
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExpensesScreen(
-    expensesList: List<Expenses>?,
+    expenseDtoList: List<ExpenseDto>?,
     paddingValues: PaddingValues,
     onExpenseClicked: (Int) -> Unit,
     onFabClick: () -> Unit
 ) {
-    val expensesListState = remember { expensesList }
+    val expensesListState = remember { expenseDtoList }
 
     val totalPrice = expensesListState?.sumOf { it.priceTrailing } ?: 0
 
@@ -72,7 +72,7 @@ fun ExpensesScreen(
                 },
                 trailingContent = {
                     Text(
-                        formatPrice(totalPrice),
+                        formatPrice(totalPrice.toDouble()),
                         modifier = Modifier
                             .padding(horizontal = 16.dp),
                         fontSize = 24.sp,
@@ -90,7 +90,7 @@ fun ExpensesScreen(
                     itemsIndexed(expensesListState) { index, item ->
                         ListItem(
                             leadingContent = {
-                                Row {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
                                     Box(
                                         modifier = Modifier
                                             .padding(horizontal = 16.dp)
@@ -101,17 +101,26 @@ fun ExpensesScreen(
                                             ),
                                         contentAlignment = Alignment.Center
                                     ) {
-                                        Icon(
-                                            painterResource(item.iconLeadingResId),
-                                            contentDescription = null,
-                                            tint = Color(0xFFFCE4EB)
+                                        Text(
+                                            item.iconLeading,
+                                            color = Color(0xFFFCE4EB)
                                         )
                                     }
-                                    Text(
-                                        text = stringResource(item.textLeadingResId),
-                                        fontSize = 24.sp,
-                                        maxLines = 1
-                                    )
+                                    Column {
+                                        Text(
+                                            text = item.textLeading,
+                                            fontSize = 24.sp,
+                                            maxLines = 1
+                                        )
+                                        item.commentLeading?.let{
+                                            Text(
+                                                text = it,
+                                                fontSize = 20.sp,
+                                                maxLines = 1,
+                                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                            )
+                                        }
+                                    }
                                 }
                             },
                             {
@@ -121,7 +130,7 @@ fun ExpensesScreen(
                                         fontSize = 24.sp,
                                     )
                                     Icon(
-                                        painterResource(item.iconTrailingResId),
+                                        painterResource(R.drawable.more_vert_icon),
                                         contentDescription = null,
                                         modifier = Modifier
                                             .padding(horizontal = 16.dp)
@@ -164,23 +173,22 @@ fun ExpensesScreen(
 @Composable
 fun ExpensesScreenPreview() {
     FinanceAppTheme {
-        val expensesList = mutableListOf<Expenses>()
+        val expenseDtoLists = mutableListOf<ExpenseDto>()
             .apply {
                 repeat(15) {
                     add(
-                        Expenses(
-
+                        ExpenseDto(
                             id = it,
-                            iconLeadingResId = R.drawable.emoji_placeholder,
-                            textLeadingResId = R.string.products_placeholder,
-                            iconTrailingResId = R.drawable.more_vert_icon,
-                            priceTrailing = 100000
+                            iconLeading ="💰",
+                            textLeading = "Продукты",
+                            priceTrailing = 100000.0,
+                            commentLeading = "джек"
                         )
                     )
                 }
             }
         ExpensesScreen(
-            expensesList,
+            expenseDtoLists,
             paddingValues = PaddingValues(50.dp),
             onExpenseClicked = { 1 },
             {}
