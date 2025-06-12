@@ -16,16 +16,17 @@ import com.smorzhok.financeapp.domain.model.IncomeDto
 import com.smorzhok.financeapp.domain.usecase.FinanceRepository
 
 class FinanceRepositoryImpl : FinanceRepository {
+
     override fun getExpenses(): List<ExpenseDto>? {
         val initialExpensesList = mutableListOf<Transaction>()
             .apply {
-                repeat(15) {
+                repeat(4) {
                     add(
                         Transaction(
                             id = it,
                             account = AccountBrief(
                                 id = it,
-                                name = "Основной счёт",
+                                name = "",
                                 balance = "1000.00",
                                 currency = "RUB"
                             ),
@@ -36,13 +37,57 @@ class FinanceRepositoryImpl : FinanceRepository {
                                 isIncome = true
                             ),
                             amount = "500.00",
-                            transactionDate = "2025-06-10T21:56:58.596Z",
-                            comment = "Зарплата за месяц",
-                            createdAt = "2025-06-10T21:56:58.596Z",
-                            updatedAt = "2025-06-10T21:56:58.596Z"
+                            transactionDate = "",
+                            comment = null,
+                            createdAt = "",
+                            updatedAt = ""
                         )
                     )
                 }
+                add(
+                    Transaction(
+                        id = 6,
+                        account = AccountBrief(
+                            id = 6,
+                            name = "",
+                            balance = "1000.00",
+                            currency = "RUB"
+                        ),
+                        category = Category(
+                            id = 1,
+                            name = "Ремонт квартиры",
+                            emoji = "РК",
+                            isIncome = true
+                        ),
+                        amount = "500.00",
+                        transactionDate = "",
+                        comment = null,
+                        createdAt = "",
+                        updatedAt = ""
+                    )
+                )
+                add(
+                    Transaction(
+                        id = 7,
+                        account = AccountBrief(
+                            id = 7,
+                            name = "",
+                            balance = "1000.00",
+                            currency = "RUB"
+                        ),
+                        category = Category(
+                            id = 1,
+                            name = "Собачка",
+                            emoji = "💰",
+                            isIncome = true
+                        ),
+                        amount = "500.00",
+                        transactionDate = "",
+                        comment = "Джек",
+                        createdAt = "",
+                        updatedAt = ""
+                    )
+                )
             }
         return initialExpensesList.map { it.mapToExpensesDto() }
     }
@@ -99,33 +144,30 @@ class FinanceRepositoryImpl : FinanceRepository {
         return initialIncomesList.map { it.mapToIncomeDto() }
     }
 
-    override fun getChecks(): List<CheckDto>? {
-        val initialAccountList = mutableListOf<AccountResponse>()
-            .apply {
-                add(
-                    AccountResponse(
-                        id = 1,
-                        name = "Основной счёт",
-                        balance = "1000.00",
-                        currency = "RUB",
-                        incomeStats = StatItem(
-                            categoryId = 1,
-                            categoryName = "Зарплата",
-                            emoji = "💰",
-                            amount = "5000.00"
-                        ),
-                        expenseStats = StatItem(
-                            categoryId = 1,
-                            categoryName = "Зарплата",
-                            emoji = "💰",
-                            amount = "5000.00"
-                        ),
-                        createdAt = "2025-06-10T23:10:28.275Z",
-                        updatedAt = "2025-06-10T23:10:28.275Z"
-                    )
-                )
-            }
-        return initialAccountList.map { it.mapToCheckDto() }
+    override fun getCheck(): CheckDto? {
+        val account =
+            AccountResponse(
+                id = 1,
+                name = "Основной счёт",
+                balance = "1000.00",
+                currency = "RUB",
+                incomeStats = StatItem(
+                    categoryId = 1,
+                    categoryName = "Зарплата",
+                    emoji = "💰",
+                    amount = "5000.00"
+                ),
+                expenseStats = StatItem(
+                    categoryId = 1,
+                    categoryName = "Зарплата",
+                    emoji = "💰",
+                    amount = "5000.00"
+                ),
+                createdAt = "2025-06-10T23:10:28.275Z",
+                updatedAt = "2025-06-10T23:10:28.275Z"
+            )
+
+        return account.mapToCheckDto()
     }
 
     override fun getCategories(): List<CategoryDto> {

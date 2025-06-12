@@ -28,7 +28,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.smorzhok.financeapp.R
 import com.smorzhok.financeapp.domain.model.ExpenseDto
 import com.smorzhok.financeapp.ui.theme.FinanceAppTheme
@@ -64,22 +63,17 @@ fun ExpensesScreen(
                 leadingContent = {
                     Text(
                         stringResource(R.string.total),
-                        modifier = Modifier
-                            .padding(horizontal = 16.dp),
-                        fontSize = 24.sp,
+                        style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                 },
                 trailingContent = {
                     Text(
                         formatPrice(totalPrice.toDouble()),
-                        modifier = Modifier
-                            .padding(horizontal = 16.dp),
-                        fontSize = 24.sp,
+                        style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                 },
-                upDivider = false,
                 downDivider = true,
                 onClick = { },
                 backgroundColor = MaterialTheme.colorScheme.secondary,
@@ -90,10 +84,11 @@ fun ExpensesScreen(
                     itemsIndexed(expensesListState) { index, item ->
                         ListItem(
                             leadingContent = {
-                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
                                     Box(
                                         modifier = Modifier
-                                            .padding(horizontal = 16.dp)
                                             .size(24.dp)
                                             .background(
                                                 color = MaterialTheme.colorScheme.secondary,
@@ -102,20 +97,24 @@ fun ExpensesScreen(
                                         contentAlignment = Alignment.Center
                                     ) {
                                         Text(
-                                            item.iconLeading,
-                                            color = Color(0xFFFCE4EB)
+                                            text = item.iconLeading,
+                                            color = MaterialTheme.colorScheme.onSurface
                                         )
                                     }
-                                    Column {
+
+                                    Column(
+                                        modifier = Modifier
+                                            .padding(start = 16.dp)
+                                            .align(Alignment.CenterVertically),
+                                    ) {
                                         Text(
                                             text = item.textLeading,
-                                            fontSize = 24.sp,
-                                            maxLines = 1
+                                            style = MaterialTheme.typography.bodyLarge,
                                         )
-                                        item.commentLeading?.let{
+                                        item.commentLeading?.let {
                                             Text(
                                                 text = it,
-                                                fontSize = 20.sp,
+                                                style = MaterialTheme.typography.bodyMedium,
                                                 maxLines = 1,
                                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                                             )
@@ -123,25 +122,26 @@ fun ExpensesScreen(
                                     }
                                 }
                             },
-                            {
-                                Row {
+                            trailingContent = {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
                                     Text(
                                         text = formatPrice(item.priceTrailing),
-                                        fontSize = 24.sp,
+                                        style = MaterialTheme.typography.bodyLarge,
                                     )
                                     Icon(
                                         painterResource(R.drawable.more_vert_icon),
                                         contentDescription = null,
-                                        modifier = Modifier
-                                            .padding(horizontal = 16.dp)
-                                            .align(Alignment.CenterVertically)
+                                        modifier = Modifier.padding(start = 16.dp)
                                     )
                                 }
                             },
-                            upDivider = false,
                             downDivider = true,
-                            onClick = { onExpenseClicked(item.id) },
-                            backgroundColor = MaterialTheme.colorScheme.surface,
+                            onClick = {
+                                onExpenseClicked(item.id)
+                            },
+                            backgroundColor = MaterialTheme.colorScheme.surface
                         )
                     }
                 }
@@ -179,7 +179,7 @@ fun ExpensesScreenPreview() {
                     add(
                         ExpenseDto(
                             id = it,
-                            iconLeading ="💰",
+                            iconLeading = "💰",
                             textLeading = "Продукты",
                             priceTrailing = 100000.0,
                             commentLeading = "джек"

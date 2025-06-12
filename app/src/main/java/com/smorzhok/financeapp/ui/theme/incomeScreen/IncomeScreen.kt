@@ -25,7 +25,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.smorzhok.financeapp.R
 import com.smorzhok.financeapp.domain.model.IncomeDto
 import com.smorzhok.financeapp.ui.theme.commonItems.ListItem
@@ -60,22 +59,17 @@ fun IncomeScreen(
                 leadingContent = {
                     Text(
                         stringResource(R.string.total),
-                        modifier = Modifier
-                            .padding(horizontal = 16.dp),
-                        fontSize = 24.sp,
+                        style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                 },
                 trailingContent = {
                     Text(
                         formatPrice(totalPrice),
-                        modifier = Modifier
-                            .padding(horizontal = 16.dp),
-                        fontSize = 24.sp,
+                        style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                 },
-                upDivider = false,
                 downDivider = true,
                 onClick = { },
                 backgroundColor = MaterialTheme.colorScheme.secondary,
@@ -86,33 +80,36 @@ fun IncomeScreen(
                     itemsIndexed(incomesListState) { index, item ->
                         ListItem(
                             leadingContent = {
-                                Text(
-                                    text = item.textLeading,
-                                    fontSize = 24.sp,
-                                    modifier = Modifier.padding(horizontal = 16.dp),
-                                    maxLines = 1
-                                )
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                        Text(
+                                            text = item.textLeading,
+                                            style = MaterialTheme.typography.bodyLarge,
+                                        )
 
+                                }
                             },
-                            {
-                                Row {
+                            trailingContent = {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
                                     Text(
-                                        text = formatPrice(item.priceTrailing.toDouble()),
-                                        fontSize = 24.sp,
+                                        text = formatPrice(item.priceTrailing),
+                                        style = MaterialTheme.typography.bodyLarge,
                                     )
                                     Icon(
                                         painterResource(R.drawable.more_vert_icon),
                                         contentDescription = null,
-                                        modifier = Modifier
-                                            .padding(horizontal = 16.dp)
-                                            .align(Alignment.CenterVertically)
+                                        modifier = Modifier.padding(start = 16.dp)
                                     )
                                 }
                             },
-                            upDivider = false,
                             downDivider = true,
-                            onClick = { onIncomeClicked(item.id) },
-                            backgroundColor = MaterialTheme.colorScheme.surface,
+                            onClick = {
+                                onIncomeClicked(item.id)
+                            },
+                            backgroundColor = MaterialTheme.colorScheme.surface
                         )
                     }
                 }

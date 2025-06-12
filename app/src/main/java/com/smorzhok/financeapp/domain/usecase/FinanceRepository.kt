@@ -8,6 +8,6 @@ import com.smorzhok.financeapp.domain.model.IncomeDto
 interface FinanceRepository {
     fun getExpenses(): List<ExpenseDto>?
     fun getIncomes(): List<IncomeDto>?
-    fun getChecks(): List<CheckDto>?
+    fun getCheck(): CheckDto?
     fun getCategories(): List<CategoryDto>?
 }

@@ -22,7 +22,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.smorzhok.financeapp.R
 import com.smorzhok.financeapp.domain.model.CategoryDto
 import com.smorzhok.financeapp.ui.theme.commonItems.ListItem
@@ -48,9 +47,7 @@ fun CategoryScreen(
             leadingContent = {
                 Text(
                     stringResource(R.string.find_article),
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp),
-                    fontSize = 24.sp,
+                    style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.surfaceVariant
                 )
             },
@@ -58,12 +55,9 @@ fun CategoryScreen(
                 Icon(
                     painterResource(R.drawable.search),
                     contentDescription = null,
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp),
                     tint = MaterialTheme.colorScheme.surfaceVariant
                 )
             },
-            upDivider = false,
             downDivider = true,
             onClick = { },
             backgroundColor = MaterialTheme.colorScheme.surfaceContainerHigh,
@@ -77,7 +71,7 @@ fun CategoryScreen(
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Box(
                                     modifier = Modifier
-                                        .padding(horizontal = 16.dp)
+                                        .padding(end = 16.dp)
                                         .size(24.dp)
                                         .background(
                                             color = MaterialTheme.colorScheme.secondary,
@@ -92,13 +86,12 @@ fun CategoryScreen(
                                 }
                                 Text(
                                     text = item.textLeading,
-                                    fontSize = 24.sp,
+                                    style = MaterialTheme.typography.bodyLarge,
                                     maxLines = 1
                                 )
                             }
                         },
                         {},
-                        upDivider = false,
                         downDivider = true,
                         onClick = { onArticleClicked(item.id) },
                         backgroundColor = MaterialTheme.colorScheme.surface,

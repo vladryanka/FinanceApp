@@ -11,8 +11,8 @@ class CheckScreenViewModel(
     financeRepository: FinanceRepository
 ) : ViewModel() {
     private val checkUseCase = GetCheckUseCase(financeRepository)
-    private val initialChecksList = checkUseCase()
+    private val initialCheck = checkUseCase()
 
-    private val _checksList = MutableLiveData<List<CheckDto>>(initialChecksList)
-    val checksList: LiveData<List<CheckDto>> get() = _checksList
+    private val _check = MutableLiveData<CheckDto>(initialCheck)
+    val check: LiveData<CheckDto> get() = _check
 }

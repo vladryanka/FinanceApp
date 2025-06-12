@@ -17,7 +17,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.smorzhok.financeapp.R
 import com.smorzhok.financeapp.ui.theme.FinanceAppTheme
 
@@ -42,7 +41,6 @@ fun TopBarTextAndIcon(
                     text = stringResource(textResId),
                     color = MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.titleLarge,
-                    fontSize = 28.sp,
                     modifier = Modifier.align(Alignment.Center)
                 )
                 if (imageResId!= null){

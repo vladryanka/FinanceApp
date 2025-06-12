@@ -117,7 +117,7 @@ fun MainScreen(
 
         val expensesList by expensesViewModel.expenseDtoList.observeAsState()
         val incomesList by incomesViewModel.incomeDtoList.observeAsState()
-        val checksList by checksViewModel.checksList.observeAsState()
+        val check by checksViewModel.check.observeAsState()
         val categoryList by categoryViewModel.categoryDtoList.observeAsState()
         val settingsList by settingsViewModel.settingsList.observeAsState()
         AppNavGraph(
@@ -129,7 +129,7 @@ fun MainScreen(
                 IncomeScreen(incomesList, it, onIncomeClicked = {}, {})
             },
             {
-                ChecksScreen (checksList, it, onCheckClicked = {}, {})
+                ChecksScreen (check, it, onCheckClicked = {}, {})
             },
             {
                 CategoryScreen(categoryList, it, onArticleClicked = {})

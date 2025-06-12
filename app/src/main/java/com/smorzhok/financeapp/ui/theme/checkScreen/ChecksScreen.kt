@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -26,7 +24,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.smorzhok.financeapp.R
 import com.smorzhok.financeapp.domain.model.CheckDto
 import com.smorzhok.financeapp.ui.theme.commonItems.ListItem
@@ -34,12 +31,12 @@ import com.smorzhok.financeapp.ui.theme.commonItems.formatPrice
 
 @Composable
 fun ChecksScreen(
-    checkList: List<CheckDto>?,
+    check: CheckDto?,
     paddingValues: PaddingValues,
     onCheckClicked: (Int) -> Unit,
     onFabClick: () -> Unit
 ) {
-    val checkListState = remember { checkList }
+    val checkState = remember { check }
 
     Box(
         modifier = Modifier
@@ -55,85 +52,79 @@ fun ChecksScreen(
                     bottom = paddingValues.calculateBottomPadding()
                 )
         ) {
-            if (checkListState != null) {
-                LazyColumn {
-                    itemsIndexed(checkListState) { index, item ->
-                        ListItem(
-                            leadingContent = {
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Box(
-                                        modifier = Modifier
-                                            .padding(horizontal = 16.dp)
-                                            .size(24.dp)
-                                            .background(
-                                                color = MaterialTheme.colorScheme.onSecondary,
-                                                shape = CircleShape
-                                            ),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Text(
-                                            text = item.leadingIcon,
-                                            color = Color(0xFFFCE4EB)
-                                        )
-                                    }
+            if (checkState != null) {
+                Column {
+                    ListItem(
+                        leadingContent = {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Box(
+                                    modifier = Modifier
+                                        .padding(end = 16.dp)
+                                        .size(24.dp)
+                                        .background(
+                                            color = MaterialTheme.colorScheme.onSecondary,
+                                            shape = CircleShape
+                                        ),
+                                    contentAlignment = Alignment.Center
+                                ) {
                                     Text(
-                                        text = stringResource(R.string.balance),
-                                        fontSize = 24.sp,
-                                        maxLines = 1,
-                                        color = MaterialTheme.colorScheme.onSurface
+                                        text = checkState.leadingIcon,
+                                        color = Color(0xFFFCE4EB)
                                     )
                                 }
-                            },
-                            {
-                                Row {
-                                    Text(
-                                        text = formatPrice(item.balance),
-                                        fontSize = 24.sp,
-                                        color = MaterialTheme.colorScheme.onSurface
-                                    )
-                                    EndIcon(Modifier
-                                        .padding(horizontal = 16.dp)
-                                        .align(Alignment.CenterVertically)
-                                    )
-                                }
-                            },
-                            upDivider = false,
-                            downDivider = true,
-                            onClick = { onCheckClicked(item.id) },
-                            backgroundColor = MaterialTheme.colorScheme.secondary,
-                        )
-                        ListItem(
-                            leadingContent = {
                                 Text(
-                                    text = stringResource(R.string.currency),
-                                    fontSize = 24.sp,
-                                    modifier = Modifier.padding(horizontal = 16.dp),
+                                    text = stringResource(R.string.balance),
+                                    style = MaterialTheme.typography.bodyLarge,
                                     maxLines = 1,
                                     color = MaterialTheme.colorScheme.onSurface
                                 )
-
-                            },
-                            {
-                                Row {
-                                    Text(
-                                        text = item.currency,
-                                        fontSize = 24.sp,
-                                        color = MaterialTheme.colorScheme.onSurface
-                                    )
-                                    EndIcon(Modifier
-                                        .padding(horizontal = 16.dp)
+                            }
+                        },
+                        {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(
+                                    text = formatPrice(checkState.balance),
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                                EndIcon(
+                                    Modifier
+                                        .padding(start = 16.dp)
                                         .align(Alignment.CenterVertically)
-                                    )
-                                }
-                            },
-                            upDivider = false,
-                            downDivider = true,
-                            onClick = { onCheckClicked(item.id) },
-                            backgroundColor = MaterialTheme.colorScheme.secondary
-                        )
-
-
-                    }
+                                )
+                            }
+                        },
+                        downDivider = true,
+                        onClick = { onCheckClicked(checkState.id) },
+                        backgroundColor = MaterialTheme.colorScheme.secondary,
+                    )
+                    ListItem(
+                        leadingContent = {
+                            Text(
+                                text = stringResource(R.string.currency),
+                                style = MaterialTheme.typography.bodyLarge,
+                                maxLines = 1,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                        },
+                        {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(
+                                    text = checkState.currency,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                                EndIcon(
+                                    Modifier
+                                        .padding(start = 16.dp)
+                                        .align(Alignment.CenterVertically)
+                                )
+                            }
+                        },
+                        downDivider = true,
+                        onClick = { onCheckClicked(checkState.id) },
+                        backgroundColor = MaterialTheme.colorScheme.secondary
+                    )
                 }
             }
         }
@@ -160,7 +151,7 @@ fun ChecksScreen(
 }
 
 @Composable
-private fun EndIcon(modifier: Modifier){
+private fun EndIcon(modifier: Modifier) {
     Icon(
         painterResource(R.drawable.more_vert_icon),
         contentDescription = null,

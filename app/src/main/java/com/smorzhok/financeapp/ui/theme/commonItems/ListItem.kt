@@ -22,7 +22,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.smorzhok.financeapp.R
 import com.smorzhok.financeapp.ui.theme.FinanceAppTheme
 
@@ -30,7 +29,6 @@ import com.smorzhok.financeapp.ui.theme.FinanceAppTheme
 fun ListItem(
     leadingContent: @Composable () -> Unit,
     trailingContent: @Composable () -> Unit,
-    upDivider: Boolean,
     downDivider: Boolean,
     onClick: () -> Unit,
     backgroundColor: Color
@@ -43,23 +41,14 @@ fun ListItem(
         color = backgroundColor
     ) {
         Column {
-            if (upDivider) {
-                HorizontalDivider(
-                    modifier = Modifier.fillMaxWidth(),
-                    thickness = 1.dp,
-                    color = MaterialTheme.colorScheme.outlineVariant
-                )
-            }
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding( vertical = 23.dp),
+                    .padding(horizontal = 16.dp, vertical = 22.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Box(modifier = Modifier.weight(1f)) {
-                    leadingContent()
-                }
+                leadingContent()
                 trailingContent()
             }
             if (downDivider) {
@@ -80,10 +69,11 @@ fun ListItemPreview() {
     FinanceAppTheme {
         ListItem(
             leadingContent = {
-                Row {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Box(
                         modifier = Modifier
-                            .padding(horizontal = 16.dp)
                             .size(24.dp)
                             .background(
                                 color = MaterialTheme.colorScheme.secondary,
@@ -99,27 +89,26 @@ fun ListItemPreview() {
                     }
                     Text(
                         text = "Аренда квартиры",
-                        fontSize = 24.sp,
-                        maxLines = 1
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.padding(start = 16.dp)
                     )
                 }
             },
             trailingContent = {
-                Row {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Text(
                         text = "100 000 Р",
-                        fontSize = 24.sp,
+                        style = MaterialTheme.typography.bodyLarge,
                     )
                     Icon(
                         painterResource(R.drawable.more_vert_icon),
                         contentDescription = null,
-                        modifier = Modifier
-                            .padding(horizontal = 16.dp)
-                            .align(Alignment.CenterVertically)
+                        modifier = Modifier.padding(start = 16.dp)
                     )
                 }
             },
-            upDivider = false,
             downDivider = true,
             onClick = {},
             backgroundColor = MaterialTheme.colorScheme.surface
