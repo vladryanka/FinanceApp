@@ -1,3 +1,31 @@
 <resources>
     <string name="app_name">FinanceApp</string>
+    <string name="income">Доходы</string>
+    <string name="income_today">Доходы сегодня</string>
+    <string name="check">Счет</string>
+    <string name="articles">Статьи</string>
+    <string name="settings">Настройки</string>
+    <string name="expenses">Расходы</string>
+    <string name="my_account">Мой счет</string>
+    <string name="my_articles">Мои статьи</string>
+    <string name="expenses_today">Расходы сегодня</string>
+    <string name="history">История</string>
+    <string name="products_placeholder">Продукты</string>
+    <string name="total">Всего</string>
+    <string name="price">"%s ₽"</string>
+    <string name="currency">Валюта</string>
+    <string name="rub">₽</string>
+    <string name="balance">Баланс</string>
+    <string name="find_article">Найти статью</string>
+    <string name="dark_theme">Темная тема</string>
+    <string name="main_color">Основной цвет</string>
+    <string name="sounds">Звуки</string>
+    <string name="haptics">Хаптики</string>
+    <string name="password">Код пароль</string>
+    <string name="synchronizing">Синхронизация</string>
+    <string name="language">Язык</string>
+    <string name="about_the_program">О программе</string>
+    <string name="add_expense">Добавить расход</string>
+
+
 </resources>
