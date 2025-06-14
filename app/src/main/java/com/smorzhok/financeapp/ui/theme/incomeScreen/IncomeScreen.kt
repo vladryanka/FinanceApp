@@ -123,7 +123,7 @@ fun IncomeScreen(
                 .align(Alignment.BottomEnd)
                 .padding(
                     end = 16.dp,
-                    bottom = paddingValues.calculateTopPadding() + 14.dp
+                    bottom = paddingValues.calculateBottomPadding() + 14.dp
                 ),
             shape = CircleShape,
             containerColor = MaterialTheme.colorScheme.background,

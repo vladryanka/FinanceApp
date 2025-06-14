@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -66,8 +67,15 @@ fun SettingScreen(
                                 Switch(
                                     checked = checked,
                                     onCheckedChange = { checked = it },
-                                    modifier = Modifier.size(32.dp)
-
+                                    modifier = Modifier.size(32.dp),
+                                    colors = SwitchDefaults.colors(
+                                        checkedBorderColor = MaterialTheme.colorScheme.background,
+                                        uncheckedBorderColor = MaterialTheme.colorScheme.outline,
+                                        checkedThumbColor = MaterialTheme.colorScheme.background,
+                                        checkedTrackColor = MaterialTheme.colorScheme.secondary,
+                                        uncheckedThumbColor = MaterialTheme.colorScheme.outline,
+                                        uncheckedTrackColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                                    )
                                 )
                             }
                         },

@@ -10,6 +10,7 @@ val Purple40 = Color(0xFF6650a4)
 
 val SurfaceColorLight = Color(0xFFFEF7FF)
 val OutlineVariantColorLight = Color(0xFFCAC4D0)
+val OutlineColorLight = Color(0xFF79747E)
 val SurfaceContainerColorLight = Color(0xFFF3EDF7)
 val SurfaceContainerHighLightColor = Color(0xFFECE6F0)
 val OnSurfaceColorLight = Color(0xFF1D1B20)
