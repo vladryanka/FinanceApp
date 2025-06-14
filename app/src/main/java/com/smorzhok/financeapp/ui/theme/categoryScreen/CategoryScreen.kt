@@ -61,6 +61,7 @@ fun CategoryScreen(
             downDivider = true,
             onClick = { },
             backgroundColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+            verticalPadding = 16.0
         )
 
         if (categoryListState != null) {
@@ -95,6 +96,7 @@ fun CategoryScreen(
                         downDivider = true,
                         onClick = { onArticleClicked(item.id) },
                         backgroundColor = MaterialTheme.colorScheme.surface,
+                        verticalPadding = 22.0
                     )
                 }
             }

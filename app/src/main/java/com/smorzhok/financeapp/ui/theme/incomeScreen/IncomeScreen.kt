@@ -73,6 +73,7 @@ fun IncomeScreen(
                 downDivider = true,
                 onClick = { },
                 backgroundColor = MaterialTheme.colorScheme.secondary,
+                verticalPadding = 16.0
             )
 
             if (incomesListState != null) {
@@ -109,7 +110,8 @@ fun IncomeScreen(
                             onClick = {
                                 onIncomeClicked(item.id)
                             },
-                            backgroundColor = MaterialTheme.colorScheme.surface
+                            backgroundColor = MaterialTheme.colorScheme.surface,
+                            verticalPadding = 23.0
                         )
                     }
                 }

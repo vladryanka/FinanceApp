@@ -24,8 +24,10 @@ import com.smorzhok.financeapp.ui.theme.FinanceAppTheme
 @Composable
 fun TopBarTextAndIcon(
     textResId: Int,
-    imageResId: Int?,
-    onClick: ()->Unit
+    leadingImageResId: Int?,
+    trailingImageResId: Int?,
+    onTrailingClicked: ()->Unit,
+    onLeadingClicked: ()-> Unit
 ) {
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
@@ -36,22 +38,35 @@ fun TopBarTextAndIcon(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
+                if (leadingImageResId!= null){
+                    Icon(
+                        painter = painterResource(leadingImageResId),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .padding(start = 18.dp)
+                            .align(alignment = Alignment.CenterStart)
+                            .clickable{
+                                onLeadingClicked()
+                            },
+                        tint = MaterialTheme.colorScheme.onSurface.copy(0.8f)
 
+                    )
+                }
                 Text(
                     text = stringResource(textResId),
                     color = MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.align(Alignment.Center)
                 )
-                if (imageResId!= null){
+                if (trailingImageResId!= null){
                     Icon(
-                        painter = painterResource(imageResId),
-                        contentDescription = stringResource(R.string.history),
+                        painter = painterResource(trailingImageResId),
+                        contentDescription = null,
                         modifier = Modifier
                             .padding(end = 18.dp)
                             .align(alignment = Alignment.CenterEnd)
                             .clickable{
-                                onClick()
+                                onTrailingClicked()
                             },
                         tint = MaterialTheme.colorScheme.onSurface.copy(0.8f)
 
@@ -67,6 +82,6 @@ fun TopBarTextAndIcon(
 @Composable
 fun TopBarTextAndIconPreview() {
     FinanceAppTheme {
-        TopBarTextAndIcon(R.string.expenses_today, R.drawable.refresh,{})
+        TopBarTextAndIcon(R.string.expenses_today, R.drawable.refresh, R.drawable.refresh,{},{})
     }
 }

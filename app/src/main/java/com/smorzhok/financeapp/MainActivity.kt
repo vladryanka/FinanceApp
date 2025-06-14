@@ -19,6 +19,7 @@ import com.smorzhok.financeapp.ui.theme.checkScreen.CheckScreenViewModel
 import com.smorzhok.financeapp.ui.theme.checkScreen.CheckScreenViewModelFactory
 import com.smorzhok.financeapp.ui.theme.expenseScreen.ExpensesScreenViewModel
 import com.smorzhok.financeapp.ui.theme.expenseScreen.ExpensesScreenViewModelFactory
+import com.smorzhok.financeapp.ui.theme.historyScreen.HistoryScreenViewModel
 import com.smorzhok.financeapp.ui.theme.incomeScreen.IncomeScreenViewModel
 import com.smorzhok.financeapp.ui.theme.incomeScreen.IncomeScreenViewModelFactory
 import com.smorzhok.financeapp.ui.theme.settingScreen.SettingsScreenViewModel
@@ -30,6 +31,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var checksViewModel: CheckScreenViewModel
     private lateinit var categoryViewModel: CategoryScreenViewModel
     private lateinit var settingsViewModel: SettingsScreenViewModel
+    private lateinit var historyViewModel: HistoryScreenViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -49,6 +51,7 @@ class MainActivity : ComponentActivity() {
         categoryViewModel = ViewModelProvider(this, categoryFactory)[CategoryScreenViewModel::class.java]
 
         settingsViewModel = ViewModelProvider(this).get(SettingsScreenViewModel::class.java)
+        historyViewModel = ViewModelProvider(this).get(HistoryScreenViewModel::class.java)
         setContent {
             var isSplashFinished by remember { mutableStateOf(false) }
 
@@ -63,7 +66,8 @@ class MainActivity : ComponentActivity() {
                         incomesViewModel = incomesViewModel,
                         checksViewModel = checksViewModel,
                         categoryViewModel = categoryViewModel,
-                        settingsViewModel = settingsViewModel
+                        settingsViewModel = settingsViewModel,
+                        historyViewModel = historyViewModel
                     )
                 }
             }

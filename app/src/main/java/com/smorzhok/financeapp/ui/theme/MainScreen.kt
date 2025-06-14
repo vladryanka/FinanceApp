@@ -25,9 +25,11 @@ import com.smorzhok.financeapp.ui.theme.categoryScreen.CategoryScreen
 import com.smorzhok.financeapp.ui.theme.categoryScreen.CategoryScreenViewModel
 import com.smorzhok.financeapp.ui.theme.checkScreen.CheckScreenViewModel
 import com.smorzhok.financeapp.ui.theme.checkScreen.ChecksScreen
-import com.smorzhok.financeapp.ui.theme.commonItems.NavigationItem
+import com.smorzhok.financeapp.ui.theme.commonItems.BottomNavigationItem
 import com.smorzhok.financeapp.ui.theme.commonItems.TopBarTextAndIcon
 import com.smorzhok.financeapp.ui.theme.expenseScreen.ExpensesScreen
+import com.smorzhok.financeapp.ui.theme.historyScreen.HistoryScreen
+import com.smorzhok.financeapp.ui.theme.historyScreen.HistoryScreenViewModel
 import com.smorzhok.financeapp.ui.theme.incomeScreen.IncomeScreen
 import com.smorzhok.financeapp.ui.theme.incomeScreen.IncomeScreenViewModel
 import com.smorzhok.financeapp.ui.theme.settingScreen.SettingScreen
@@ -39,7 +41,8 @@ fun MainScreen(
     incomesViewModel: IncomeScreenViewModel,
     checksViewModel: CheckScreenViewModel,
     categoryViewModel: CategoryScreenViewModel,
-    settingsViewModel: SettingsScreenViewModel
+    settingsViewModel: SettingsScreenViewModel,
+    historyViewModel: HistoryScreenViewModel
 ) {
 
     val navState = rememberNavigationState()
@@ -49,19 +52,36 @@ fun MainScreen(
     val topBarContent = when (currentRoute) {
         Screen.Expenses.route -> ScaffoldItem(
             textResId = R.string.expenses_today,
-            imageResId = R.drawable.refresh
+            trailingImageResId = R.drawable.refresh,
+            leadingImageResId = null
         )
 
-        Screen.Settings.route -> ScaffoldItem(textResId = R.string.settings, imageResId = null)
-        Screen.Articles.route -> ScaffoldItem(textResId = R.string.my_articles, imageResId = null)
+        Screen.Settings.route -> ScaffoldItem(
+            textResId = R.string.settings, trailingImageResId = null,
+            leadingImageResId = null
+        )
+
+        Screen.Articles.route -> ScaffoldItem(
+            textResId = R.string.my_articles, trailingImageResId = null,
+            leadingImageResId = null
+        )
+
         Screen.Income.route -> ScaffoldItem(
             textResId = R.string.income_today,
-            imageResId = R.drawable.refresh
+            trailingImageResId = R.drawable.refresh,
+            leadingImageResId = null
         )
 
         Screen.Check.route -> ScaffoldItem(
             textResId = R.string.my_account,
-            imageResId = R.drawable.pencil
+            trailingImageResId = R.drawable.pencil,
+            leadingImageResId = null
+        )
+
+        Screen.History.route -> ScaffoldItem(
+            textResId = R.string.my_history,
+            trailingImageResId = R.drawable.analysis_icon,
+            leadingImageResId = R.drawable.back_icon
         )
 
         else -> null
@@ -70,17 +90,36 @@ fun MainScreen(
     Scaffold(
         topBar = {
             topBarContent?.let {
-                TopBarTextAndIcon(it.textResId, it.imageResId, onClick = {})
+                TopBarTextAndIcon(
+                    it.textResId, trailingImageResId = it.trailingImageResId,
+                    leadingImageResId = it.leadingImageResId, onLeadingClicked = {
+
+                    }, onTrailingClicked = {
+                        when (currentRoute) {
+                            Screen.Expenses.route ->{
+                                navState.navigateTo(Screen.History.route)
+                            }
+                            Screen.Income.route ->{}
+                            Screen.Check.route -> {
+                                // Переход на экран истории для чека
+                                navState.navigateTo(Screen.History.route)
+                            }
+                            Screen.History.route -> {
+                                // Дополнительные действия для анализа
+                            }
+                        }
+
+                    })
             }
         },
         bottomBar = {
             NavigationBar(containerColor = MaterialTheme.colorScheme.surfaceContainer) {
                 val items = listOf(
-                    NavigationItem.Expenses,
-                    NavigationItem.Income,
-                    NavigationItem.Check,
-                    NavigationItem.Articles,
-                    NavigationItem.Settings
+                    BottomNavigationItem.Expenses,
+                    BottomNavigationItem.Income,
+                    BottomNavigationItem.Check,
+                    BottomNavigationItem.Articles,
+                    BottomNavigationItem.Settings
                 )
                 items.forEach { item ->
                     val selected = currentRoute == item.screen.route
@@ -91,7 +130,7 @@ fun MainScreen(
                         },
                         icon = {
                             Icon(
-                                painterResource(item.imageResId),
+                                painterResource(item.trailingImageResId),
                                 contentDescription = null
                             )
                         },
@@ -120,6 +159,7 @@ fun MainScreen(
         val check by checksViewModel.check.observeAsState()
         val categoryList by categoryViewModel.categoryDtoList.observeAsState()
         val settingsList by settingsViewModel.settingsList.observeAsState()
+        val historyList by historyViewModel.historyList.observeAsState()
         AppNavGraph(
             navState.navHostController,
             {
@@ -129,13 +169,16 @@ fun MainScreen(
                 IncomeScreen(incomesList, it, onIncomeClicked = {}, {})
             },
             {
-                ChecksScreen (check, it, onCheckClicked = {}, {})
+                ChecksScreen(check, it, onCheckClicked = {}, {})
             },
             {
                 CategoryScreen(categoryList, it, onArticleClicked = {})
             },
             {
                 SettingScreen(settingsList, it, onSettingClicked = {})
+            },
+            {
+                HistoryScreen(historyList, onHistoryItemClicked = {}, it)
             }
         )
     }

@@ -13,6 +13,7 @@ fun AppNavGraph(
     checkScreenContent: @Composable () -> Unit,
     articlesScreenContent: @Composable () -> Unit,
     settingsScreenContent: @Composable () -> Unit,
+    historyScreenContent: @Composable () ->Unit
 ) {
 
     NavHost(
@@ -33,6 +34,9 @@ fun AppNavGraph(
         }
         composable(Screen.Settings.route) {
             settingsScreenContent()
+        }
+        composable(Screen.History.route) {
+            historyScreenContent()
         }
     }
 }

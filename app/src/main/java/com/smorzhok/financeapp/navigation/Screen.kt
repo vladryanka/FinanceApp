@@ -6,6 +6,7 @@ sealed class Screen(val route: String) {
     object Check: Screen(ROUTE_CHECK)
     object Articles: Screen(ROUTE_ARTICLES)
     object Settings: Screen(ROUTE_SETTINGS)
+    object History: Screen(ROUTE_HISTORY)
 
     private companion object{
         const val ROUTE_EXPENSES = "expenses"
@@ -13,5 +14,6 @@ sealed class Screen(val route: String) {
         const val ROUTE_CHECK = "check"
         const val ROUTE_ARTICLES = "articles"
         const val ROUTE_SETTINGS = "settings"
+        const val ROUTE_HISTORY = "history"
     }
 }

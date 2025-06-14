@@ -31,11 +31,12 @@ fun ListItem(
     trailingContent: @Composable () -> Unit,
     downDivider: Boolean,
     onClick: () -> Unit,
-    backgroundColor: Color
+    backgroundColor: Color,
+    verticalPadding: Double
 ) {
 
     Surface(
-        modifier = Modifier.clickable{
+        modifier = Modifier.clickable {
             onClick()
         },
         color = backgroundColor
@@ -44,7 +45,7 @@ fun ListItem(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 22.dp),
+                    .padding(horizontal = 16.dp, vertical = verticalPadding.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
@@ -111,7 +112,7 @@ fun ListItemPreview() {
             },
             downDivider = true,
             onClick = {},
-            backgroundColor = MaterialTheme.colorScheme.surface
+            backgroundColor = MaterialTheme.colorScheme.surface, 22.0
         )
     }
 }

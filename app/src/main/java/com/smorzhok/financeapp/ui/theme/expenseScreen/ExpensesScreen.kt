@@ -28,6 +28,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.smorzhok.financeapp.R
 import com.smorzhok.financeapp.domain.model.ExpenseDto
 import com.smorzhok.financeapp.ui.theme.FinanceAppTheme
@@ -77,6 +78,7 @@ fun ExpensesScreen(
                 downDivider = true,
                 onClick = { },
                 backgroundColor = MaterialTheme.colorScheme.secondary,
+                verticalPadding = 16.0
             )
 
             if (expensesListState != null) {
@@ -98,7 +100,8 @@ fun ExpensesScreen(
                                     ) {
                                         Text(
                                             text = item.iconLeading,
-                                            color = MaterialTheme.colorScheme.onSurface
+                                            color = MaterialTheme.colorScheme.onSurface,
+                                            fontSize = 10.sp
                                         )
                                     }
 
@@ -141,7 +144,8 @@ fun ExpensesScreen(
                             onClick = {
                                 onExpenseClicked(item.id)
                             },
-                            backgroundColor = MaterialTheme.colorScheme.surface
+                            backgroundColor = MaterialTheme.colorScheme.surface,
+                            verticalPadding = 22.0
                         )
                     }
                 }

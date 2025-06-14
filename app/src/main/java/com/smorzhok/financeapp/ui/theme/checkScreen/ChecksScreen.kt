@@ -97,6 +97,7 @@ fun ChecksScreen(
                         downDivider = true,
                         onClick = { onCheckClicked(checkState.id) },
                         backgroundColor = MaterialTheme.colorScheme.secondary,
+                        verticalPadding = 16.0
                     )
                     ListItem(
                         leadingContent = {
@@ -123,7 +124,8 @@ fun ChecksScreen(
                         },
                         downDivider = true,
                         onClick = { onCheckClicked(checkState.id) },
-                        backgroundColor = MaterialTheme.colorScheme.secondary
+                        backgroundColor = MaterialTheme.colorScheme.secondary,
+                        verticalPadding = 16.0
                     )
                 }
             }

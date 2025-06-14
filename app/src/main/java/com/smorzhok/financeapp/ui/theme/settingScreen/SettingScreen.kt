@@ -74,6 +74,7 @@ fun SettingScreen(
                         downDivider = true,
                         onClick = { },
                         backgroundColor = MaterialTheme.colorScheme.surface,
+                        verticalPadding = 16.0
                     )
                 }
                 itemsIndexed(incomesListState) { index, item ->
@@ -101,6 +102,7 @@ fun SettingScreen(
                         downDivider = true,
                         onClick = { onSettingClicked(item.id) },
                         backgroundColor = MaterialTheme.colorScheme.surface,
+                        verticalPadding = 15.5
                     )
                 }
             }
