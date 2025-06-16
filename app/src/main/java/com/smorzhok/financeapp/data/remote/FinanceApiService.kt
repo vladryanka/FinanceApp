@@ -17,6 +17,9 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Query
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import com.smorzhok.financeapp.data.model.request.DeleteTransactionRequest
+import com.smorzhok.financeapp.data.model.request.UpdateTransactionRequest
+import retrofit2.http.HTTP
 import java.util.concurrent.TimeUnit
 
 
@@ -40,6 +43,12 @@ interface FinanceApiService {
 
     @POST("/transaction")
     suspend fun createTransaction(@Body request: CreateTransactionRequest): Response<Unit>
+
+    @PUT("/transaction")
+    suspend fun updateTransaction(@Body request: UpdateTransactionRequest): Response<Unit>
+
+    @HTTP(method = "DELETE", path = "/transaction", hasBody = true)
+    suspend fun deleteTransaction(@Body request: DeleteTransactionRequest): Response<Unit>
 }
 
 object DeezerApi {
