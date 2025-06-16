@@ -25,19 +25,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.smorzhok.financeapp.LocalFinanceRepository
 import com.smorzhok.financeapp.R
-import com.smorzhok.financeapp.domain.model.IncomeDto
 import com.smorzhok.financeapp.ui.theme.commonItems.ListItem
 import com.smorzhok.financeapp.ui.theme.commonItems.formatPrice
 
 @Composable
 fun IncomeScreen(
-    incomeDtoList: List<IncomeDto>?,
     paddingValues: PaddingValues,
     onIncomeClicked: (Int) -> Unit,
     onFabClick: () -> Unit
 ) {
-    val incomesListState = remember { incomeDtoList }
+    val financeRepository = LocalFinanceRepository.current
+    val viewModel: IncomeScreenViewModel = viewModel(
+        factory = IncomeScreenViewModelFactory(financeRepository)
+    )
+    val incomesListState = remember { viewModel.incomeDtoList.value }
 
     val totalPrice = incomesListState?.sumOf { it.priceTrailing } ?: 0.0
 

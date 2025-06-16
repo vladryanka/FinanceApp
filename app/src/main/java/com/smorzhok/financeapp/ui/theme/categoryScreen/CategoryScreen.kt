@@ -22,17 +22,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.smorzhok.financeapp.LocalFinanceRepository
 import com.smorzhok.financeapp.R
-import com.smorzhok.financeapp.domain.model.CategoryDto
 import com.smorzhok.financeapp.ui.theme.commonItems.ListItem
 
 @Composable
 fun CategoryScreen(
-    categoryDtoList: List<CategoryDto>?,
     paddingValues: PaddingValues,
     onArticleClicked: (Int) -> Unit
 ) {
-    val categoryListState = remember { categoryDtoList }
+    val financeRepository = LocalFinanceRepository.current
+    val viewModel: CategoryScreenViewModel = viewModel(
+        factory = CategoryScreenViewModelFactory(financeRepository)
+    )
+
+    val categoryListState = remember { viewModel.categoryDtoList.value }
 
     Column(
         modifier = Modifier

@@ -29,8 +29,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.smorzhok.financeapp.LocalFinanceRepository
 import com.smorzhok.financeapp.R
-import com.smorzhok.financeapp.domain.model.ExpenseDto
 import com.smorzhok.financeapp.ui.theme.FinanceAppTheme
 import com.smorzhok.financeapp.ui.theme.commonItems.ListItem
 import com.smorzhok.financeapp.ui.theme.commonItems.formatPrice
@@ -38,12 +39,16 @@ import com.smorzhok.financeapp.ui.theme.commonItems.formatPrice
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExpensesScreen(
-    expenseDtoList: List<ExpenseDto>?,
     paddingValues: PaddingValues,
     onExpenseClicked: (Int) -> Unit,
     onFabClick: () -> Unit
 ) {
-    val expensesListState = remember { expenseDtoList }
+    val financeRepository = LocalFinanceRepository.current
+    val viewModel: ExpensesScreenViewModel = viewModel(
+        factory = ExpensesScreenViewModelFactory(financeRepository)
+    )
+
+    val expensesListState = remember { viewModel.expenseDtoList.value }
 
     val totalPrice = expensesListState?.sumOf { it.priceTrailing } ?: 0
 
@@ -177,27 +182,11 @@ fun ExpensesScreen(
 @Composable
 fun ExpensesScreenPreview() {
     FinanceAppTheme {
-        val expenseDtoLists = mutableListOf<ExpenseDto>()
-            .apply {
-                repeat(15) {
-                    add(
-                        ExpenseDto(
-                            id = it,
-                            iconLeading = "💰",
-                            textLeading = "Продукты",
-                            priceTrailing = 100000.0,
-                            commentLeading = "джек"
-                        )
-                    )
-                }
-            }
         ExpensesScreen(
-            expenseDtoLists,
             paddingValues = PaddingValues(50.dp),
             onExpenseClicked = { 1 },
             {}
         )
-
     }
 }
 

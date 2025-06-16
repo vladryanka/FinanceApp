@@ -24,19 +24,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.smorzhok.financeapp.LocalFinanceRepository
 import com.smorzhok.financeapp.R
-import com.smorzhok.financeapp.domain.model.CheckDto
 import com.smorzhok.financeapp.ui.theme.commonItems.ListItem
 import com.smorzhok.financeapp.ui.theme.commonItems.formatPrice
 
 @Composable
 fun ChecksScreen(
-    check: CheckDto?,
     paddingValues: PaddingValues,
     onCheckClicked: (Int) -> Unit,
     onFabClick: () -> Unit
 ) {
-    val checkState = remember { check }
+    val financeRepository = LocalFinanceRepository.current
+    val viewModel: CheckScreenViewModel = viewModel(
+        factory = CheckScreenViewModelFactory(financeRepository)
+    )
+    val checkState = remember { viewModel.check.value }
 
     Box(
         modifier = Modifier

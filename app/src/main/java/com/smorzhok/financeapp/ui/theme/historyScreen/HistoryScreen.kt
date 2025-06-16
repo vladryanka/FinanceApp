@@ -15,6 +15,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,18 +26,19 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.smorzhok.financeapp.R
-import com.smorzhok.financeapp.domain.model.HistoryDto
 import com.smorzhok.financeapp.ui.theme.FinanceAppTheme
 import com.smorzhok.financeapp.ui.theme.commonItems.ListItem
 import com.smorzhok.financeapp.ui.theme.commonItems.formatPrice
 
 @Composable
 fun HistoryScreen(
-    historyList: List<HistoryDto>?,
     onHistoryItemClicked: (Int) -> Unit,
     paddingValues: PaddingValues
 ) {
+    val viewModel: HistoryScreenViewModel = viewModel()
+    val historyList by viewModel.historyList.observeAsState(emptyList())
     val historyListState = remember { historyList }
     Box(
         modifier = Modifier
@@ -60,80 +63,78 @@ fun HistoryScreen(
                 GreenInfoItem(R.string.sum, R.string.sum, false) // Заменить на рил данные
             }
 
-            if (historyListState != null) {
-                itemsIndexed(historyListState) { index, item ->
-                    ListItem(
-                        leadingContent = {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically
+            itemsIndexed(historyListState) { index, item ->
+                ListItem(
+                    leadingContent = {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(24.dp)
+                                    .background(
+                                        color = MaterialTheme.colorScheme.secondary,
+                                        shape = CircleShape
+                                    ),
+                                contentAlignment = Alignment.Center
                             ) {
-                                Box(
-                                    modifier = Modifier
-                                        .size(24.dp)
-                                        .background(
-                                            color = MaterialTheme.colorScheme.secondary,
-                                            shape = CircleShape
-                                        ),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Text(
-                                        text = item.leadingIcon,
-                                        color = MaterialTheme.colorScheme.onSurface,
-                                        fontSize = 10.sp
-                                    )
-                                }
-
-                                Column(
-                                    modifier = Modifier
-                                        .padding(start = 16.dp)
-                                        .align(Alignment.CenterVertically),
-                                ) {
-                                    Text(
-                                        text = item.leadingName,
-                                        style = MaterialTheme.typography.bodyLarge,
-                                    )
-                                    item.leadingComment?.let {
-                                        Text(
-                                            text = it,
-                                            style = MaterialTheme.typography.labelMedium,
-                                            maxLines = 1,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                                        )
-                                    }
-                                }
+                                Text(
+                                    text = item.leadingIcon,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    fontSize = 10.sp
+                                )
                             }
-                        },
-                        trailingContent = {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically
+
+                            Column(
+                                modifier = Modifier
+                                    .padding(start = 16.dp)
+                                    .align(Alignment.CenterVertically),
                             ) {
-                                Column(
-                                    modifier = Modifier
-                                        .align(Alignment.CenterVertically),
-                                ) {
+                                Text(
+                                    text = item.leadingName,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                )
+                                item.leadingComment?.let {
                                     Text(
-                                        text = formatPrice(item.trailingPrice) +
-                                                "\n${item.trailingTime}",
-                                        style = MaterialTheme.typography.bodyLarge,
-                                        textAlign = TextAlign.End,
+                                        text = it,
+                                        style = MaterialTheme.typography.labelMedium,
+                                        maxLines = 1,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
                                 }
-                                Icon(
-                                    painterResource(R.drawable.more_vert_icon),
-                                    contentDescription = null,
-                                    modifier = Modifier.padding(start = 16.dp)
+                            }
+                        }
+                    },
+                    trailingContent = {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .align(Alignment.CenterVertically),
+                            ) {
+                                Text(
+                                    text = formatPrice(item.trailingPrice) +
+                                            "\n${item.trailingTime}",
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    textAlign = TextAlign.End,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
-                        },
-                        downDivider = true,
-                        onClick = {
-                            onHistoryItemClicked(item.id)
-                        },
-                        backgroundColor = MaterialTheme.colorScheme.surface,
-                        verticalPadding = 10.5
-                    )
-                }
+                            Icon(
+                                painterResource(R.drawable.more_vert_icon),
+                                contentDescription = null,
+                                modifier = Modifier.padding(start = 16.dp)
+                            )
+                        }
+                    },
+                    downDivider = true,
+                    onClick = {
+                        onHistoryItemClicked(item.id)
+                    },
+                    backgroundColor = MaterialTheme.colorScheme.surface,
+                    verticalPadding = 10.5
+                )
             }
         }
 
@@ -169,20 +170,6 @@ private fun GreenInfoItem(leadingTextResId: Int, trailingTextResId: Int, isDivid
 @Composable
 fun HistoryPreview() {
     FinanceAppTheme {
-        val list = mutableListOf<HistoryDto>().apply {
-            repeat(4) {
-                add(
-                    HistoryDto(
-                        it,
-                        "РК",
-                        "Ремонт квартиры",
-                        "Ремонт - фурнитура для дверей",
-                        10000.0,
-                        "22:01"
-                    )
-                )
-            }
-        }
-        HistoryScreen(list, {}, PaddingValues(50.dp))
+        HistoryScreen({}, PaddingValues(50.dp))
     }
 }

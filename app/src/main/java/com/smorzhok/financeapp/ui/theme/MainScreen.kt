@@ -10,40 +10,26 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.smorzhok.financeapp.ui.theme.expenseScreen.ExpensesScreenViewModel
 import com.smorzhok.financeapp.R
 import com.smorzhok.financeapp.domain.model.ScaffoldItem
 import com.smorzhok.financeapp.navigation.AppNavGraph
 import com.smorzhok.financeapp.navigation.Screen
 import com.smorzhok.financeapp.navigation.rememberNavigationState
 import com.smorzhok.financeapp.ui.theme.categoryScreen.CategoryScreen
-import com.smorzhok.financeapp.ui.theme.categoryScreen.CategoryScreenViewModel
-import com.smorzhok.financeapp.ui.theme.checkScreen.CheckScreenViewModel
 import com.smorzhok.financeapp.ui.theme.checkScreen.ChecksScreen
 import com.smorzhok.financeapp.ui.theme.commonItems.BottomNavigationItem
 import com.smorzhok.financeapp.ui.theme.commonItems.TopBarTextAndIcon
 import com.smorzhok.financeapp.ui.theme.expenseScreen.ExpensesScreen
 import com.smorzhok.financeapp.ui.theme.historyScreen.HistoryScreen
-import com.smorzhok.financeapp.ui.theme.historyScreen.HistoryScreenViewModel
 import com.smorzhok.financeapp.ui.theme.incomeScreen.IncomeScreen
-import com.smorzhok.financeapp.ui.theme.incomeScreen.IncomeScreenViewModel
 import com.smorzhok.financeapp.ui.theme.settingScreen.SettingScreen
-import com.smorzhok.financeapp.ui.theme.settingScreen.SettingsScreenViewModel
 
 @Composable
-fun MainScreen(
-    expensesViewModel: ExpensesScreenViewModel,
-    incomesViewModel: IncomeScreenViewModel,
-    checksViewModel: CheckScreenViewModel,
-    categoryViewModel: CategoryScreenViewModel,
-    settingsViewModel: SettingsScreenViewModel,
-    historyViewModel: HistoryScreenViewModel
-) {
+fun MainScreen() {
 
     val navState = rememberNavigationState()
     val navBackStackEntry by navState.navHostController.currentBackStackEntryAsState()
@@ -101,7 +87,6 @@ fun MainScreen(
                             }
                             Screen.Income.route ->{}
                             Screen.Check.route -> {
-                                // Переход на экран истории для чека
                                 navState.navigateTo(Screen.History.route)
                             }
                             Screen.History.route -> {
@@ -154,31 +139,25 @@ fun MainScreen(
     ) {
         it
 
-        val expensesList by expensesViewModel.expenseDtoList.observeAsState()
-        val incomesList by incomesViewModel.incomeDtoList.observeAsState()
-        val check by checksViewModel.check.observeAsState()
-        val categoryList by categoryViewModel.categoryDtoList.observeAsState()
-        val settingsList by settingsViewModel.settingsList.observeAsState()
-        val historyList by historyViewModel.historyList.observeAsState()
         AppNavGraph(
             navState.navHostController,
             {
-                ExpensesScreen(expensesList, it, onExpenseClicked = {}, {})
+                ExpensesScreen(it, onExpenseClicked = {}, {})
             },
             {
-                IncomeScreen(incomesList, it, onIncomeClicked = {}, {})
+                IncomeScreen(it, onIncomeClicked = {}, {})
             },
             {
-                ChecksScreen(check, it, onCheckClicked = {}, {})
+                ChecksScreen(it, onCheckClicked = {}, {})
             },
             {
-                CategoryScreen(categoryList, it, onArticleClicked = {})
+                CategoryScreen(it, onArticleClicked = {})
             },
             {
-                SettingScreen(settingsList, it, onSettingClicked = {})
+                SettingScreen(it, onSettingClicked = {})
             },
             {
-                HistoryScreen(historyList, onHistoryItemClicked = {}, it)
+                HistoryScreen(onHistoryItemClicked = {}, it)
             }
         )
     }
