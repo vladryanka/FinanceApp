@@ -1,10 +1,11 @@
 package com.smorzhok.financeapp.data.remote
 
-import com.smorzhok.financeapp.data.model.request.CreateTransactionRequest
+import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import com.smorzhok.financeapp.data.model.AccountDto
+import com.smorzhok.financeapp.data.model.response.AccountHistoryResponse
+import com.smorzhok.financeapp.data.model.CategoryDto
+import com.smorzhok.financeapp.data.model.TransactionDto
 import com.smorzhok.financeapp.data.model.request.UpdateAccountsRequest
-import com.smorzhok.financeapp.data.model.response.AccountsResponse
-import com.smorzhok.financeapp.data.model.response.CategoryResponse
-import com.smorzhok.financeapp.data.model.response.TransactionsResponse
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -14,44 +15,33 @@ import retrofit2.Retrofit
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
-import retrofit2.http.PUT
+import retrofit2.http.Path
 import retrofit2.http.Query
-import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
-import com.smorzhok.financeapp.data.model.request.DeleteTransactionRequest
-import com.smorzhok.financeapp.data.model.request.UpdateTransactionRequest
-import retrofit2.http.HTTP
 import java.util.concurrent.TimeUnit
-
 
 interface FinanceApiService {
 
-    @GET("account/list")
-    suspend fun getAccountList(
-    ): AccountsResponse
+    @GET("accounts")
+    suspend fun getAccountList(): List<AccountDto>
 
-    @PUT("/account")
+    @GET("accounts/{id}/history")
+    suspend fun getAccountHistoryById(@Path("id") id: Int,): List<AccountHistoryResponse>
+
+    @POST("accounts")
     suspend fun updateAccounts(@Body request: UpdateAccountsRequest): Response<Unit>
 
-    @GET("category/list")
-    suspend fun getCategories(): CategoryResponse
+    @GET("categories")
+    suspend fun getCategories(): List<CategoryDto>
 
-    @GET("/transaction/list")
-    suspend fun getTransactions(
-        @Query("from") from: Long,
-        @Query("to") to: Long
-    ): TransactionsResponse
-
-    @POST("/transaction")
-    suspend fun createTransaction(@Body request: CreateTransactionRequest): Response<Unit>
-
-    @PUT("/transaction")
-    suspend fun updateTransaction(@Body request: UpdateTransactionRequest): Response<Unit>
-
-    @HTTP(method = "DELETE", path = "/transaction", hasBody = true)
-    suspend fun deleteTransaction(@Body request: DeleteTransactionRequest): Response<Unit>
+    @GET("transactions/account/{accountId}/period")
+    suspend fun getTransactionsByAccountAndPeriod(
+        @Path("accountId") accountId: Int,
+        @Query("from") from: String,
+        @Query("to") to: String
+    ): List<TransactionDto>
 }
 
-object DeezerApi {
+object FinanceApi {
 
     private const val BASE_URL = "https://shmr-finance.ru/api/v1/"
 
@@ -59,12 +49,27 @@ object DeezerApi {
         ignoreUnknownKeys = true
     }
 
-    private val interceptor = HttpLoggingInterceptor().apply {
+    private var authToken: String? = null
+
+    fun setAuthToken(token: String) {
+        authToken = token
+    }
+
+    private val authInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
     }
 
+    private val tokenInterceptor = okhttp3.Interceptor { chain ->
+        val requestBuilder = chain.request().newBuilder()
+        authToken?.let { token ->
+            requestBuilder.addHeader("Authorization", "Bearer $token")
+        }
+        chain.proceed(requestBuilder.build())
+    }
+
     private val okHttpClient = OkHttpClient.Builder()
-        .addInterceptor(interceptor)
+        .addInterceptor(tokenInterceptor)
+        .addInterceptor(authInterceptor)
         .connectTimeout(60, TimeUnit.SECONDS)
         .readTimeout(60, TimeUnit.SECONDS)
         .writeTimeout(60, TimeUnit.SECONDS)

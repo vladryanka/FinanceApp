@@ -1,5 +1,8 @@
 package com.smorzhok.financeapp.data.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class AccountHistory(
     val id: Int,
     val accountId: Int,

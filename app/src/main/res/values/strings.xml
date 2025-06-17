@@ -30,6 +30,11 @@
     <string name="start">Начало</string>
     <string name="end">Конец</string>
     <string name="sum">Сумма</string>
+    <string name="error">Произошла ошибка</string>
+    <string name="loading">Загрузка</string>
+    <string name="money_icon">💰</string>
+    <string name="no_accounts">Нет доступных аккаунтов</string>
+    <string name="unknown_error">Неизвестная ошибка</string>
 
 
 </resources>
