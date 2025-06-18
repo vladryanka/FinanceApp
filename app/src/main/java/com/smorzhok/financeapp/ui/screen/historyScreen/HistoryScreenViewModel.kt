@@ -33,7 +33,8 @@ class HistoryScreenViewModel(
                 val id = accounts.first().id
 
                 val transactions = getTransactionsUseCase(id, from, to)
-                val history = transactions.filter { it.isIncome == isIncome }
+                val history =
+                    transactions.filter { it.isIncome == isIncome }.sortedBy { it.time }
                 Log.d("Doing", history.toString())
 
                 _historyList.value = UiState.Success(history)
