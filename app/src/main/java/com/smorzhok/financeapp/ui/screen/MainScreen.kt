@@ -86,20 +86,24 @@ fun MainScreen() {
                     }, onTrailingClicked = {
                         when (currentRoute) {
                             Screen.Expenses.route -> {
-                                navState.navigateTo(Screen.History.createRoute(false))
+                                navState.navigateTo(
+                                    Screen.History.createRoute(false),
+                                    usePopUpTo = false
+                                )
                             }
 
                             Screen.Income.route -> {
-                                navState.navigateTo(Screen.History.createRoute(true))
+                                navState.navigateTo(
+                                    Screen.History.createRoute(true),
+                                    usePopUpTo = false
+                                )
                             }
 
                             Screen.Check.route -> {
-                                navState.navigateTo(Screen.History.route)
+                                navState.navigateTo(Screen.History.route, usePopUpTo = false)
                             }
 
-                            Screen.History.route -> {
-
-                            }
+                            Screen.History.route -> {}
                         }
 
                     })

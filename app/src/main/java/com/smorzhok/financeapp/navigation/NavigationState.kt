@@ -8,13 +8,15 @@ import androidx.navigation.compose.rememberNavController
 class NavigationState(
     val navHostController: NavHostController,
 ) {
-    fun navigateTo(route: String) {
+    fun navigateTo(route: String, usePopUpTo: Boolean = true) {
         navHostController.navigate(route) {
             launchSingleTop = true
-            popUpTo(navHostController.graph.startDestinationId) {
-                saveState = true
-            }
             restoreState = true
+            if (usePopUpTo) {
+                popUpTo(navHostController.graph.startDestinationId) {
+                    saveState = true
+                }
+            }
         }
     }
 }
