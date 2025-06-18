@@ -1,5 +1,6 @@
 package com.smorzhok.financeapp.ui.screen.historyScreen
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -18,7 +19,7 @@ class HistoryScreenViewModel(
     private val _historyList = MutableLiveData<UiState<List<Transaction>>>()
     val historyList: LiveData<UiState<List<Transaction>>> get() = _historyList
 
-    fun loadHistory(from: String, to: String) {
+    fun loadHistory(from: String, to: String, isIncome: Boolean) {
         viewModelScope.launch {
             _historyList.value = UiState.Loading
             try {
@@ -28,12 +29,14 @@ class HistoryScreenViewModel(
                     return@launch
                 }
 
+
                 val id = accounts.first().id
 
                 val transactions = getTransactionsUseCase(id, from, to)
-                val incomes = transactions.filter { it.isIncome }
+                val history = transactions.filter { it.isIncome == isIncome }
+                Log.d("Doing", history.toString())
 
-                _historyList.value = UiState.Success(incomes)
+                _historyList.value = UiState.Success(history)
             } catch (e: Exception) {
                 _historyList.value = UiState.Error(e.message)
             }

@@ -26,8 +26,8 @@ fun TopBarTextAndIcon(
     textResId: Int,
     leadingImageResId: Int?,
     trailingImageResId: Int?,
-    onTrailingClicked: ()->Unit,
-    onLeadingClicked: ()-> Unit
+    onTrailingClicked: () -> Unit,
+    onLeadingClicked: () -> Unit
 ) {
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
@@ -38,14 +38,14 @@ fun TopBarTextAndIcon(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                if (leadingImageResId!= null){
+                if (leadingImageResId != null) {
                     Icon(
                         painter = painterResource(leadingImageResId),
                         contentDescription = null,
                         modifier = Modifier
                             .padding(start = 18.dp)
                             .align(alignment = Alignment.CenterStart)
-                            .clickable{
+                            .clickable {
                                 onLeadingClicked()
                             },
                         tint = MaterialTheme.colorScheme.onSurface.copy(0.8f)
@@ -58,14 +58,14 @@ fun TopBarTextAndIcon(
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.align(Alignment.Center)
                 )
-                if (trailingImageResId!= null){
+                if (trailingImageResId != null) {
                     Icon(
                         painter = painterResource(trailingImageResId),
                         contentDescription = null,
                         modifier = Modifier
                             .padding(end = 18.dp)
                             .align(alignment = Alignment.CenterEnd)
-                            .clickable{
+                            .clickable {
                                 onTrailingClicked()
                             },
                         tint = MaterialTheme.colorScheme.onSurface.copy(0.8f)
@@ -82,6 +82,6 @@ fun TopBarTextAndIcon(
 @Composable
 fun TopBarTextAndIconPreview() {
     FinanceAppTheme {
-        TopBarTextAndIcon(R.string.expenses_today, R.drawable.refresh, R.drawable.refresh,{},{})
+        TopBarTextAndIcon(R.string.expenses_today, R.drawable.refresh, R.drawable.refresh, {}, {})
     }
 }

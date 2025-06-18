@@ -4,6 +4,7 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -16,6 +17,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -190,15 +192,31 @@ fun ExpensesScreen(
             }
 
             is UiState.Error -> {
-                val errorMessage = when (state.message) {
-                    "no_accounts" -> stringResource(R.string.no_accounts)
-                    else -> state.message ?: stringResource(R.string.unknown_error)
+                Column(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .padding(24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = stringResource(R.string.error),
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                    Button(
+                        onClick = {
+                            val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+                            val today = LocalDate.now()
+                            val from = today.withDayOfMonth(1).format(dateFormatter)
+                            val to = today.format(dateFormatter)
+                            viewModel.loadTransactions(from, to)
+                        },
+                        modifier = Modifier.padding(top = 16.dp)
+                    ) {
+                        Text(text = stringResource(R.string.retry))
+                    }
                 }
-                Text(
-                    text = errorMessage,
-                    color = Color.Red,
-                    modifier = Modifier.align(Alignment.Center)
-                )
             }
 
             null -> {}

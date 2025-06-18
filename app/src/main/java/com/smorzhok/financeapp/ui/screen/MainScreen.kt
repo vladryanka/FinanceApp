@@ -82,18 +82,23 @@ fun MainScreen() {
                 TopBarTextAndIcon(
                     it.textResId, trailingImageResId = it.trailingImageResId,
                     leadingImageResId = it.leadingImageResId, onLeadingClicked = {
-
+                        navState.navHostController.popBackStack()
                     }, onTrailingClicked = {
                         when (currentRoute) {
-                            Screen.Expenses.route ->{
-                                navState.navigateTo(Screen.History.route)
+                            Screen.Expenses.route -> {
+                                navState.navigateTo(Screen.History.createRoute(false))
                             }
-                            Screen.Income.route ->{}
+
+                            Screen.Income.route -> {
+                                navState.navigateTo(Screen.History.createRoute(true))
+                            }
+
                             Screen.Check.route -> {
                                 navState.navigateTo(Screen.History.route)
                             }
+
                             Screen.History.route -> {
-                                // Дополнительные действия для анализа
+
                             }
                         }
 
@@ -159,8 +164,8 @@ fun MainScreen() {
             {
                 SettingScreen(it, onSettingClicked = {})
             },
-            {
-                HistoryScreen(onHistoryItemClicked = {}, it)
+            { isIncome ->
+                HistoryScreen(isIncome, onHistoryItemClicked = {}, it)
             }
         )
     }

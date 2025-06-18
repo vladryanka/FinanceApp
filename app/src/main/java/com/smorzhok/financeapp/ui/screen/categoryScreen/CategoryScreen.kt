@@ -1,6 +1,7 @@
 package com.smorzhok.financeapp.ui.screen.categoryScreen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -11,11 +12,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,11 +27,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.smorzhok.financeapp.R
-import com.smorzhok.financeapp.ui.screen.commonItems.ListItem
-import androidx.compose.runtime.getValue
 import com.smorzhok.financeapp.LocalCategoryRepository
+import com.smorzhok.financeapp.R
 import com.smorzhok.financeapp.domain.model.Category
+import com.smorzhok.financeapp.ui.screen.commonItems.ListItem
 import com.smorzhok.financeapp.ui.screen.commonItems.UiState
 
 @Composable
@@ -120,10 +122,31 @@ fun CategoryScreen(
             }
 
             is UiState.Error -> {
-                val message =
-                    (categoryState as UiState.Error).message ?: stringResource(R.string.error)
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(text = message, color = Color.Red)
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .padding(24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = stringResource(R.string.error),
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                        Button(
+                            onClick = {
+                                viewModel.loadCategories()
+                            },
+                            modifier = Modifier.padding(top = 16.dp)
+                        ) {
+                            Text(text = stringResource(R.string.retry))
+                        }
+                    }
                 }
             }
 

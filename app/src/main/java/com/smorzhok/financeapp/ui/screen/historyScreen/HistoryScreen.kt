@@ -3,6 +3,7 @@ package com.smorzhok.financeapp.ui.screen.historyScreen
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -23,7 +25,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -45,6 +46,7 @@ import java.time.format.DateTimeFormatter
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HistoryScreen(
+    isIncome: Boolean,
     onHistoryItemClicked: (Int) -> Unit,
     paddingValues: PaddingValues
 ) {
@@ -61,7 +63,7 @@ fun HistoryScreen(
         val today = LocalDate.now()
         val from = today.withDayOfMonth(1).format(dateFormatter)
         val to = today.format(dateFormatter)
-        viewModel.loadHistory(from, to)
+        viewModel.loadHistory(from, to, isIncome)
     }
 
     Box(
@@ -80,15 +82,36 @@ fun HistoryScreen(
             }
 
             is UiState.Error -> {
-                val errorMessage = when (state.message) {
-                    "no_accounts" -> stringResource(R.string.no_accounts)
-                    else -> state.message ?: stringResource(R.string.unknown_error)
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .padding(24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = stringResource(R.string.error),
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                        Button(
+                            onClick = {
+                                val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+                                val today = LocalDate.now()
+                                val from = today.withDayOfMonth(1).format(dateFormatter)
+                                val to = today.format(dateFormatter)
+                                viewModel.loadHistory(from, to, isIncome)
+                            },
+                            modifier = Modifier.padding(top = 16.dp)
+                        ) {
+                            Text(text = stringResource(R.string.retry))
+                        }
+                    }
                 }
-                Text(
-                    text = errorMessage,
-                    color = Color.Red,
-                    modifier = Modifier.align(Alignment.Center)
-                )
             }
 
             is UiState.Success -> {
@@ -110,10 +133,18 @@ fun HistoryScreen(
                         ) // Заменить на реальные данные
                     }
                     item {
-                        GreenInfoItem(R.string.end, R.string.end, true) // Заменить на реальные данные
+                        GreenInfoItem(
+                            R.string.end,
+                            R.string.end,
+                            true
+                        ) // Заменить на реальные данные
                     }
                     item {
-                        GreenInfoItem(R.string.sum, R.string.sum, false) // Заменить на реальные данные
+                        GreenInfoItem(
+                            R.string.sum,
+                            R.string.sum,
+                            false
+                        ) // Заменить на реальные данные
                     }
 
                     itemsIndexed(historyList) { index, item ->
@@ -191,6 +222,7 @@ fun HistoryScreen(
                     }
                 }
             }
+
             else -> {}
         }
     }
@@ -227,6 +259,6 @@ private fun GreenInfoItem(leadingTextResId: Int, trailingTextResId: Int, isDivid
 @Composable
 fun HistoryPreview() {
     FinanceAppTheme {
-        HistoryScreen({}, PaddingValues(50.dp))
+        HistoryScreen(true, {}, PaddingValues(50.dp))
     }
 }

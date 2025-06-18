@@ -19,7 +19,7 @@ class CheckScreenViewModel(
         loadAccount()
     }
 
-    private fun loadAccount() {
+    fun loadAccount() {
         viewModelScope.launch {
             _checkState.value = UiState.Loading
             try {

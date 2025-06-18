@@ -17,7 +17,7 @@ class CategoryScreenViewModel(private val getCategoriesUseCase: GetCategoriesUse
         loadCategories()
     }
 
-    private fun loadCategories() {
+    fun loadCategories() {
         viewModelScope.launch {
             _categoryState.value = UiState.Loading
             try {

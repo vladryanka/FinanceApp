@@ -1,6 +1,7 @@
 package com.smorzhok.financeapp.ui.screen.checkScreen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
@@ -152,21 +154,31 @@ fun CheckScreen(
                 }
 
                 is UiState.Error -> {
-                    val errorMessage = when (state.message) {
-                        "no_accounts" -> stringResource(R.string.no_accounts)
-                        else -> state.message ?: stringResource(R.string.unknown_error)
-                    }
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(16.dp),
-                        contentAlignment = Alignment.Center
                     ) {
-                        Text(
-                            text = errorMessage,
-                            color = MaterialTheme.colorScheme.error,
-                            style = MaterialTheme.typography.bodyLarge
-                        )
+                        Column(
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                                .padding(24.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = stringResource(R.string.error),
+                                color = MaterialTheme.colorScheme.error,
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                            Button(
+                                onClick = {
+                                    viewModel.loadAccount()
+                                },
+                                modifier = Modifier.padding(top = 16.dp)
+                            ) {
+                                Text(text = stringResource(R.string.retry))
+                            }
+                        }
                     }
                 }
 

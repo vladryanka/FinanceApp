@@ -2,8 +2,10 @@ package com.smorzhok.financeapp.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 
 @Composable
 fun AppNavGraph(
@@ -13,7 +15,7 @@ fun AppNavGraph(
     checkScreenContent: @Composable () -> Unit,
     articlesScreenContent: @Composable () -> Unit,
     settingsScreenContent: @Composable () -> Unit,
-    historyScreenContent: @Composable () ->Unit
+    historyScreenContent: @Composable (Boolean) -> Unit
 ) {
 
     NavHost(
@@ -35,8 +37,12 @@ fun AppNavGraph(
         composable(Screen.Settings.route) {
             settingsScreenContent()
         }
-        composable(Screen.History.route) {
-            historyScreenContent()
+        composable(
+            route = Screen.History.route,
+            arguments = listOf(navArgument("isIncome") { type = NavType.BoolType })
+        ) { backStackEntry ->
+            val isIncome = backStackEntry.arguments?.getBoolean("isIncome") ?: false
+            historyScreenContent(isIncome)
         }
     }
 }
