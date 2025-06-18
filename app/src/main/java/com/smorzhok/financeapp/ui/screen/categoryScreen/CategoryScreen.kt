@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -34,6 +35,7 @@ import com.smorzhok.financeapp.R
 import com.smorzhok.financeapp.domain.model.Category
 import com.smorzhok.financeapp.ui.screen.commonItems.ListItem
 import com.smorzhok.financeapp.ui.screen.commonItems.UiState
+import com.smorzhok.financeapp.ui.theme.Green
 
 @Composable
 fun CategoryScreen(
@@ -153,7 +155,11 @@ fun CategoryScreen(
                             onClick = {
                                 viewModel.loadCategories(context)
                             },
-                            modifier = Modifier.padding(top = 16.dp)
+                            modifier = Modifier.padding(top = 16.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Green,
+                                contentColor = Color.White
+                            )
                         ) {
                             Text(text = stringResource(R.string.retry))
                         }

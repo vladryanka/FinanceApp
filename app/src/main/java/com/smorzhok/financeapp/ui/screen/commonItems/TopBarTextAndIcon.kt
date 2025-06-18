@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.smorzhok.financeapp.R
 import com.smorzhok.financeapp.ui.theme.FinanceAppTheme
+import com.smorzhok.financeapp.ui.theme.Green
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,7 +32,7 @@ fun TopBarTextAndIcon(
 ) {
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.background
+            containerColor = Green
         ),
         title = {
             Box(

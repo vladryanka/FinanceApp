@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -30,6 +31,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -46,6 +48,7 @@ import com.smorzhok.financeapp.ui.screen.commonItems.UiState
 import com.smorzhok.financeapp.ui.screen.commonItems.formatBackendTime
 import com.smorzhok.financeapp.ui.screen.commonItems.formatPrice
 import com.smorzhok.financeapp.ui.theme.FinanceAppTheme
+import com.smorzhok.financeapp.ui.theme.Green
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -147,7 +150,11 @@ fun HistoryScreen(
                                 val to = today.format(dateFormatter)
                                 viewModel.loadHistory(from, to, isIncome, context)
                             },
-                            modifier = Modifier.padding(top = 16.dp)
+                            modifier = Modifier.padding(top = 16.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Green,
+                                contentColor = Color.White
+                            )
                         ) {
                             Text(text = stringResource(R.string.retry))
                         }

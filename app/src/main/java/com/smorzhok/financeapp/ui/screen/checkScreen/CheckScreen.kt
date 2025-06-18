@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
@@ -37,6 +38,7 @@ import com.smorzhok.financeapp.ui.screen.commonItems.ListItem
 import com.smorzhok.financeapp.ui.screen.commonItems.UiState
 import com.smorzhok.financeapp.ui.screen.commonItems.formatCurrencyCodeToSymbol
 import com.smorzhok.financeapp.ui.screen.commonItems.formatPrice
+import com.smorzhok.financeapp.ui.theme.Green
 
 @Composable
 fun CheckScreen(
@@ -185,7 +187,11 @@ fun CheckScreen(
                                 onClick = {
                                     viewModel.loadAccount(context)
                                 },
-                                modifier = Modifier.padding(top = 16.dp)
+                                modifier = Modifier.padding(top = 16.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Green,
+                                    contentColor = Color.White
+                                )
                             ) {
                                 Text(text = stringResource(R.string.retry))
                             }
@@ -205,7 +211,7 @@ fun CheckScreen(
                     bottom = paddingValues.calculateBottomPadding() + 14.dp
                 ),
             shape = CircleShape,
-            containerColor = MaterialTheme.colorScheme.background,
+            containerColor = Green,
             elevation = FloatingActionButtonDefaults.elevation(0.dp)
         ) {
             Icon(

@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -47,6 +48,7 @@ import com.smorzhok.financeapp.ui.screen.commonItems.ListItem
 import com.smorzhok.financeapp.ui.screen.commonItems.UiState
 import com.smorzhok.financeapp.ui.screen.commonItems.formatPrice
 import com.smorzhok.financeapp.ui.theme.FinanceAppTheme
+import com.smorzhok.financeapp.ui.theme.Green
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -213,7 +215,11 @@ fun ExpensesScreen(
                             val to = today.format(dateFormatter)
                             viewModel.loadTransactions(to, to, context)
                         },
-                        modifier = Modifier.padding(top = 16.dp)
+                        modifier = Modifier.padding(top = 16.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Green,
+                            contentColor = Color.White
+                        )
                     ) {
                         Text(text = stringResource(R.string.retry))
                     }
@@ -232,7 +238,7 @@ fun ExpensesScreen(
                     bottom = paddingValues.calculateBottomPadding() + 14.dp
                 ),
             shape = CircleShape,
-            containerColor = MaterialTheme.colorScheme.background,
+            containerColor = Green,
             elevation = FloatingActionButtonDefaults.elevation(0.dp)
         ) {
             Icon(
