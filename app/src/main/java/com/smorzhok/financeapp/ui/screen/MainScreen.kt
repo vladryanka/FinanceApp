@@ -25,7 +25,7 @@ import com.smorzhok.financeapp.ui.screen.categoryScreen.CategoryScreen
 import com.smorzhok.financeapp.ui.screen.checkScreen.CheckScreen
 import com.smorzhok.financeapp.ui.screen.commonItems.BottomNavigationItem
 import com.smorzhok.financeapp.ui.screen.commonItems.TopBarTextAndIcon
-import com.smorzhok.financeapp.ui.screen.expenseScreen.ExpensesScreen
+import com.smorzhok.financeapp.ui.screen.expenseScreen.expensesToday.ExpensesScreen
 import com.smorzhok.financeapp.ui.screen.historyScreen.HistoryScreen
 import com.smorzhok.financeapp.ui.screen.incomeScreen.IncomeScreen
 import com.smorzhok.financeapp.ui.screen.settingScreen.SettingScreen

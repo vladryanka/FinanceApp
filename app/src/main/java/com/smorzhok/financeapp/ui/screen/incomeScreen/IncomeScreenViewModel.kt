@@ -8,6 +8,7 @@ import com.smorzhok.financeapp.domain.model.Transaction
 import com.smorzhok.financeapp.domain.usecase.account.GetAccountUseCase
 import com.smorzhok.financeapp.domain.usecase.transaction.GetTransactionsUseCase
 import com.smorzhok.financeapp.ui.screen.commonItems.UiState
+import com.smorzhok.financeapp.ui.screen.commonItems.retryWithBackoff
 import kotlinx.coroutines.launch
 
 class IncomeScreenViewModel(
@@ -22,7 +23,7 @@ class IncomeScreenViewModel(
         viewModelScope.launch {
             _incomeList.value = UiState.Loading
             try {
-                val accounts = getAccountUseCase()
+                val accounts = retryWithBackoff { getAccountUseCase() }
                 if (accounts.isEmpty()) {
                     _incomeList.value = UiState.Error("no_accounts")
                     return@launch
@@ -30,7 +31,7 @@ class IncomeScreenViewModel(
 
                 val id = accounts.first().id
 
-                val transactions = getTransactionsUseCase(id, from, to)
+                val transactions = retryWithBackoff { getTransactionsUseCase(id, from, to) }
                 val incomes = transactions.filter { it.isIncome }
 
                 _incomeList.value = UiState.Success(incomes)

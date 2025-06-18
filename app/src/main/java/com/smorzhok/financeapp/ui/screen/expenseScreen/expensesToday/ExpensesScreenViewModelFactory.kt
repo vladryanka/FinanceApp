@@ -1,4 +1,4 @@
-package com.smorzhok.financeapp.ui.screen.expenseScreen
+package com.smorzhok.financeapp.ui.screen.expenseScreen.expensesToday
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

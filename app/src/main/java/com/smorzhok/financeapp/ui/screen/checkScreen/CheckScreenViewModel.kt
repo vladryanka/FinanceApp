@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.smorzhok.financeapp.domain.model.Account
 import com.smorzhok.financeapp.domain.usecase.account.GetAccountUseCase
 import com.smorzhok.financeapp.ui.screen.commonItems.UiState
+import com.smorzhok.financeapp.ui.screen.commonItems.retryWithBackoff
 import kotlinx.coroutines.launch
 
 class CheckScreenViewModel(
@@ -23,7 +24,7 @@ class CheckScreenViewModel(
         viewModelScope.launch {
             _checkState.value = UiState.Loading
             try {
-                val accounts = getAccountUseCase()
+                val accounts = retryWithBackoff { getAccountUseCase() }
                 val firstAccount = accounts.firstOrNull()
                 if (firstAccount != null) {
                     _checkState.value = UiState.Success(firstAccount)

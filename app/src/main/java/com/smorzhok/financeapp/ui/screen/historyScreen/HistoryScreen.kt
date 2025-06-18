@@ -1,8 +1,10 @@
 package com.smorzhok.financeapp.ui.screen.historyScreen
 
+import android.app.DatePickerDialog
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,8 +25,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -41,6 +47,7 @@ import com.smorzhok.financeapp.ui.screen.commonItems.formatBackendTime
 import com.smorzhok.financeapp.ui.screen.commonItems.formatPrice
 import com.smorzhok.financeapp.ui.theme.FinanceAppTheme
 import java.time.LocalDate
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -56,14 +63,44 @@ fun HistoryScreen(
         factory = HistoryScreenViewModelFactory(transactionRepository, accountRepository)
     )
 
-    val historyListState by viewModel.historyList.observeAsState()
+    val displayDateFormatter = DateTimeFormatter.ofPattern("dd-MM-yy")
+    val backendDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
-    LaunchedEffect(Unit) {
-        val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-        val today = LocalDate.now()
-        val from = today.withDayOfMonth(1).format(dateFormatter)
-        val to = today.format(dateFormatter)
-        viewModel.loadHistory(from, to, isIncome)
+    var fromDate by remember { mutableStateOf(LocalDate.now().withDayOfMonth(1)) }
+    var toDate by remember { mutableStateOf(LocalDate.now()) }
+
+    fun loadHistory() {
+        val fromStr = fromDate.format(backendDateFormatter)
+        val toStr = toDate.format(backendDateFormatter)
+        viewModel.loadHistory(fromStr, toStr, isIncome)
+    }
+
+    LaunchedEffect(fromDate, toDate, isIncome) {
+        loadHistory()
+    }
+
+    val historyListState by viewModel.historyList.observeAsState()
+    val context = LocalContext.current
+
+    fun showDatePicker(
+        initialDate: LocalDate,
+        onDateSelected: (LocalDate) -> Unit,
+        minDate: Long? = null,
+        maxDate: Long? = null
+    ) {
+        val datePickerDialog = DatePickerDialog(
+            context,
+            { _, year, month, dayOfMonth ->
+                val selected = LocalDate.of(year, month + 1, dayOfMonth)
+                onDateSelected(selected)
+            },
+            initialDate.year,
+            initialDate.monthValue - 1,
+            initialDate.dayOfMonth
+        )
+        minDate?.let { datePickerDialog.datePicker.minDate = it }
+        maxDate?.let { datePickerDialog.datePicker.maxDate = it }
+        datePickerDialog.show()
     }
 
     Box(
@@ -116,6 +153,8 @@ fun HistoryScreen(
 
             is UiState.Success -> {
                 val historyList = state.data
+                val totalSum = historyList.sumOf { it.amount }
+                val totalSumFormatted = formatPrice(totalSum)
 
                 LazyColumn(
                     modifier = Modifier
@@ -126,25 +165,54 @@ fun HistoryScreen(
                         )
                 ) {
                     item {
-                        GreenInfoItem(
-                            R.string.start,
-                            R.string.start,
-                            true
-                        ) // Заменить на реальные данные
+                        GreenInfoItemClickable(
+                            leadingTextResId = R.string.start,
+                            trailingText = fromDate.format(displayDateFormatter),
+                            onClick = {
+                                val maxDateMillis = toDate.atStartOfDay(ZoneId.systemDefault())
+                                    .toInstant().toEpochMilli()
+                                showDatePicker(
+                                    initialDate = fromDate,
+                                    onDateSelected = { selected ->
+                                        if (!selected.isAfter(toDate)) {
+                                            fromDate = selected
+                                        }
+                                    },
+                                    maxDate = maxDateMillis
+                                )
+                            },
+                            isDivider = true
+                        )
                     }
+
                     item {
-                        GreenInfoItem(
-                            R.string.end,
-                            R.string.end,
-                            true
-                        ) // Заменить на реальные данные
+                        GreenInfoItemClickable(
+                            leadingTextResId = R.string.end,
+                            trailingText = toDate.format(displayDateFormatter),
+                            onClick = {
+                                val minDateMillis = fromDate.atStartOfDay(ZoneId.systemDefault())
+                                    .toInstant().toEpochMilli()
+                                showDatePicker(
+                                    initialDate = toDate,
+                                    onDateSelected = { selected ->
+                                        if (!selected.isBefore(fromDate) && !selected.isAfter(LocalDate.now())) {
+                                            toDate = selected
+                                        }
+                                    },
+                                    minDate = minDateMillis
+                                )
+                            },
+                            isDivider = true
+                        )
                     }
+
                     item {
-                        GreenInfoItem(
-                            R.string.sum,
-                            R.string.sum,
-                            false
-                        ) // Заменить на реальные данные
+                        GreenInfoItemClickable(
+                            leadingTextResId = R.string.sum,
+                            trailingText =totalSumFormatted,
+                            onClick = {},
+                            isDivider = false
+                        )
                     }
 
                     itemsIndexed(historyList) { index, item ->
@@ -194,8 +262,7 @@ fun HistoryScreen(
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Column(
-                                        modifier = Modifier
-                                            .align(Alignment.CenterVertically),
+                                        modifier = Modifier.align(Alignment.CenterVertically),
                                     ) {
                                         Text(
                                             text = formatPrice(item.amount) +
@@ -230,7 +297,12 @@ fun HistoryScreen(
 
 
 @Composable
-private fun GreenInfoItem(leadingTextResId: Int, trailingTextResId: Int, isDivider: Boolean) {
+private fun GreenInfoItemClickable(
+    leadingTextResId: Int,
+    trailingText: String,
+    onClick: () -> Unit,
+    isDivider: Boolean
+) {
     ListItem(
         leadingContent = {
             Text(
@@ -241,14 +313,15 @@ private fun GreenInfoItem(leadingTextResId: Int, trailingTextResId: Int, isDivid
         },
         trailingContent = {
             Text(
-                text = stringResource(trailingTextResId),
+                text = trailingText,
                 style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier
+                    .clickable { onClick() }
             )
-
         },
         downDivider = isDivider,
-        onClick = { },
+        onClick = onClick,
         backgroundColor = MaterialTheme.colorScheme.secondary,
         verticalPadding = 15.5
     )

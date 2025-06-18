@@ -36,8 +36,8 @@ interface FinanceApiService {
     @GET("transactions/account/{accountId}/period")
     suspend fun getTransactionsByAccountAndPeriod(
         @Path("accountId") accountId: Int,
-        @Query("from") from: String,
-        @Query("to") to: String
+        @Query("startDate") from: String,
+        @Query("endDate") to: String
     ): List<TransactionDto>
 }
 

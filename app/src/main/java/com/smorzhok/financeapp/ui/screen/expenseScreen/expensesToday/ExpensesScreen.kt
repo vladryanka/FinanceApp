@@ -1,4 +1,4 @@
-package com.smorzhok.financeapp.ui.screen.expenseScreen
+package com.smorzhok.financeapp.ui.screen.expenseScreen.expensesToday
 
 import android.os.Build
 import android.util.Log
@@ -69,12 +69,8 @@ fun ExpensesScreen(
     LaunchedEffect(Unit) {
         val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         val today = LocalDate.now()
-        val from = today.withDayOfMonth(1).format(dateFormatter)
         val to = today.format(dateFormatter)
-
-        Log.d("Doing", "from = "+from)
-        Log.d("Doing", "to = "+to)
-        viewModel.loadTransactions(from, to)
+        viewModel.loadTransactions(to, to)
     }
 
     Box(
@@ -208,9 +204,8 @@ fun ExpensesScreen(
                         onClick = {
                             val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
                             val today = LocalDate.now()
-                            val from = today.withDayOfMonth(1).format(dateFormatter)
                             val to = today.format(dateFormatter)
-                            viewModel.loadTransactions(from, to)
+                            viewModel.loadTransactions(to, to)
                         },
                         modifier = Modifier.padding(top = 16.dp)
                     ) {
