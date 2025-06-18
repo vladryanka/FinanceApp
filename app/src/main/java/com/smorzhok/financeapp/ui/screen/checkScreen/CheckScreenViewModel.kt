@@ -1,5 +1,6 @@
 package com.smorzhok.financeapp.ui.screen.checkScreen
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -7,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.smorzhok.financeapp.domain.model.Account
 import com.smorzhok.financeapp.domain.usecase.account.GetAccountUseCase
 import com.smorzhok.financeapp.ui.screen.commonItems.UiState
+import com.smorzhok.financeapp.ui.screen.commonItems.isNetworkAvailable
 import com.smorzhok.financeapp.ui.screen.commonItems.retryWithBackoff
 import kotlinx.coroutines.launch
 
@@ -16,13 +18,13 @@ class CheckScreenViewModel(
     private val _checkState = MutableLiveData<UiState<Account>>()
     val checkState: LiveData<UiState<Account>> get() = _checkState
 
-    init {
-        loadAccount()
-    }
-
-    fun loadAccount() {
+    fun loadAccount(context: Context) {
         viewModelScope.launch {
             _checkState.value = UiState.Loading
+            if (!isNetworkAvailable(context)) {
+                _checkState.value = UiState.Error("no_internet")
+                return@launch
+            }
             try {
                 val accounts = retryWithBackoff { getAccountUseCase() }
                 val firstAccount = accounts.firstOrNull()

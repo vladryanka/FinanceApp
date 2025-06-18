@@ -20,11 +20,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -48,6 +50,11 @@ fun CheckScreen(
     )
 
     val checkState by viewModel.checkState.observeAsState()
+
+    val context = LocalContext.current
+    LaunchedEffect(Unit) {
+        viewModel.loadAccount(context)
+    }
 
     Box(
         modifier = Modifier
@@ -154,6 +161,10 @@ fun CheckScreen(
                 }
 
                 is UiState.Error -> {
+                    val errorText = when (state.message) {
+                        "no_internet" -> stringResource(R.string.no_internet_connection)
+                        else -> stringResource(R.string.error)
+                    }
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
@@ -166,13 +177,13 @@ fun CheckScreen(
                             verticalArrangement = Arrangement.Center
                         ) {
                             Text(
-                                text = stringResource(R.string.error),
+                                text = errorText,
                                 color = MaterialTheme.colorScheme.error,
                                 style = MaterialTheme.typography.bodyLarge
                             )
                             Button(
                                 onClick = {
-                                    viewModel.loadAccount()
+                                    viewModel.loadAccount(context)
                                 },
                                 modifier = Modifier.padding(top = 16.dp)
                             ) {

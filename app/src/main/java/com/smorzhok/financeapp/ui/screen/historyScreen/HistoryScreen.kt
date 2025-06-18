@@ -68,11 +68,12 @@ fun HistoryScreen(
 
     var fromDate by remember { mutableStateOf(LocalDate.now().withDayOfMonth(1)) }
     var toDate by remember { mutableStateOf(LocalDate.now()) }
+    val context = LocalContext.current
 
     fun loadHistory() {
         val fromStr = fromDate.format(backendDateFormatter)
         val toStr = toDate.format(backendDateFormatter)
-        viewModel.loadHistory(fromStr, toStr, isIncome)
+        viewModel.loadHistory(fromStr, toStr, isIncome, context)
     }
 
     LaunchedEffect(fromDate, toDate, isIncome) {
@@ -80,7 +81,6 @@ fun HistoryScreen(
     }
 
     val historyListState by viewModel.historyList.observeAsState()
-    val context = LocalContext.current
 
     fun showDatePicker(
         initialDate: LocalDate,
@@ -119,6 +119,10 @@ fun HistoryScreen(
             }
 
             is UiState.Error -> {
+                val errorText = when (state.message) {
+                    "no_internet" -> stringResource(R.string.no_internet_connection)
+                    else -> stringResource(R.string.error)
+                }
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -131,7 +135,7 @@ fun HistoryScreen(
                         verticalArrangement = Arrangement.Center
                     ) {
                         Text(
-                            text = stringResource(R.string.error),
+                            text = errorText,
                             color = MaterialTheme.colorScheme.error,
                             style = MaterialTheme.typography.bodyLarge
                         )
@@ -141,7 +145,7 @@ fun HistoryScreen(
                                 val today = LocalDate.now()
                                 val from = today.withDayOfMonth(1).format(dateFormatter)
                                 val to = today.format(dateFormatter)
-                                viewModel.loadHistory(from, to, isIncome)
+                                viewModel.loadHistory(from, to, isIncome, context)
                             },
                             modifier = Modifier.padding(top = 16.dp)
                         ) {

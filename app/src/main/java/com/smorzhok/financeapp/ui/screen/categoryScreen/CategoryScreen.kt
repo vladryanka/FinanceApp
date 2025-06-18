@@ -18,11 +18,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -44,6 +46,11 @@ fun CategoryScreen(
     )
 
     val categoryState by viewModel.categoryState.observeAsState()
+
+    val context = LocalContext.current
+    LaunchedEffect(Unit) {
+        viewModel.loadCategories(context)
+    }
 
     Column(
         modifier = Modifier
@@ -75,7 +82,7 @@ fun CategoryScreen(
             verticalPadding = 16.0
         )
 
-        when (categoryState) {
+        when (val state = categoryState) {
             is UiState.Loading -> {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator()
@@ -122,6 +129,10 @@ fun CategoryScreen(
             }
 
             is UiState.Error -> {
+                val errorText = when (state.message) {
+                    "no_internet" -> stringResource(R.string.no_internet_connection)
+                    else -> stringResource(R.string.error)
+                }
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -134,13 +145,13 @@ fun CategoryScreen(
                         verticalArrangement = Arrangement.Center
                     ) {
                         Text(
-                            text = stringResource(R.string.error),
+                            text = errorText,
                             color = MaterialTheme.colorScheme.error,
                             style = MaterialTheme.typography.bodyLarge
                         )
                         Button(
                             onClick = {
-                                viewModel.loadCategories()
+                                viewModel.loadCategories(context)
                             },
                             modifier = Modifier.padding(top = 16.dp)
                         ) {

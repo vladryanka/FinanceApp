@@ -1,5 +1,6 @@
 package com.smorzhok.financeapp.ui.screen.incomeScreen
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,6 +9,7 @@ import com.smorzhok.financeapp.domain.model.Transaction
 import com.smorzhok.financeapp.domain.usecase.account.GetAccountUseCase
 import com.smorzhok.financeapp.domain.usecase.transaction.GetTransactionsUseCase
 import com.smorzhok.financeapp.ui.screen.commonItems.UiState
+import com.smorzhok.financeapp.ui.screen.commonItems.isNetworkAvailable
 import com.smorzhok.financeapp.ui.screen.commonItems.retryWithBackoff
 import kotlinx.coroutines.launch
 
@@ -19,9 +21,13 @@ class IncomeScreenViewModel(
     private val _incomeList = MutableLiveData<UiState<List<Transaction>>>()
     val incomeList: LiveData<UiState<List<Transaction>>> get() = _incomeList
 
-    fun loadIncomes(from: String, to: String) {
+    fun loadIncomes(from: String, to: String, context: Context) {
         viewModelScope.launch {
             _incomeList.value = UiState.Loading
+            if (!isNetworkAvailable(context)) {
+                _incomeList.value = UiState.Error("no_internet")
+                return@launch
+            }
             try {
                 val accounts = retryWithBackoff { getAccountUseCase() }
                 if (accounts.isEmpty()) {

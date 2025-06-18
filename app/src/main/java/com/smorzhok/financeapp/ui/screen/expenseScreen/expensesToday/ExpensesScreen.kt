@@ -32,6 +32,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -66,11 +67,12 @@ fun ExpensesScreen(
 
     val expenseState by viewModel.expenseList.observeAsState()
 
+    val context = LocalContext.current
     LaunchedEffect(Unit) {
         val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         val today = LocalDate.now()
         val to = today.format(dateFormatter)
-        viewModel.loadTransactions(to, to)
+        viewModel.loadTransactions(to, to, context)
     }
 
     Box(
@@ -188,6 +190,10 @@ fun ExpensesScreen(
             }
 
             is UiState.Error -> {
+                val errorText = when (state.message) {
+                    "no_internet" -> stringResource(R.string.no_internet_connection)
+                    else -> stringResource(R.string.error)
+                }
                 Column(
                     modifier = Modifier
                         .align(Alignment.Center)
@@ -196,7 +202,7 @@ fun ExpensesScreen(
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = stringResource(R.string.error),
+                        text = errorText,
                         color = MaterialTheme.colorScheme.error,
                         style = MaterialTheme.typography.bodyLarge
                     )
@@ -205,7 +211,7 @@ fun ExpensesScreen(
                             val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
                             val today = LocalDate.now()
                             val to = today.format(dateFormatter)
-                            viewModel.loadTransactions(to, to)
+                            viewModel.loadTransactions(to, to, context)
                         },
                         modifier = Modifier.padding(top = 16.dp)
                     ) {
