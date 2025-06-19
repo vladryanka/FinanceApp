@@ -21,13 +21,14 @@ import com.smorzhok.financeapp.ui.theme.FinanceAppTheme
 import com.smorzhok.financeapp.ui.screen.LottieSplashScreen
 import com.smorzhok.financeapp.ui.screen.MainScreen
 
+
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         RepositoryProvider.initialize()
-        FinanceApi.setAuthToken("вставьте токен")
+        FinanceApi.setAuthToken("21321")
         setContent {
             var isSplashFinished by remember { mutableStateOf(false) }
 

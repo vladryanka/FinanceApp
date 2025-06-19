@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.serialization)
 }
 
+val financeApiKey: String = (project.properties["financeApiKey"] as? String).toString()
 android {
     namespace = "com.smorzhok.financeapp"
     compileSdk = 35
@@ -17,10 +18,17 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "FINANCE_API_KEY", financeApiKey)
     }
 
     buildTypes {
+        debug {
+            buildConfigField ("String", "FINANCE_API_KEY", financeApiKey)
+            // etc.
+        }
         release {
+            buildConfigField ("String", "FINANCE_API_KEY", financeApiKey)
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -37,6 +45,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
