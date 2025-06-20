@@ -1,43 +1,43 @@
 package com.smorzhok.financeapp.data.mapper
 
-import com.smorzhok.financeapp.data.model.AccountResponse
-import com.smorzhok.financeapp.data.model.Category
-import com.smorzhok.financeapp.data.model.Transaction
-import com.smorzhok.financeapp.domain.model.CategoryDto
-import com.smorzhok.financeapp.domain.model.CheckDto
-import com.smorzhok.financeapp.domain.model.ExpenseDto
-import com.smorzhok.financeapp.domain.model.IncomeDto
+import com.smorzhok.financeapp.data.model.AccountBrief
+import com.smorzhok.financeapp.data.model.AccountDto
+import com.smorzhok.financeapp.data.model.CategoryDto
+import com.smorzhok.financeapp.data.model.TransactionDto
+import com.smorzhok.financeapp.domain.model.Account
+import com.smorzhok.financeapp.domain.model.Category
+import com.smorzhok.financeapp.domain.model.Transaction
 
-fun Transaction.mapToExpensesDto(): ExpenseDto{
-    return ExpenseDto(
-        id = this.id,
-        iconLeading = this.category.emoji,
-        textLeading = this.category.name,
-        commentLeading = this.comment,
-        priceTrailing = this.amount.toDouble()
-    )
-}
-fun Transaction.mapToIncomeDto(): IncomeDto{
-    return IncomeDto(
-        id = this.id,
-        textLeading = this.category.name,
-        priceTrailing = this.amount.toDouble()
-    )
-}
+fun TransactionDto.toDomain(): Transaction = Transaction(
+    id = id,
+    accountId = account.id.toString(),
+    categoryEmoji = category.emoji,
+    categoryName = category.name,
+    isIncome = category.isIncome,
+    amount = amount.toDoubleOrNull() ?: 0.0,
+    time = transactionDate,
+    comment = comment
+)
 
-fun AccountResponse.mapToCheckDto(): CheckDto{
-    return CheckDto(
-        id = this.id,
-        leadingIcon = this.incomeStats.emoji,
-        balance = this.balance.toDouble(),
-        currency = this.currency
-    )
-}
+fun Account.toAccountBrief(): AccountBrief = AccountBrief(
+    id = id.toInt(),
+    name = name,
+    balance = balance.toString(),
+    currency = currency
+)
 
-fun Category.mapToCategoryDto(): CategoryDto{
-    return CategoryDto(
+fun AccountDto.toDomain(): Account = Account(
+    id = this.id,
+    name = this.name,
+    balance = this.balance.toDouble(),
+    currency = this.currency
+)
+
+fun CategoryDto.mapToCategory(): Category{
+    return Category(
         id = this.id,
         iconLeading = this.emoji,
-        textLeading = this.name
+        textLeading = this.name,
+        isIncome = this.isIncome
     )
 }

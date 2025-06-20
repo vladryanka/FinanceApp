@@ -26,6 +26,17 @@
     <string name="language">Язык</string>
     <string name="about_the_program">О программе</string>
     <string name="add_expense">Добавить расход</string>
+    <string name="my_history">Моя история</string>
+    <string name="start">Начало</string>
+    <string name="end">Конец</string>
+    <string name="sum">Сумма</string>
+    <string name="error">Произошла ошибка</string>
+    <string name="loading">Загрузка</string>
+    <string name="money_icon">💰</string>
+    <string name="retry">Повторить</string>
+    <string name="no_accounts">Нет доступных аккаунтов</string>
+    <string name="unknown_error">Неизвестная ошибка</string>
+    <string name="no_internet_connection">Отсутствует подключение к интернету</string>
 
 
 </resources>
