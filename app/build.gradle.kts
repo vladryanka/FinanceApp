@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -5,7 +7,17 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.serialization)
 }
 
-val financeApiKey: String = (project.properties["financeApiKey"] as? String).toString()
+val localProperties = Properties().apply {
+    val localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        load(localPropertiesFile.inputStream())
+    }
+}
+
+val financeApiKey: String = localProperties.getProperty("financeApiKey")?.let {
+    "\"$it\""
+} ?: "\"\""
+
 android {
     namespace = "com.smorzhok.financeapp"
     compileSdk = 35
@@ -25,7 +37,6 @@ android {
     buildTypes {
         debug {
             buildConfigField ("String", "FINANCE_API_KEY", financeApiKey)
-            // etc.
         }
         release {
             buildConfigField ("String", "FINANCE_API_KEY", financeApiKey)

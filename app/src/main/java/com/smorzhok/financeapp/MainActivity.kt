@@ -28,7 +28,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         RepositoryProvider.initialize()
-        FinanceApi.setAuthToken("21321")
+        FinanceApi.setAuthToken(BuildConfig.FINANCE_API_KEY)
         setContent {
             var isSplashFinished by remember { mutableStateOf(false) }
 
