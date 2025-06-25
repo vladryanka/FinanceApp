@@ -5,11 +5,16 @@ import com.smorzhok.financeapp.data.remote.FinanceApiService
 import com.smorzhok.financeapp.domain.model.Transaction
 import com.smorzhok.financeapp.domain.repository.TransactionRepository
 
+/*Имплементация репозитория для данных о транзакциях*/
 class TransactionRepositoryImpl(
     private val api: FinanceApiService
 ) : TransactionRepository {
 
-    override suspend fun getTransactions(accountId: Int, from: String, to: String): List<Transaction> {
+    override suspend fun getTransactions(
+        accountId: Int,
+        from: String,
+        to: String
+    ): List<Transaction> {
         return api.getTransactionsByAccountAndPeriod(accountId, from, to).map { it.toDomain() }
     }
 

@@ -5,6 +5,7 @@ import com.smorzhok.financeapp.domain.repository.AccountRepository
 import com.smorzhok.financeapp.domain.repository.CategoryRepository
 import com.smorzhok.financeapp.domain.repository.TransactionRepository
 
+/*Провайдер репозиториев для инициализации репозиториев и предоставления их синглтонов*/
 object RepositoryProvider {
 
     private lateinit var accountRepository: AccountRepository
@@ -18,22 +19,21 @@ object RepositoryProvider {
     }
 
     fun getAccountRepository(): AccountRepository {
-        if (!::accountRepository.isInitialized) {
-            throw IllegalStateException("AccountRepository is not initialized. Call initialize() first.")
-        }
+        check(::accountRepository.isInitialized) { "AccountRepository is not initialized. Call initialize() first." }
         return accountRepository
     }
+
     fun getCategoryRepository(): CategoryRepository {
-        if (!::categoryRepository.isInitialized) {
+        check(::categoryRepository.isInitialized) {
             throw IllegalStateException("CategoryRepository is not initialized. Call initialize() first.")
         }
         return categoryRepository
     }
+
     fun getTransactionRepository(): TransactionRepository {
-        if (!::transactionRepository.isInitialized) {
+        check(::transactionRepository.isInitialized) {
             throw IllegalStateException("TransactionRepository is not initialized. Call initialize() first.")
         }
         return transactionRepository
     }
-
 }

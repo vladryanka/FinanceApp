@@ -1,15 +1,17 @@
 package com.smorzhok.financeapp.navigation
 
+/*централизованное описание всех экранов с их маршрутами*/
 sealed class Screen(val route: String) {
-    object Expenses: Screen(ROUTE_EXPENSES)
-    object Income: Screen(ROUTE_INCOME)
-    object Check: Screen(ROUTE_CHECK)
-    object Articles: Screen(ROUTE_ARTICLES)
-    object Settings: Screen(ROUTE_SETTINGS)
-    object History: Screen(ROUTE_HISTORY) {
+    object Expenses : Screen(ROUTE_EXPENSES)
+    object Income : Screen(ROUTE_INCOME)
+    object Check : Screen(ROUTE_CHECK)
+    object Articles : Screen(ROUTE_ARTICLES)
+    object Settings : Screen(ROUTE_SETTINGS)
+    object History : Screen(ROUTE_HISTORY) {
         fun createRoute(isIncome: Boolean) = "history/$isIncome"
     }
-    private companion object{
+
+    private companion object {
         const val ROUTE_EXPENSES = "expenses"
         const val ROUTE_INCOME = "income"
         const val ROUTE_CHECK = "check"

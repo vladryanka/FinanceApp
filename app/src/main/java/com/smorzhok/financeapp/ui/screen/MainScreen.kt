@@ -21,14 +21,8 @@ import com.smorzhok.financeapp.domain.model.ScaffoldItem
 import com.smorzhok.financeapp.navigation.AppNavGraph
 import com.smorzhok.financeapp.navigation.Screen
 import com.smorzhok.financeapp.navigation.rememberNavigationState
-import com.smorzhok.financeapp.ui.screen.categoryScreen.CategoryScreen
-import com.smorzhok.financeapp.ui.screen.checkScreen.CheckScreen
-import com.smorzhok.financeapp.ui.screen.commonItems.BottomNavigationItem
-import com.smorzhok.financeapp.ui.screen.commonItems.TopBarTextAndIcon
-import com.smorzhok.financeapp.ui.screen.expenseScreen.expensesToday.ExpensesScreen
-import com.smorzhok.financeapp.ui.screen.historyScreen.HistoryScreen
-import com.smorzhok.financeapp.ui.screen.incomeScreen.IncomeScreen
-import com.smorzhok.financeapp.ui.screen.settingScreen.SettingScreen
+import com.smorzhok.financeapp.ui.commonitems.BottomNavigationItem
+import com.smorzhok.financeapp.ui.screen.commonComposable.TopBarTextAndIcon
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
