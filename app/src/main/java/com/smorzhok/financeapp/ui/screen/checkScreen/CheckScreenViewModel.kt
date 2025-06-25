@@ -5,12 +5,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.HttpException
+import com.smorzhok.financeapp.R
 import com.smorzhok.financeapp.domain.model.Account
 import com.smorzhok.financeapp.domain.usecase.account.GetAccountUseCase
 import com.smorzhok.financeapp.ui.screen.commonItems.UiState
 import com.smorzhok.financeapp.ui.screen.commonItems.isNetworkAvailable
 import com.smorzhok.financeapp.ui.screen.commonItems.retryWithBackoff
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.IOException
 
 class CheckScreenViewModel(
     private val getAccountUseCase: GetAccountUseCase
@@ -26,15 +31,20 @@ class CheckScreenViewModel(
                 return@launch
             }
             try {
-                val accounts = retryWithBackoff { getAccountUseCase() }
+                val accounts =
+                    withContext(Dispatchers.IO) { retryWithBackoff { getAccountUseCase() } }
                 val firstAccount = accounts.firstOrNull()
                 if (firstAccount != null) {
                     _checkState.value = UiState.Success(firstAccount)
                 } else {
                     _checkState.value = UiState.Error("no_accounts")
                 }
-            } catch (e: Exception) {
-                _checkState.value = UiState.Error(e.message ?: "Неизвестная ошибка")
+            } catch (e: IOException) {
+                e.printStackTrace()
+                _checkState.value = UiState.Error(e.message ?: R.string.network_error.toString())
+            } catch (e: HttpException) {
+                e.printStackTrace()
+                _checkState.value = UiState.Error(e.message ?: (R.string.server_error).toString())
             }
         }
     }

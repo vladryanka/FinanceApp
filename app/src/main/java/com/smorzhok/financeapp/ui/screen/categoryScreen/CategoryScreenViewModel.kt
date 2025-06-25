@@ -5,12 +5,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.HttpException
+import com.smorzhok.financeapp.R
 import com.smorzhok.financeapp.domain.model.Category
 import com.smorzhok.financeapp.domain.usecase.category.GetCategoriesUseCase
 import com.smorzhok.financeapp.ui.screen.commonItems.UiState
 import com.smorzhok.financeapp.ui.screen.commonItems.isNetworkAvailable
 import com.smorzhok.financeapp.ui.screen.commonItems.retryWithBackoff
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.IOException
 
 class CategoryScreenViewModel(private val getCategoriesUseCase: GetCategoriesUseCase) :
     ViewModel() {
@@ -25,10 +30,16 @@ class CategoryScreenViewModel(private val getCategoriesUseCase: GetCategoriesUse
                 return@launch
             }
             try {
-                val categories = retryWithBackoff { getCategoriesUseCase() }
+                val categories = withContext(Dispatchers.IO) {
+                    retryWithBackoff { getCategoriesUseCase() }
+                }
                 _categoryState.value = UiState.Success(categories)
-            } catch (e: Exception) {
+            } catch (e: IOException) {
+                e.printStackTrace()
                 _categoryState.value = UiState.Error(e.message)
+            } catch (e: HttpException) {
+                e.printStackTrace()
+                _categoryState.value = UiState.Error(e.message ?: R.string.server_error.toString())
             }
         }
     }

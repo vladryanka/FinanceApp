@@ -24,9 +24,11 @@ interface FinanceApiService {
     @GET("accounts")
     suspend fun getAccountList(): List<AccountDto>
 
+    //будет использоваться, нужная ручка
     @GET("accounts/{id}/history")
-    suspend fun getAccountHistoryById(@Path("id") id: Int,): List<AccountHistoryResponse>
+    suspend fun getAccountHistoryById(@Path("id") id: Int): List<AccountHistoryResponse>
 
+    //будет использоваться, нужная ручка
     @POST("accounts")
     suspend fun updateAccounts(@Body request: UpdateAccountsRequest): Response<Unit>
 
@@ -67,12 +69,14 @@ object FinanceApi {
         chain.proceed(requestBuilder.build())
     }
 
+    private const val TIMEOUT = 60L
+
     private val okHttpClient = OkHttpClient.Builder()
         .addInterceptor(tokenInterceptor)
         .addInterceptor(authInterceptor)
-        .connectTimeout(60, TimeUnit.SECONDS)
-        .readTimeout(60, TimeUnit.SECONDS)
-        .writeTimeout(60, TimeUnit.SECONDS)
+        .connectTimeout(TIMEOUT, TimeUnit.SECONDS)
+        .readTimeout(TIMEOUT, TimeUnit.SECONDS)
+        .writeTimeout(TIMEOUT, TimeUnit.SECONDS)
         .build()
 
     private val retrofit: Retrofit = Retrofit.Builder()
@@ -84,4 +88,5 @@ object FinanceApi {
     val service: FinanceApiService by lazy {
         retrofit.create(FinanceApiService::class.java)
     }
+
 }

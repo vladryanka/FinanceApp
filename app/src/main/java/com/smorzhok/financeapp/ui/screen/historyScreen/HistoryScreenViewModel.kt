@@ -5,13 +5,18 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.HttpException
+import com.smorzhok.financeapp.R
 import com.smorzhok.financeapp.domain.model.Transaction
 import com.smorzhok.financeapp.domain.usecase.account.GetAccountUseCase
 import com.smorzhok.financeapp.domain.usecase.transaction.GetTransactionsUseCase
 import com.smorzhok.financeapp.ui.screen.commonItems.UiState
 import com.smorzhok.financeapp.ui.screen.commonItems.isNetworkAvailable
 import com.smorzhok.financeapp.ui.screen.commonItems.retryWithBackoff
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.IOException
 
 class HistoryScreenViewModel(
     private val getTransactionsUseCase: GetTransactionsUseCase,
@@ -29,8 +34,10 @@ class HistoryScreenViewModel(
                 return@launch
             }
             try {
-                val accounts = retryWithBackoff {
-                    getAccountUseCase()
+                val accounts = withContext(Dispatchers.IO) {
+                    retryWithBackoff {
+                        getAccountUseCase()
+                    }
                 }
                 if (accounts.isEmpty()) {
                     _historyList.value = UiState.Error("no_accounts")
@@ -39,13 +46,19 @@ class HistoryScreenViewModel(
 
                 val id = accounts.first().id
 
-                val transactions = retryWithBackoff { getTransactionsUseCase(id, from, to) }
+                val transactions = withContext(Dispatchers.IO) {
+                    retryWithBackoff { getTransactionsUseCase(id, from, to) }
+                }
                 val history =
                     transactions.filter { it.isIncome == isIncome }.sortedBy { it.time }
 
                 _historyList.value = UiState.Success(history)
-            } catch (e: Exception) {
+            } catch (e: IOException) {
+                e.printStackTrace()
                 _historyList.value = UiState.Error(e.message)
+            } catch (e: HttpException) {
+                e.printStackTrace()
+                _historyList.value = UiState.Error(e.message ?: R.string.server_error.toString())
             }
         }
     }
