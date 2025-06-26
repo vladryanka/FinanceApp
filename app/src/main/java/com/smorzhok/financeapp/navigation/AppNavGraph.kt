@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 
+/*навигационный бар с маршрутами и реакциями на клик*/
 @Composable
 fun AppNavGraph(
     navHostController: NavHostController,

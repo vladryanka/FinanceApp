@@ -5,6 +5,7 @@ import com.smorzhok.financeapp.data.remote.FinanceApiService
 import com.smorzhok.financeapp.domain.model.Category
 import com.smorzhok.financeapp.domain.repository.CategoryRepository
 
+/*Имплементация репозитория для данных о категориях*/
 class CategoryRepositoryImpl(
     private val api: FinanceApiService
 ) : CategoryRepository {

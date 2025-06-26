@@ -5,6 +5,7 @@ import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 
+/*управление переходами между экранами через NavHostController*/
 class NavigationState(
     val navHostController: NavHostController,
 ) {
@@ -21,6 +22,7 @@ class NavigationState(
     }
 }
 
+/*Создаёт и запоминает экземпляр NavigationState для управления навигацией в Compose*/
 @Composable
 fun rememberNavigationState(
     navHostController: NavHostController = rememberNavController()

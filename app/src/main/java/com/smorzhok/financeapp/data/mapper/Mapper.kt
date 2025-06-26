@@ -1,9 +1,9 @@
 package com.smorzhok.financeapp.data.mapper
 
-import com.smorzhok.financeapp.data.model.AccountBrief
-import com.smorzhok.financeapp.data.model.AccountDto
-import com.smorzhok.financeapp.data.model.CategoryDto
-import com.smorzhok.financeapp.data.model.TransactionDto
+import com.smorzhok.financeapp.data.model.account.AccountBrief
+import com.smorzhok.financeapp.data.model.account.AccountDto
+import com.smorzhok.financeapp.data.model.category.CategoryDto
+import com.smorzhok.financeapp.data.model.transaction.TransactionDto
 import com.smorzhok.financeapp.domain.model.Account
 import com.smorzhok.financeapp.domain.model.Category
 import com.smorzhok.financeapp.domain.model.Transaction

@@ -1,11 +1,11 @@
 package com.smorzhok.financeapp.data.remote
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
-import com.smorzhok.financeapp.data.model.AccountDto
-import com.smorzhok.financeapp.data.model.response.AccountHistoryResponse
-import com.smorzhok.financeapp.data.model.CategoryDto
-import com.smorzhok.financeapp.data.model.TransactionDto
-import com.smorzhok.financeapp.data.model.request.UpdateAccountsRequest
+import com.smorzhok.financeapp.data.model.account.AccountDto
+import com.smorzhok.financeapp.data.model.account.AccountHistoryResponse
+import com.smorzhok.financeapp.data.model.category.CategoryDto
+import com.smorzhok.financeapp.data.model.transaction.TransactionDto
+import com.smorzhok.financeapp.data.model.account.UpdateAccountsRequest
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -24,9 +24,11 @@ interface FinanceApiService {
     @GET("accounts")
     suspend fun getAccountList(): List<AccountDto>
 
+    //будет использоваться, нужная ручка
     @GET("accounts/{id}/history")
-    suspend fun getAccountHistoryById(@Path("id") id: Int,): List<AccountHistoryResponse>
+    suspend fun getAccountHistoryById(@Path("id") id: Int): List<AccountHistoryResponse>
 
+    //будет использоваться, нужная ручка
     @POST("accounts")
     suspend fun updateAccounts(@Body request: UpdateAccountsRequest): Response<Unit>
 
@@ -41,6 +43,7 @@ interface FinanceApiService {
     ): List<TransactionDto>
 }
 
+/*синглтон для создания сервиса и связи с сетью*/
 object FinanceApi {
 
     private const val BASE_URL = "https://shmr-finance.ru/api/v1/"
@@ -67,12 +70,14 @@ object FinanceApi {
         chain.proceed(requestBuilder.build())
     }
 
+    private const val TIMEOUT = 60L
+
     private val okHttpClient = OkHttpClient.Builder()
         .addInterceptor(tokenInterceptor)
         .addInterceptor(authInterceptor)
-        .connectTimeout(60, TimeUnit.SECONDS)
-        .readTimeout(60, TimeUnit.SECONDS)
-        .writeTimeout(60, TimeUnit.SECONDS)
+        .connectTimeout(TIMEOUT, TimeUnit.SECONDS)
+        .readTimeout(TIMEOUT, TimeUnit.SECONDS)
+        .writeTimeout(TIMEOUT, TimeUnit.SECONDS)
         .build()
 
     private val retrofit: Retrofit = Retrofit.Builder()
