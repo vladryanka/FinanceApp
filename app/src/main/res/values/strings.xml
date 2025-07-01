@@ -7,6 +7,7 @@
     <string name="settings">Настройки</string>
     <string name="expenses">Расходы</string>
     <string name="my_account">Мой счет</string>
+    <string name="check_name">Название счета:</string>
     <string name="my_articles">Мои статьи</string>
     <string name="expenses_today">Расходы сегодня</string>
     <string name="history">История</string>
@@ -39,6 +40,11 @@
     <string name="no_internet_connection">Отсутствует подключение к интернету</string>
     <string name="network_error">network_error</string>
     <string name="server_error">server_error</string>
+    <string name="human_icon">Иконка человека</string>
+    <string name="russian_rub">Российский рубль</string>
+    <string name="american_dollar">Американский доллар</string>
+    <string name="euro">Евро</string>
+    <string name="cancel">Отмена</string>
 
 
 </resources>

@@ -14,7 +14,8 @@ fun AppNavGraph(
     expensesScreenContent: @Composable () -> Unit,
     incomeScreenContent: @Composable () -> Unit,
     checkScreenContent: @Composable () -> Unit,
-    articlesScreenContent: @Composable () -> Unit,
+    checkEditingContent: @Composable () ->Unit,
+    categoryScreenContent: @Composable () -> Unit,
     settingsScreenContent: @Composable () -> Unit,
     historyScreenContent: @Composable (Boolean) -> Unit
 ) {
@@ -32,8 +33,11 @@ fun AppNavGraph(
         composable(Screen.Check.route) {
             checkScreenContent()
         }
-        composable(Screen.Articles.route) {
-            articlesScreenContent()
+        composable(Screen.CheckEditing.route) {
+            checkEditingContent()
+        }
+        composable(Screen.Category.route) {
+            categoryScreenContent()
         }
         composable(Screen.Settings.route) {
             settingsScreenContent()

@@ -28,7 +28,7 @@ fun Account.toAccountBrief(): AccountBrief = AccountBrief(
 
 fun AccountDto.toDomain(): Account = Account(
     id = this.id,
-    name = this.name,
+    name = "Мой счет", // реализовано так, тк мультисчет не предусмотрен
     balance = this.balance.toDouble(),
     currency = this.currency
 )

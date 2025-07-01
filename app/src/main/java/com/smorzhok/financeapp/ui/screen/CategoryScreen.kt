@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -19,6 +20,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -27,12 +31,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.smorzhok.financeapp.R
-import com.smorzhok.financeapp.domain.model.Category
+import com.smorzhok.financeapp.ui.commonitems.UiState
 import com.smorzhok.financeapp.ui.screen.commonComposable.ErrorWithRetry
+import com.smorzhok.financeapp.ui.screen.commonComposable.ListItem
 import com.smorzhok.financeapp.ui.viewmodel.CategoryScreenViewModel
 import com.smorzhok.financeapp.ui.viewmodel.CategoryScreenViewModelFactory
-import com.smorzhok.financeapp.ui.screen.commonComposable.ListItem
-import com.smorzhok.financeapp.ui.commonitems.UiState
 
 @Composable
 fun CategoryScreen(
@@ -45,6 +48,7 @@ fun CategoryScreen(
     )
 
     val categoryState by viewModel.categoryState.observeAsState()
+    var searchQuery by remember { mutableStateOf("") }
 
     val context = LocalContext.current
     LaunchedEffect(Unit) {
@@ -62,10 +66,26 @@ fun CategoryScreen(
     ) {
         ListItem(
             leadingContent = {
-                Text(
-                    stringResource(R.string.find_article),
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.surfaceVariant
+                BasicTextField(
+                    value = searchQuery,
+                    onValueChange = { searchQuery = it },
+                    singleLine = true,
+                    textStyle = MaterialTheme.typography.bodyLarge.copy(
+                        color = MaterialTheme.colorScheme.onSurface
+                    ),
+                    decorationBox = { innerTextField ->
+                        Box {
+                            if (searchQuery.isEmpty()) {
+                                Text(
+                                    text = stringResource(R.string.find_article),
+                                    style = MaterialTheme.typography.bodyLarge.copy(
+                                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
+                                    )
+                                )
+                            }
+                            innerTextField()
+                        }
+                    }
                 )
             },
             trailingContent = {
@@ -89,9 +109,12 @@ fun CategoryScreen(
             }
 
             is UiState.Success -> {
-                val categories = (categoryState as UiState.Success<List<Category>>).data
+                val allCategories = state.data
+                val filteredCategories = allCategories.filter {
+                    it.textLeading.contains(searchQuery.trim(), ignoreCase = true)
+                }
                 LazyColumn {
-                    itemsIndexed(categories) { _, item ->
+                    itemsIndexed(filteredCategories) { _, item ->
                         ListItem(
                             leadingContent = {
                                 Row(verticalAlignment = Alignment.CenterVertically) {

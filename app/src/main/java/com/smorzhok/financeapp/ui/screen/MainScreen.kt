@@ -44,7 +44,7 @@ fun MainScreen() {
             leadingImageResId = null
         )
 
-        Screen.Articles.route -> ScaffoldItem(
+        Screen.Category.route -> ScaffoldItem(
             textResId = R.string.my_articles, trailingImageResId = null,
             leadingImageResId = null
         )
@@ -59,6 +59,12 @@ fun MainScreen() {
             textResId = R.string.my_account,
             trailingImageResId = R.drawable.pencil,
             leadingImageResId = null
+        )
+
+        Screen.CheckEditing.route -> ScaffoldItem(
+            textResId = R.string.my_account,
+            trailingImageResId = R.drawable.check_mark,
+            leadingImageResId = R.drawable.cross
         )
 
         Screen.History.route -> ScaffoldItem(
@@ -94,7 +100,7 @@ fun MainScreen() {
                             }
 
                             Screen.Check.route -> {
-                                navState.navigateTo(Screen.History.route, usePopUpTo = false)
+                                navState.navigateTo(Screen.CheckEditing.route, usePopUpTo = false)
                             }
 
                             Screen.History.route -> {}
@@ -109,7 +115,7 @@ fun MainScreen() {
                     BottomNavigationItem.Expenses,
                     BottomNavigationItem.Income,
                     BottomNavigationItem.Check,
-                    BottomNavigationItem.Articles,
+                    BottomNavigationItem.Category,
                     BottomNavigationItem.Settings
                 )
                 items.forEach { item ->
@@ -147,22 +153,25 @@ fun MainScreen() {
 
         AppNavGraph(
             navState.navHostController,
-            {
+            expensesScreenContent = {
                 ExpensesScreen(it, onExpenseClicked = {}, {})
             },
-            {
+            incomeScreenContent = {
                 IncomeScreen(it, onIncomeClicked = {}, {})
             },
-            {
+            checkScreenContent = {
                 CheckScreen(it, onCheckClicked = {}, {})
             },
-            {
+            checkEditingContent = {
+                CheckEditingScreen(it)
+            },
+            categoryScreenContent = {
                 CategoryScreen(it, onCategoryClicked = {})
             },
-            {
+            settingsScreenContent = {
                 SettingScreen(it, onSettingClicked = {})
             },
-            { isIncome ->
+            historyScreenContent = { isIncome ->
                 HistoryScreen(isIncome, onHistoryItemClicked = {}, it)
             }
         )

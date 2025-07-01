@@ -27,8 +27,8 @@ sealed class BottomNavigationItem(
         R.drawable.check
     )
 
-    object Articles : BottomNavigationItem(
-        Screen.Articles,
+    object Category : BottomNavigationItem(
+        Screen.Category,
         R.string.articles,
         R.drawable.articles
     )

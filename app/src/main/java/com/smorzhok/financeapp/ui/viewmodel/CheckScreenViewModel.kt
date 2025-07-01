@@ -1,6 +1,7 @@
 package com.smorzhok.financeapp.ui.viewmodel
 
 import android.content.Context
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -23,6 +24,8 @@ class CheckScreenViewModel(
 ) : ViewModel() {
     private val _checkState = MutableLiveData<UiState<Account>>()
     val checkState: LiveData<UiState<Account>> get() = _checkState
+    val name = mutableStateOf("")
+    val balance = mutableStateOf("")
 
     fun loadAccount(context: Context) {
         viewModelScope.launch {
@@ -37,6 +40,8 @@ class CheckScreenViewModel(
                 val firstAccount = accounts.firstOrNull()
                 if (firstAccount != null) {
                     _checkState.value = UiState.Success(firstAccount)
+                    name.value = firstAccount.name
+                    balance.value = firstAccount.balance.toString()
                 } else {
                     _checkState.value = UiState.Error("no_accounts")
                 }
