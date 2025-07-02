@@ -10,6 +10,7 @@ import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.HttpExce
 import com.smorzhok.financeapp.R
 import com.smorzhok.financeapp.domain.model.Account
 import com.smorzhok.financeapp.domain.usecase.account.GetAccountUseCase
+import com.smorzhok.financeapp.domain.usecase.account.UpdateAccountsUseCase
 import com.smorzhok.financeapp.ui.commonitems.UiState
 import com.smorzhok.financeapp.ui.commonitems.isNetworkAvailable
 import com.smorzhok.financeapp.ui.commonitems.retryWithBackoff
@@ -20,12 +21,31 @@ import java.io.IOException
 
 /*управление состоянием UI, связанным с загрузкой списка аккаунтов*/
 class CheckScreenViewModel(
-    private val getAccountUseCase: GetAccountUseCase
+    private val getAccountUseCase: GetAccountUseCase,
+    private val updateAccountsUseCase: UpdateAccountsUseCase
 ) : ViewModel() {
     private val _checkState = MutableLiveData<UiState<Account>>()
     val checkState: LiveData<UiState<Account>> get() = _checkState
     val name = mutableStateOf("")
     val balance = mutableStateOf("")
+    val currency = mutableStateOf("")
+
+    private lateinit var account: Account
+
+    fun updateAccount() {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO){
+                updateAccountsUseCase(
+                    Account(
+                        account.id,
+                        name.value,
+                        balance.value.toDouble(),
+                        currency.value
+                    )
+                )
+            }
+        }
+    }
 
     fun loadAccount(context: Context) {
         viewModelScope.launch {
@@ -42,6 +62,7 @@ class CheckScreenViewModel(
                     _checkState.value = UiState.Success(firstAccount)
                     name.value = firstAccount.name
                     balance.value = firstAccount.balance.toString()
+                    account = firstAccount
                 } else {
                     _checkState.value = UiState.Error("no_accounts")
                 }

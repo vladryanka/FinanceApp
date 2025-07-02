@@ -45,6 +45,8 @@
     <string name="american_dollar">Американский доллар</string>
     <string name="euro">Евро</string>
     <string name="cancel">Отмена</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>

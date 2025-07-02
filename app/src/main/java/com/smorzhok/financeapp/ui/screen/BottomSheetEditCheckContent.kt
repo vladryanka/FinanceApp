@@ -1,6 +1,5 @@
 package com.smorzhok.financeapp.ui.screen
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,30 +20,33 @@ import com.smorzhok.financeapp.R
 import com.smorzhok.financeapp.ui.screen.commonComposable.ListItem
 
 @Composable
-fun BottomSheetEditCheckContent(onClose: () -> Unit) {
+fun BottomSheetEditCheckContent(
+    onClose: () -> Unit,
+    onCurrencySelected: (String) -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
     ) {
-        val currencyList = listOf<Pair<Int, Int>>(
-            Pair(R.drawable.rub, R.string.russian_rub),
-            Pair(R.drawable.dollar, R.string.american_dollar),
-            Pair(R.drawable.euro, R.string.euro),
+        val currencyList = listOf<Pair<String, Int>>(
+            "₽" to R.string.russian_rub,
+            "$" to R.string.american_dollar,
+            "€" to R.string.euro
         )
 
         LazyColumn {
-            itemsIndexed(currencyList) { index, it ->
+            itemsIndexed(currencyList) { index, (symbol, nameRes) ->
                 ListItem(
                     leadingContent = {
                         Row(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Image(
-                                painterResource(it.component1()),
-                                contentDescription = stringResource(it.component2())
+                            Text(
+                                symbol,
+                                style = MaterialTheme.typography.bodyLarge,
                             )
                             Text(
-                                text = stringResource(it.component2()),
+                                text = stringResource(nameRes),
                                 modifier = Modifier.padding(start = 16.dp),
                                 style = MaterialTheme.typography.bodyLarge,
                             )
@@ -52,7 +54,10 @@ fun BottomSheetEditCheckContent(onClose: () -> Unit) {
                     },
                     trailingContent = {},
                     downDivider = true,
-                    onClick = {},
+                    onClick = {
+                        onCurrencySelected(symbol)
+                        onClose()
+                    },
                     backgroundColor = MaterialTheme.colorScheme.surface,
                     verticalPadding = 23.5
                 )

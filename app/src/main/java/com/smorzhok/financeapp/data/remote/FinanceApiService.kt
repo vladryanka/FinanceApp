@@ -1,11 +1,11 @@
 package com.smorzhok.financeapp.data.remote
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import com.smorzhok.financeapp.data.model.account.AccountBrief
 import com.smorzhok.financeapp.data.model.account.AccountDto
 import com.smorzhok.financeapp.data.model.account.AccountHistoryResponse
 import com.smorzhok.financeapp.data.model.category.CategoryDto
 import com.smorzhok.financeapp.data.model.transaction.TransactionDto
-import com.smorzhok.financeapp.data.model.account.UpdateAccountsRequest
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -14,7 +14,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.http.Body
 import retrofit2.http.GET
-import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 import java.util.concurrent.TimeUnit
@@ -28,9 +28,11 @@ interface FinanceApiService {
     @GET("accounts/{id}/history")
     suspend fun getAccountHistoryById(@Path("id") id: Int): List<AccountHistoryResponse>
 
-    //будет использоваться, нужная ручка
-    @POST("accounts")
-    suspend fun updateAccounts(@Body request: UpdateAccountsRequest): Response<Unit>
+    @PUT("account/{id}")
+    suspend fun updateAccount(
+        @Path("id") id: Int,
+        @Body request: AccountBrief
+    ): Response<Unit>
 
     @GET("categories")
     suspend fun getCategories(): List<CategoryDto>

@@ -14,7 +14,7 @@ fun AppNavGraph(
     expensesScreenContent: @Composable () -> Unit,
     incomeScreenContent: @Composable () -> Unit,
     checkScreenContent: @Composable () -> Unit,
-    checkEditingContent: @Composable () ->Unit,
+    checkEditingContent: @Composable () -> Unit,
     categoryScreenContent: @Composable () -> Unit,
     settingsScreenContent: @Composable () -> Unit,
     historyScreenContent: @Composable (Boolean) -> Unit
