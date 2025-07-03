@@ -2,8 +2,6 @@ package com.smorzhok.financeapp.ui.screen.expences
 
 import android.content.Context
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.HttpException
@@ -16,6 +14,8 @@ import com.smorzhok.financeapp.ui.commonitems.UiState
 import com.smorzhok.financeapp.ui.commonitems.isNetworkAvailable
 import com.smorzhok.financeapp.ui.commonitems.retryWithBackoff
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.IOException
@@ -26,8 +26,8 @@ class ExpensesScreenViewModel(
     private val getAccountUseCase: GetAccountUseCase,
     private val getCurrencyUseCase: GetCurrencyUseCase
 ) : ViewModel() {
-    private val _expenseList = MutableLiveData<UiState<List<Transaction>>>()
-    val expenseList: LiveData<UiState<List<Transaction>>> get() = _expenseList
+    private val _expenseList = MutableStateFlow<UiState<List<Transaction>>>(UiState.Loading)
+    val expenseList: StateFlow<UiState<List<Transaction>>> get() = _expenseList
     val currency = mutableStateOf("")
 
     fun loadTransactions(from: String, to: String, context: Context) {

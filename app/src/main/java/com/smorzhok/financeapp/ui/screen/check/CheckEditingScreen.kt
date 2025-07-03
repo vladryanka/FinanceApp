@@ -24,7 +24,6 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -36,6 +35,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.smorzhok.financeapp.R
 import com.smorzhok.financeapp.domain.model.ScaffoldItem
@@ -61,9 +61,9 @@ fun CheckEditingScreen(navState: NavigationState) {
     val viewModel: CheckScreenViewModel = viewModel(
         factory = CheckScreenViewModelFactory(accountRepository, transactionRepository)
     )
-    val checkState by viewModel.checkState.observeAsState()
+    val checkState by viewModel.checkState.collectAsStateWithLifecycle()
 
-    val dialogueMessage by viewModel.dialogueMessage.observeAsState()
+    val dialogueMessage by viewModel.dialogueMessage.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
 
@@ -266,12 +266,8 @@ fun CheckEditingScreen(navState: NavigationState) {
                             )
                         }
                     }
-
-                    null -> {}
                 }
             }
         }
     }
-
-
 }

@@ -23,7 +23,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,14 +30,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.smorzhok.financeapp.R
-import com.smorzhok.financeapp.ui.screen.commonComposable.ErrorWithRetry
-import com.smorzhok.financeapp.ui.screen.commonComposable.ListItem
 import com.smorzhok.financeapp.ui.commonitems.UiState
 import com.smorzhok.financeapp.ui.formatter.formatPrice
 import com.smorzhok.financeapp.ui.screen.LocalAccountRepository
 import com.smorzhok.financeapp.ui.screen.LocalTransactionRepository
+import com.smorzhok.financeapp.ui.screen.commonComposable.ErrorWithRetry
+import com.smorzhok.financeapp.ui.screen.commonComposable.ListItem
 import com.smorzhok.financeapp.ui.theme.Green
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -56,7 +56,7 @@ fun IncomeScreen(
         factory = IncomeScreenViewModelFactory(transactionRepository, accountRepository)
     )
 
-    val incomeState by viewModel.incomeList.observeAsState()
+    val incomeState by viewModel.incomeList.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
 
@@ -168,10 +168,6 @@ fun IncomeScreen(
                         }
                     }
                 }
-            }
-
-            null -> {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             }
         }
         FloatingActionButton(

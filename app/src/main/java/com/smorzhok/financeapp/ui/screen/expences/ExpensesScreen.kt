@@ -25,7 +25,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,20 +34,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.smorzhok.financeapp.R
 import com.smorzhok.financeapp.domain.model.Transaction
-import com.smorzhok.financeapp.ui.screen.commonComposable.ErrorWithRetry
-import com.smorzhok.financeapp.ui.screen.commonComposable.ListItem
 import com.smorzhok.financeapp.ui.commonitems.UiState
 import com.smorzhok.financeapp.ui.formatter.formatPrice
 import com.smorzhok.financeapp.ui.screen.LocalAccountRepository
 import com.smorzhok.financeapp.ui.screen.LocalTransactionRepository
+import com.smorzhok.financeapp.ui.screen.commonComposable.ErrorWithRetry
+import com.smorzhok.financeapp.ui.screen.commonComposable.ListItem
 import com.smorzhok.financeapp.ui.theme.FinanceAppTheme
 import com.smorzhok.financeapp.ui.theme.Green
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -63,7 +62,7 @@ fun ExpensesScreen(
     val viewModel: ExpensesScreenViewModel = viewModel(
         factory = ExpensesScreenViewModelFactory(transactionRepository, accountRepository)
     )
-    val expenseState by viewModel.expenseList.observeAsState()
+    val expenseState by viewModel.expenseList.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
     LaunchedEffect(Unit) {
@@ -204,8 +203,6 @@ fun ExpensesScreen(
                     modifier = Modifier.align(Alignment.Center)
                 )
             }
-
-            null -> {}
         }
 
         FloatingActionButton(

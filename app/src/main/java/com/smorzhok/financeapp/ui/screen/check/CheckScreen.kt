@@ -20,13 +20,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.smorzhok.financeapp.R
 import com.smorzhok.financeapp.ui.commonitems.UiState
@@ -50,7 +50,7 @@ fun CheckScreen(
         factory = CheckScreenViewModelFactory(accountRepository,transactionRepository)
     )
 
-    val checkState by viewModel.checkState.observeAsState()
+    val checkState by viewModel.checkState.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
     LaunchedEffect(Unit) {
@@ -161,8 +161,6 @@ fun CheckScreen(
                         )
                     }
                 }
-
-                null -> {}
             }
         }
         FloatingActionButton(

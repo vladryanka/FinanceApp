@@ -2,11 +2,8 @@ package com.smorzhok.financeapp.ui.screen.check
 
 import android.content.Context
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.HttpException
@@ -22,6 +19,8 @@ import com.smorzhok.financeapp.ui.commonitems.retryWithBackoff
 import com.smorzhok.financeapp.ui.formatter.formatCurrencyCodeToSymbol
 import com.smorzhok.financeapp.ui.formatter.formatCurrencySymbolToCode
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.IOException
@@ -35,11 +34,11 @@ class CheckScreenViewModel(
     private val updateTransactionUseCase: UpdateTransactionUseCase,
     private val getTransactionsUseCase: GetTransactionsUseCase
 ) : ViewModel() {
-    private val _checkState = MutableLiveData<UiState<Account>>()
-    val checkState: LiveData<UiState<Account>> get() = _checkState
+    private val _checkState = MutableStateFlow<UiState<Account>>(UiState.Loading)
+    val checkState: StateFlow<UiState<Account>> get() = _checkState
 
-    private val _dialogueMessage = MutableLiveData<String?>()
-    val dialogueMessage: LiveData<String?> get() = _dialogueMessage
+    private val _dialogueMessage = MutableStateFlow<String?>(null)
+    val dialogueMessage: StateFlow<String?> get() = _dialogueMessage
 
     val name = mutableStateOf("")
     val balance = mutableStateOf("")
@@ -50,7 +49,7 @@ class CheckScreenViewModel(
     @RequiresApi(Build.VERSION_CODES.O)
     fun updateAccount(context: Context) {
         viewModelScope.launch {
-            _checkState.postValue(UiState.Loading)
+            _checkState.value = UiState.Loading
             val account = Account(
                 account.id,
                 name.value,
@@ -60,7 +59,7 @@ class CheckScreenViewModel(
             if (!isNetworkAvailable(context)) {
                 val error = context.getString(R.string.network_error)
                 _dialogueMessage.value = context.getString(R.string.error)
-                _checkState.postValue(UiState.Error(error))
+                _checkState.value = UiState.Error(error)
                 return@launch
             }
             try {
@@ -76,14 +75,13 @@ class CheckScreenViewModel(
                         fromDate.format(dateFormatter),
                         toDate.format(dateFormatter)
                     )
-                    Log.d("Doing", "All tr = $transactions")
-                    transactions.forEach{
+                    transactions.forEach {
                         val newCurrency = formatCurrencyCodeToSymbol(account.currency)
                         val newTransaction = it.copy(currency = newCurrency)
                         updateTransactionUseCase(newTransaction)
                     }
                 }
-                _checkState.postValue(UiState.Success(account))
+                _checkState.value = UiState.Success(account)
                 _dialogueMessage.value = context.getString(R.string.account_updated_successfully)
             } catch (e: Exception) {
                 val error = when (e) {
@@ -91,8 +89,8 @@ class CheckScreenViewModel(
                     is HttpException -> e.message ?: context.getString(R.string.server_error)
                     else -> context.getString(R.string.unknown_error)
                 }
-                _dialogueMessage.postValue(error)
-                _checkState.postValue(UiState.Error(error))
+                _dialogueMessage.value = error
+                _checkState.value = UiState.Error(error)
             }
         }
     }

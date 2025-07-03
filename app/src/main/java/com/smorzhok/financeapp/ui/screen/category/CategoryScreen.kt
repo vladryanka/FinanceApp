@@ -19,7 +19,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -29,6 +28,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.smorzhok.financeapp.R
 import com.smorzhok.financeapp.ui.commonitems.UiState
@@ -46,7 +46,7 @@ fun CategoryScreen(
         factory = CategoryScreenViewModelFactory(categoryRepository)
     )
 
-    val categoryState by viewModel.categoryState.observeAsState()
+    val categoryState by viewModel.categoryState.collectAsStateWithLifecycle()
     var searchQuery by remember { mutableStateOf("") }
 
     val context = LocalContext.current
@@ -159,8 +159,6 @@ fun CategoryScreen(
                     )
                 }
             }
-
-            null -> {}
         }
     }
 }
