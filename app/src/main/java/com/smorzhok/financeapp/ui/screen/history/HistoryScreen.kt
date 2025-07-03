@@ -1,6 +1,7 @@
-package com.smorzhok.financeapp.ui.screen
+package com.smorzhok.financeapp.ui.screen.history
 
 import android.app.DatePickerDialog
+import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
@@ -22,7 +23,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -35,15 +35,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.smorzhok.financeapp.R
-import com.smorzhok.financeapp.ui.screen.commonComposable.ErrorWithRetry
-import com.smorzhok.financeapp.ui.screen.commonComposable.ListItem
 import com.smorzhok.financeapp.ui.commonitems.UiState
 import com.smorzhok.financeapp.ui.formatter.formatBackendTime
 import com.smorzhok.financeapp.ui.formatter.formatPrice
-import com.smorzhok.financeapp.ui.viewmodel.HistoryScreenViewModel
-import com.smorzhok.financeapp.ui.viewmodel.HistoryScreenViewModelFactory
+import com.smorzhok.financeapp.ui.screen.LocalAccountRepository
+import com.smorzhok.financeapp.ui.screen.LocalTransactionRepository
+import com.smorzhok.financeapp.ui.screen.commonComposable.ErrorWithRetry
+import com.smorzhok.financeapp.ui.screen.commonComposable.ListItem
 import com.smorzhok.financeapp.ui.theme.FinanceAppTheme
 import java.time.LocalDate
 import java.time.ZoneId
@@ -72,7 +73,7 @@ fun HistoryScreen(
         loadHistory(viewModel, fromDate, toDate, isIncome, context)
     }
 
-    val historyListState by viewModel.historyList.observeAsState()
+    val historyListState by viewModel.historyList.collectAsStateWithLifecycle()
 
     fun showDatePicker(
         initialDate: LocalDate,
@@ -100,7 +101,7 @@ fun HistoryScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.surface)
     ) {
-        if (historyListState == null) {
+        if (false) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             return@Box
         }
@@ -127,7 +128,9 @@ fun HistoryScreen(
             is UiState.Success -> {
                 val historyList = state.data
                 val totalSum = historyList.sumOf { it.amount }
-                val totalSumFormatted = formatPrice(totalSum)
+                val currency = if (historyList.isEmpty()) viewModel.currency.value else
+                    historyList.get(0).currency
+                val totalSumFormatted = formatPrice(totalSum, currency)
 
                 LazyColumn(
                     modifier = Modifier
@@ -241,7 +244,7 @@ fun HistoryScreen(
                                         modifier = Modifier.align(Alignment.CenterVertically),
                                     ) {
                                         Text(
-                                            text = formatPrice(item.amount) +
+                                            text = formatPrice(item.amount, item.currency) +
                                                     "\n" + formatBackendTime(item.time),
                                             style = MaterialTheme.typography.bodyLarge,
                                             textAlign = TextAlign.End,
@@ -265,8 +268,6 @@ fun HistoryScreen(
                     }
                 }
             }
-
-            else -> {}
         }
     }
 }
@@ -309,7 +310,7 @@ private fun loadHistory(
     fromDate: LocalDate,
     toDate: LocalDate,
     isIncome: Boolean,
-    context: android.content.Context
+    context: Context
 ) {
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
     val fromStr = fromDate.format(formatter)

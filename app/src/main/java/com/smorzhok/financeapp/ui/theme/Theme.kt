@@ -27,7 +27,8 @@ private val LightColorScheme = lightColorScheme(
     outlineVariant = OutlineVariantColorLight,
     outline = OutlineColorLight,
     surfaceVariant = SurfaceVariantLightColor,
-    surfaceContainerHigh = SurfaceContainerHighLightColor
+    surfaceContainerHigh = SurfaceContainerHighLightColor,
+    error = ErrorColorLight
 )
 
 @Composable

@@ -10,3 +10,14 @@ fun formatCurrencyCodeToSymbol(code: String): String {
         else -> code
     }
 }
+
+fun formatCurrencySymbolToCode(symbol: String): String {
+    return when (symbol.uppercase()) {
+        "₽" -> "RUB"
+        "$" -> "USD"
+        "€" -> "EUR"
+        "£" -> "GBP"
+        "¥" -> "JPY"
+        else -> symbol
+    }
+}

@@ -1,4 +1,4 @@
-package com.smorzhok.financeapp.ui.screen
+package com.smorzhok.financeapp.ui.screen.setting
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

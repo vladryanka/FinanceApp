@@ -1,4 +1,4 @@
-package com.smorzhok.financeapp.ui.screen
+package com.smorzhok.financeapp.ui.screen.check
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -20,23 +20,22 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.smorzhok.financeapp.R
-import com.smorzhok.financeapp.ui.screen.commonComposable.ErrorWithRetry
-import com.smorzhok.financeapp.ui.viewmodel.CheckScreenViewModel
-import com.smorzhok.financeapp.ui.viewmodel.CheckScreenViewModelFactory
-import com.smorzhok.financeapp.ui.screen.commonComposable.ListItem
 import com.smorzhok.financeapp.ui.commonitems.UiState
 import com.smorzhok.financeapp.ui.formatter.formatCurrencyCodeToSymbol
 import com.smorzhok.financeapp.ui.formatter.formatPrice
+import com.smorzhok.financeapp.ui.screen.LocalAccountRepository
+import com.smorzhok.financeapp.ui.screen.LocalTransactionRepository
+import com.smorzhok.financeapp.ui.screen.commonComposable.ErrorWithRetry
+import com.smorzhok.financeapp.ui.screen.commonComposable.ListItem
 import com.smorzhok.financeapp.ui.theme.Green
 
 @Composable
@@ -46,11 +45,12 @@ fun CheckScreen(
     onFabClick: () -> Unit
 ) {
     val accountRepository = LocalAccountRepository.current
+    val transactionRepository = LocalTransactionRepository.current
     val viewModel: CheckScreenViewModel = viewModel(
-        factory = CheckScreenViewModelFactory(accountRepository)
+        factory = CheckScreenViewModelFactory(accountRepository,transactionRepository)
     )
 
-    val checkState by viewModel.checkState.observeAsState()
+    val checkState by viewModel.checkState.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
     LaunchedEffect(Unit) {
@@ -113,14 +113,9 @@ fun CheckScreen(
                             {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Text(
-                                        text = formatPrice(check.balance),
+                                        text = formatPrice(check.balance, check.currency),
                                         style = MaterialTheme.typography.bodyLarge,
                                         color = MaterialTheme.colorScheme.onSurface
-                                    )
-                                    EndIcon(
-                                        Modifier
-                                            .padding(start = 16.dp)
-                                            .align(Alignment.CenterVertically)
                                     )
                                 }
                             },
@@ -145,11 +140,6 @@ fun CheckScreen(
                                         style = MaterialTheme.typography.bodyLarge,
                                         color = MaterialTheme.colorScheme.onSurface
                                     )
-                                    EndIcon(
-                                        Modifier
-                                            .padding(start = 16.dp)
-                                            .align(Alignment.CenterVertically)
-                                    )
                                 }
                             },
                             downDivider = true,
@@ -171,8 +161,6 @@ fun CheckScreen(
                         )
                     }
                 }
-
-                null -> {}
             }
         }
         FloatingActionButton(
@@ -194,15 +182,4 @@ fun CheckScreen(
             )
         }
     }
-
-}
-
-@Composable
-private fun EndIcon(modifier: Modifier) {
-    Icon(
-        painterResource(R.drawable.more_vert_icon),
-        contentDescription = null,
-        modifier = modifier,
-        tint = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.7f)
-    )
 }

@@ -1,19 +1,21 @@
-package com.smorzhok.financeapp.ui.viewmodel
+package com.smorzhok.financeapp.ui.screen.expences
 
 import android.content.Context
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.HttpException
 import com.smorzhok.financeapp.R
 import com.smorzhok.financeapp.domain.model.Transaction
 import com.smorzhok.financeapp.domain.usecase.account.GetAccountUseCase
+import com.smorzhok.financeapp.domain.usecase.transaction.GetCurrencyUseCase
 import com.smorzhok.financeapp.domain.usecase.transaction.GetTransactionsUseCase
 import com.smorzhok.financeapp.ui.commonitems.UiState
 import com.smorzhok.financeapp.ui.commonitems.isNetworkAvailable
 import com.smorzhok.financeapp.ui.commonitems.retryWithBackoff
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.IOException
@@ -21,10 +23,12 @@ import java.io.IOException
 /*управление состоянием UI, связанным с загрузкой списка транзакций и фильтрация на расходы*/
 class ExpensesScreenViewModel(
     private val getTransactionsUseCase: GetTransactionsUseCase,
-    private val getAccountUseCase: GetAccountUseCase
+    private val getAccountUseCase: GetAccountUseCase,
+    private val getCurrencyUseCase: GetCurrencyUseCase
 ) : ViewModel() {
-    private val _expenseList = MutableLiveData<UiState<List<Transaction>>>()
-    val expenseList: LiveData<UiState<List<Transaction>>> get() = _expenseList
+    private val _expenseList = MutableStateFlow<UiState<List<Transaction>>>(UiState.Loading)
+    val expenseList: StateFlow<UiState<List<Transaction>>> get() = _expenseList
+    val currency = mutableStateOf("")
 
     fun loadTransactions(from: String, to: String, context: Context) {
         viewModelScope.launch {
@@ -62,6 +66,7 @@ class ExpensesScreenViewModel(
                 e.printStackTrace()
                 _expenseList.value = UiState.Error(e.message ?: R.string.server_error.toString())
             }
+            currency.value = getCurrencyUseCase()
         }
     }
 }
