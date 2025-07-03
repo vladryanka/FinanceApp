@@ -8,4 +8,5 @@ interface TransactionRepository {
     suspend fun createTransaction(transaction: Transaction)
     suspend fun updateTransaction(transaction: Transaction)
     suspend fun deleteTransaction(id: Int)
+    fun getCurrentCurrency(): String
 }

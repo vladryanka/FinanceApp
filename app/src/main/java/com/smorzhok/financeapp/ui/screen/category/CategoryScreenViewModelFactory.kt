@@ -1,4 +1,4 @@
-package com.smorzhok.financeapp.ui.viewmodel
+package com.smorzhok.financeapp.ui.screen.category
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

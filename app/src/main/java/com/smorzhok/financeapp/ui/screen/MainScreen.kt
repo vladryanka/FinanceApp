@@ -24,7 +24,14 @@ import com.smorzhok.financeapp.navigation.AppNavGraph
 import com.smorzhok.financeapp.navigation.Screen
 import com.smorzhok.financeapp.navigation.rememberNavigationState
 import com.smorzhok.financeapp.ui.commonitems.BottomNavigationItem
+import com.smorzhok.financeapp.ui.screen.category.CategoryScreen
+import com.smorzhok.financeapp.ui.screen.check.CheckEditingScreen
+import com.smorzhok.financeapp.ui.screen.check.CheckScreen
 import com.smorzhok.financeapp.ui.screen.commonComposable.TopBarTextAndIcon
+import com.smorzhok.financeapp.ui.screen.expences.ExpensesScreen
+import com.smorzhok.financeapp.ui.screen.history.HistoryScreen
+import com.smorzhok.financeapp.ui.screen.incomes.IncomeScreen
+import com.smorzhok.financeapp.ui.screen.setting.SettingScreen
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable

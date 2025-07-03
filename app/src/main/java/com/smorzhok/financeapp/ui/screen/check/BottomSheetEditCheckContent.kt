@@ -1,4 +1,4 @@
-package com.smorzhok.financeapp.ui.screen
+package com.smorzhok.financeapp.ui.screen.check
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row

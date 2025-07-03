@@ -1,7 +1,6 @@
-package com.smorzhok.financeapp.ui.screen
+package com.smorzhok.financeapp.ui.screen.expences
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -43,8 +42,8 @@ import com.smorzhok.financeapp.ui.screen.commonComposable.ErrorWithRetry
 import com.smorzhok.financeapp.ui.screen.commonComposable.ListItem
 import com.smorzhok.financeapp.ui.commonitems.UiState
 import com.smorzhok.financeapp.ui.formatter.formatPrice
-import com.smorzhok.financeapp.ui.viewmodel.ExpensesScreenViewModel
-import com.smorzhok.financeapp.ui.viewmodel.ExpensesScreenViewModelFactory
+import com.smorzhok.financeapp.ui.screen.LocalAccountRepository
+import com.smorzhok.financeapp.ui.screen.LocalTransactionRepository
 import com.smorzhok.financeapp.ui.theme.FinanceAppTheme
 import com.smorzhok.financeapp.ui.theme.Green
 import java.time.LocalDate
@@ -64,7 +63,6 @@ fun ExpensesScreen(
     val viewModel: ExpensesScreenViewModel = viewModel(
         factory = ExpensesScreenViewModelFactory(transactionRepository, accountRepository)
     )
-
     val expenseState by viewModel.expenseList.observeAsState()
 
     val context = LocalContext.current
@@ -87,7 +85,6 @@ fun ExpensesScreen(
 
             is UiState.Success -> {
                 val expensesList = state.data
-                Log.d("Doing", expensesList.toString())
                 val totalPrice = expensesList.sumOf { it.amount }
 
                 Column(
@@ -107,8 +104,14 @@ fun ExpensesScreen(
                             )
                         },
                         trailingContent = {
+                            val currency = if (expensesList.isEmpty()) viewModel.currency.value
+                            else expensesList.get(0).currency
+
                             Text(
-                                formatPrice(totalPrice.toDouble()),
+                                formatPrice(
+                                    totalPrice.toDouble(),
+                                    currency
+                                ),
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = MaterialTheme.colorScheme.onSurface
                             )
@@ -167,7 +170,7 @@ fun ExpensesScreen(
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
                                         Text(
-                                            text = formatPrice(item.amount),
+                                            text = formatPrice(item.amount, item.currency),
                                             style = MaterialTheme.typography.bodyLarge,
                                         )
                                         Icon(

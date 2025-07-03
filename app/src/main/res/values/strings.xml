@@ -44,6 +44,8 @@
     <string name="russian_rub">Российский рубль</string>
     <string name="american_dollar">Американский доллар</string>
     <string name="euro">Евро</string>
+    <string name="ok">Ок</string>
+    <string name="account_updated_successfully">Аккаунт успешно обновлен</string>
     <string name="cancel">Отмена</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

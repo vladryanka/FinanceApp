@@ -13,6 +13,7 @@ import com.smorzhok.financeapp.data.repository.RepositoryProvider
 import com.smorzhok.financeapp.domain.repository.AccountRepository
 import com.smorzhok.financeapp.domain.repository.CategoryRepository
 import com.smorzhok.financeapp.domain.repository.TransactionRepository
+import com.smorzhok.financeapp.ui.screen.splash.LottieSplashScreen
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable

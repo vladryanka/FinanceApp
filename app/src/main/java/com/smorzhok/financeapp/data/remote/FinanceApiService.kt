@@ -6,6 +6,7 @@ import com.smorzhok.financeapp.data.model.account.AccountDto
 import com.smorzhok.financeapp.data.model.account.AccountHistoryResponse
 import com.smorzhok.financeapp.data.model.category.CategoryDto
 import com.smorzhok.financeapp.data.model.transaction.TransactionDto
+import com.smorzhok.financeapp.data.model.transaction.TransactionRequest
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -28,10 +29,16 @@ interface FinanceApiService {
     @GET("accounts/{id}/history")
     suspend fun getAccountHistoryById(@Path("id") id: Int): List<AccountHistoryResponse>
 
-    @PUT("account/{id}")
+    @PUT("accounts/{id}")
     suspend fun updateAccount(
         @Path("id") id: Int,
         @Body request: AccountBrief
+    ): Response<Unit>
+
+    @PUT("transactions/{id}")
+    suspend fun updateTransaction(
+        @Path("id") id: Int,
+        @Body request: TransactionRequest
     ): Response<Unit>
 
     @GET("categories")

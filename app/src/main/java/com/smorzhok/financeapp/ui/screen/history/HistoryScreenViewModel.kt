@@ -1,6 +1,7 @@
-package com.smorzhok.financeapp.ui.viewmodel
+package com.smorzhok.financeapp.ui.screen.history
 
 import android.content.Context
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,6 +10,7 @@ import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.HttpExce
 import com.smorzhok.financeapp.R
 import com.smorzhok.financeapp.domain.model.Transaction
 import com.smorzhok.financeapp.domain.usecase.account.GetAccountUseCase
+import com.smorzhok.financeapp.domain.usecase.transaction.GetCurrencyUseCase
 import com.smorzhok.financeapp.domain.usecase.transaction.GetTransactionsUseCase
 import com.smorzhok.financeapp.ui.commonitems.UiState
 import com.smorzhok.financeapp.ui.commonitems.isNetworkAvailable
@@ -18,28 +20,35 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.IOException
 
-/*управление состоянием UI, связанным с загрузкой списка транзакций и фильтрация на доходы*/
-class IncomeScreenViewModel(
+/*
+управление состоянием UI, связанным с загрузкой списка
+транзакций по дате с учетом требования - расходы или доходы
+*/
+class HistoryScreenViewModel(
     private val getTransactionsUseCase: GetTransactionsUseCase,
-    private val getAccountUseCase: GetAccountUseCase
+    private val getAccountUseCase: GetAccountUseCase,
+    private val getCurrencyUseCase: GetCurrencyUseCase
 ) : ViewModel() {
 
-    private val _incomeList = MutableLiveData<UiState<List<Transaction>>>()
-    val incomeList: LiveData<UiState<List<Transaction>>> get() = _incomeList
+    private val _historyList = MutableLiveData<UiState<List<Transaction>>>()
+    val historyList: LiveData<UiState<List<Transaction>>> get() = _historyList
+    val currency = mutableStateOf("")
 
-    fun loadIncomes(from: String, to: String, context: Context) {
+    fun loadHistory(from: String, to: String, isIncome: Boolean, context: Context) {
         viewModelScope.launch {
-            _incomeList.value = UiState.Loading
+            _historyList.value = UiState.Loading
             if (!isNetworkAvailable(context)) {
-                _incomeList.value = UiState.Error("no_internet")
+                _historyList.value = UiState.Error("no_internet")
                 return@launch
             }
             try {
                 val accounts = withContext(Dispatchers.IO) {
-                    retryWithBackoff { getAccountUseCase() }
+                    retryWithBackoff {
+                        getAccountUseCase()
+                    }
                 }
                 if (accounts.isEmpty()) {
-                    _incomeList.value = UiState.Error("no_accounts")
+                    _historyList.value = UiState.Error("no_accounts")
                     return@launch
                 }
 
@@ -48,18 +57,18 @@ class IncomeScreenViewModel(
                 val transactions = withContext(Dispatchers.IO) {
                     retryWithBackoff { getTransactionsUseCase(id, from, to) }
                 }
-                val incomes = transactions.filter { it.isIncome }
+                val history =
+                    transactions.filter { it.isIncome == isIncome }.sortedBy { it.time }
 
-                _incomeList.value = UiState.Success(incomes)
+                _historyList.value = UiState.Success(history)
             } catch (e: IOException) {
                 e.printStackTrace()
-                _incomeList.value = UiState.Error(e.message)
-            }
-            catch (e: HttpException) {
+                _historyList.value = UiState.Error(e.message)
+            } catch (e: HttpException) {
                 e.printStackTrace()
-                _incomeList.value = UiState.Error(e.message ?: R.string.server_error.toString())
+                _historyList.value = UiState.Error(e.message ?: R.string.server_error.toString())
             }
+            currency.value = getCurrencyUseCase()
         }
     }
 }
-

@@ -1,5 +1,7 @@
-package com.smorzhok.financeapp.ui.screen
+package com.smorzhok.financeapp.ui.screen.check
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,6 +10,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -25,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -35,12 +41,14 @@ import com.smorzhok.financeapp.R
 import com.smorzhok.financeapp.domain.model.ScaffoldItem
 import com.smorzhok.financeapp.navigation.NavigationState
 import com.smorzhok.financeapp.ui.commonitems.UiState
+import com.smorzhok.financeapp.ui.screen.LocalAccountRepository
+import com.smorzhok.financeapp.ui.screen.LocalTransactionRepository
 import com.smorzhok.financeapp.ui.screen.commonComposable.ErrorWithRetry
 import com.smorzhok.financeapp.ui.screen.commonComposable.ListItem
 import com.smorzhok.financeapp.ui.screen.commonComposable.TopBarTextAndIcon
-import com.smorzhok.financeapp.ui.viewmodel.CheckScreenViewModel
-import com.smorzhok.financeapp.ui.viewmodel.CheckScreenViewModelFactory
+import com.smorzhok.financeapp.ui.theme.Green
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CheckEditingScreen(navState: NavigationState) {
@@ -49,14 +57,48 @@ fun CheckEditingScreen(navState: NavigationState) {
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     val accountRepository = LocalAccountRepository.current
+    val transactionRepository = LocalTransactionRepository.current
     val viewModel: CheckScreenViewModel = viewModel(
-        factory = CheckScreenViewModelFactory(accountRepository)
+        factory = CheckScreenViewModelFactory(accountRepository, transactionRepository)
     )
     val checkState by viewModel.checkState.observeAsState()
 
+    val dialogueMessage by viewModel.dialogueMessage.observeAsState()
+
     val context = LocalContext.current
+
     LaunchedEffect(Unit) {
         viewModel.loadAccount(context)
+    }
+
+    if (dialogueMessage != null && checkState is UiState.Error) {
+        AlertDialog(
+            onDismissRequest = { viewModel.dialogueShown() },
+            title = {
+                Text(
+                    text = stringResource(R.string.error),
+                    color = MaterialTheme.colorScheme.error
+                )
+            },
+            text = {
+                Text(
+                    text = dialogueMessage ?: stringResource(R.string.unknown_error),
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = { viewModel.dialogueShown() },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Green,
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text(text = stringResource(R.string.ok))
+                }
+            },
+            containerColor = MaterialTheme.colorScheme.surface
+        )
     }
 
     if (showBottomSheet) {
@@ -88,7 +130,7 @@ fun CheckEditingScreen(navState: NavigationState) {
                     leadingImageResId = it.leadingImageResId, onLeadingClicked = {
                         navState.navHostController.popBackStack()
                     }, onTrailingClicked = {
-                        viewModel.updateAccount()
+                        viewModel.updateAccount(context)
                     })
             }
         }) { paddingValues ->

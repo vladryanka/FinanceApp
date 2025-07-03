@@ -1,6 +1,7 @@
-package com.smorzhok.financeapp.ui.screen
+package com.smorzhok.financeapp.ui.screen.history
 
 import android.app.DatePickerDialog
+import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
@@ -42,8 +43,8 @@ import com.smorzhok.financeapp.ui.screen.commonComposable.ListItem
 import com.smorzhok.financeapp.ui.commonitems.UiState
 import com.smorzhok.financeapp.ui.formatter.formatBackendTime
 import com.smorzhok.financeapp.ui.formatter.formatPrice
-import com.smorzhok.financeapp.ui.viewmodel.HistoryScreenViewModel
-import com.smorzhok.financeapp.ui.viewmodel.HistoryScreenViewModelFactory
+import com.smorzhok.financeapp.ui.screen.LocalAccountRepository
+import com.smorzhok.financeapp.ui.screen.LocalTransactionRepository
 import com.smorzhok.financeapp.ui.theme.FinanceAppTheme
 import java.time.LocalDate
 import java.time.ZoneId
@@ -127,7 +128,9 @@ fun HistoryScreen(
             is UiState.Success -> {
                 val historyList = state.data
                 val totalSum = historyList.sumOf { it.amount }
-                val totalSumFormatted = formatPrice(totalSum)
+                val currency = if (historyList.isEmpty()) viewModel.currency.value else
+                    historyList.get(0).currency
+                val totalSumFormatted = formatPrice(totalSum, currency)
 
                 LazyColumn(
                     modifier = Modifier
@@ -241,7 +244,7 @@ fun HistoryScreen(
                                         modifier = Modifier.align(Alignment.CenterVertically),
                                     ) {
                                         Text(
-                                            text = formatPrice(item.amount) +
+                                            text = formatPrice(item.amount, item.currency) +
                                                     "\n" + formatBackendTime(item.time),
                                             style = MaterialTheme.typography.bodyLarge,
                                             textAlign = TextAlign.End,
@@ -309,7 +312,7 @@ private fun loadHistory(
     fromDate: LocalDate,
     toDate: LocalDate,
     isIncome: Boolean,
-    context: android.content.Context
+    context: Context
 ) {
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
     val fromStr = fromDate.format(formatter)

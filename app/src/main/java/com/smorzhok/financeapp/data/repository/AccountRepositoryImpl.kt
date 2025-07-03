@@ -13,11 +13,11 @@ class AccountRepositoryImpl(
 
     override suspend fun getAccounts(): List<Account> {
         return api.getAccountList().map { it.toDomain() }
+
     }
 
     override suspend fun updateAccount(account: Account) {
         val request = account.toAccountBrief()
-
         api.updateAccount(account.id, request)
     }
 }

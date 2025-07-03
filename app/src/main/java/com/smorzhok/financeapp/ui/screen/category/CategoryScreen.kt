@@ -1,4 +1,4 @@
-package com.smorzhok.financeapp.ui.screen
+package com.smorzhok.financeapp.ui.screen.category
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -32,10 +32,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.smorzhok.financeapp.R
 import com.smorzhok.financeapp.ui.commonitems.UiState
+import com.smorzhok.financeapp.ui.screen.LocalCategoryRepository
 import com.smorzhok.financeapp.ui.screen.commonComposable.ErrorWithRetry
 import com.smorzhok.financeapp.ui.screen.commonComposable.ListItem
-import com.smorzhok.financeapp.ui.viewmodel.CategoryScreenViewModel
-import com.smorzhok.financeapp.ui.viewmodel.CategoryScreenViewModelFactory
 
 @Composable
 fun CategoryScreen(

@@ -1,4 +1,4 @@
-package com.smorzhok.financeapp.ui.screen
+package com.smorzhok.financeapp.ui.screen.incomes
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -37,8 +37,8 @@ import com.smorzhok.financeapp.ui.screen.commonComposable.ErrorWithRetry
 import com.smorzhok.financeapp.ui.screen.commonComposable.ListItem
 import com.smorzhok.financeapp.ui.commonitems.UiState
 import com.smorzhok.financeapp.ui.formatter.formatPrice
-import com.smorzhok.financeapp.ui.viewmodel.IncomeScreenViewModel
-import com.smorzhok.financeapp.ui.viewmodel.IncomeScreenViewModelFactory
+import com.smorzhok.financeapp.ui.screen.LocalAccountRepository
+import com.smorzhok.financeapp.ui.screen.LocalTransactionRepository
 import com.smorzhok.financeapp.ui.theme.Green
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -115,8 +115,10 @@ fun IncomeScreen(
                             )
                         },
                         trailingContent = {
+                            val currency = if (incomesList.isEmpty()) viewModel.currency.value
+                            else incomesList.get(0).currency
                             Text(
-                                formatPrice(totalPrice),
+                                formatPrice(totalPrice, currency),
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = MaterialTheme.colorScheme.onSurface
                             )
@@ -146,7 +148,7 @@ fun IncomeScreen(
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
                                         Text(
-                                            text = formatPrice(item.amount),
+                                            text = formatPrice(item.amount, item.currency),
                                             style = MaterialTheme.typography.bodyLarge,
                                         )
                                         Icon(
