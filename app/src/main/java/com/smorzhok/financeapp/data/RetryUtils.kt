@@ -1,4 +1,4 @@
-package com.smorzhok.financeapp.ui.commonitems
+package com.smorzhok.financeapp.data
 
 import retrofit2.HttpException
 import kotlinx.coroutines.delay

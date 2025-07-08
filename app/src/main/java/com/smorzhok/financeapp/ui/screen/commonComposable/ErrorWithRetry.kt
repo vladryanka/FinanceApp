@@ -24,6 +24,7 @@ fun ErrorWithRetry(
 ) {
     val errorText = when (message) {
         "no_internet" -> stringResource(R.string.no_internet_connection)
+        "Не авторизован" -> stringResource(R.string.not_authorized)
         else -> stringResource(R.string.error)
     }
 

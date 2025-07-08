@@ -1,12 +1,13 @@
 package com.smorzhok.financeapp.data.remote
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
-import com.smorzhok.financeapp.data.model.account.AccountBrief
 import com.smorzhok.financeapp.data.model.account.AccountDto
 import com.smorzhok.financeapp.data.model.account.AccountHistoryResponse
+import com.smorzhok.financeapp.data.model.account.AccountUpdateRequest
 import com.smorzhok.financeapp.data.model.category.CategoryDto
 import com.smorzhok.financeapp.data.model.transaction.TransactionDto
 import com.smorzhok.financeapp.data.model.transaction.TransactionRequest
+import com.smorzhok.financeapp.data.model.transaction.TransactionResponse
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -32,14 +33,14 @@ interface FinanceApiService {
     @PUT("accounts/{id}")
     suspend fun updateAccount(
         @Path("id") id: Int,
-        @Body request: AccountBrief
-    ): Response<Unit>
+        @Body request: AccountUpdateRequest
+    ): Response<AccountDto>
 
     @PUT("transactions/{id}")
     suspend fun updateTransaction(
         @Path("id") id: Int,
         @Body request: TransactionRequest
-    ): Response<Unit>
+    ): Response<TransactionResponse>
 
     @GET("categories")
     suspend fun getCategories(): List<CategoryDto>

@@ -4,20 +4,15 @@ import android.content.Context
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.HttpException
-import com.smorzhok.financeapp.R
 import com.smorzhok.financeapp.domain.model.Transaction
 import com.smorzhok.financeapp.domain.usecase.account.GetAccountUseCase
-import com.smorzhok.financeapp.domain.usecase.transaction.GetCurrencyUseCase
 import com.smorzhok.financeapp.domain.usecase.transaction.GetTransactionsUseCase
 import com.smorzhok.financeapp.ui.commonitems.UiState
 import com.smorzhok.financeapp.ui.commonitems.isNetworkAvailable
-import com.smorzhok.financeapp.ui.commonitems.retryWithBackoff
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import retrofit2.HttpException
 import java.io.IOException
 
 /*
@@ -26,8 +21,7 @@ import java.io.IOException
 */
 class HistoryScreenViewModel(
     private val getTransactionsUseCase: GetTransactionsUseCase,
-    private val getAccountUseCase: GetAccountUseCase,
-    private val getCurrencyUseCase: GetCurrencyUseCase
+    private val getAccountUseCase: GetAccountUseCase
 ) : ViewModel() {
 
     private val _historyList = MutableStateFlow<UiState<List<Transaction>>>(UiState.Loading)
@@ -42,11 +36,7 @@ class HistoryScreenViewModel(
                 return@launch
             }
             try {
-                val accounts = withContext(Dispatchers.IO) {
-                    retryWithBackoff {
-                        getAccountUseCase()
-                    }
-                }
+                val accounts = getAccountUseCase()
                 if (accounts.isEmpty()) {
                     _historyList.value = UiState.Error("no_accounts")
                     return@launch
@@ -54,11 +44,11 @@ class HistoryScreenViewModel(
 
                 val id = accounts.first().id
 
-                val transactions = withContext(Dispatchers.IO) {
-                    retryWithBackoff { getTransactionsUseCase(id, from, to) }
-                }
-                val history =
-                    transactions.filter { it.isIncome == isIncome }.sortedBy { it.time }
+                val transactions = getTransactionsUseCase(id, from, to)
+                val history = transactions
+                    .filter { it.isIncome == isIncome }
+                    .sortedBy { it.time }
+                currency.value = transactions.firstOrNull()?.currency ?: "RUB"
 
                 _historyList.value = UiState.Success(history)
             } catch (e: IOException) {
@@ -66,9 +56,12 @@ class HistoryScreenViewModel(
                 _historyList.value = UiState.Error(e.message)
             } catch (e: HttpException) {
                 e.printStackTrace()
-                _historyList.value = UiState.Error(e.message ?: R.string.server_error.toString())
+                if (e.code() == 401) {
+                    _historyList.value = UiState.Error("Не авторизован")
+                } else {
+                    _historyList.value = UiState.Error(e.message ?: "server_error")
+                }
             }
-            currency.value = getCurrencyUseCase()
         }
     }
 }

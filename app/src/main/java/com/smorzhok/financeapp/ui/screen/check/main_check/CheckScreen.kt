@@ -1,4 +1,4 @@
-package com.smorzhok.financeapp.ui.screen.check
+package com.smorzhok.financeapp.ui.screen.check.main_check
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -34,6 +34,8 @@ import com.smorzhok.financeapp.ui.formatter.formatCurrencyCodeToSymbol
 import com.smorzhok.financeapp.ui.formatter.formatPrice
 import com.smorzhok.financeapp.ui.screen.LocalAccountRepository
 import com.smorzhok.financeapp.ui.screen.LocalTransactionRepository
+import com.smorzhok.financeapp.ui.screen.check.CheckScreenViewModel
+import com.smorzhok.financeapp.ui.screen.check.CheckScreenViewModelFactory
 import com.smorzhok.financeapp.ui.screen.commonComposable.ErrorWithRetry
 import com.smorzhok.financeapp.ui.screen.commonComposable.ListItem
 import com.smorzhok.financeapp.ui.theme.Green
@@ -47,7 +49,7 @@ fun CheckScreen(
     val accountRepository = LocalAccountRepository.current
     val transactionRepository = LocalTransactionRepository.current
     val viewModel: CheckScreenViewModel = viewModel(
-        factory = CheckScreenViewModelFactory(accountRepository,transactionRepository)
+        factory = CheckScreenViewModelFactory(accountRepository, transactionRepository)
     )
 
     val checkState by viewModel.checkState.collectAsStateWithLifecycle()

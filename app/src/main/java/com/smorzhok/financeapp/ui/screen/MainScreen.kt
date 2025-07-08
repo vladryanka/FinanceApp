@@ -25,8 +25,8 @@ import com.smorzhok.financeapp.navigation.Screen
 import com.smorzhok.financeapp.navigation.rememberNavigationState
 import com.smorzhok.financeapp.ui.commonitems.BottomNavigationItem
 import com.smorzhok.financeapp.ui.screen.category.CategoryScreen
-import com.smorzhok.financeapp.ui.screen.check.CheckEditingScreen
-import com.smorzhok.financeapp.ui.screen.check.CheckScreen
+import com.smorzhok.financeapp.ui.screen.check.editing.CheckEditingScreen
+import com.smorzhok.financeapp.ui.screen.check.main_check.CheckScreen
 import com.smorzhok.financeapp.ui.screen.commonComposable.TopBarTextAndIcon
 import com.smorzhok.financeapp.ui.screen.expences.ExpensesScreen
 import com.smorzhok.financeapp.ui.screen.history.HistoryScreen

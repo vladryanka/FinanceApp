@@ -2,11 +2,11 @@ package com.smorzhok.financeapp.ui.screen.check
 
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.HttpException
 import com.smorzhok.financeapp.R
 import com.smorzhok.financeapp.domain.model.Account
 import com.smorzhok.financeapp.domain.usecase.account.GetAccountUseCase
@@ -15,14 +15,12 @@ import com.smorzhok.financeapp.domain.usecase.transaction.GetTransactionsUseCase
 import com.smorzhok.financeapp.domain.usecase.transaction.UpdateTransactionUseCase
 import com.smorzhok.financeapp.ui.commonitems.UiState
 import com.smorzhok.financeapp.ui.commonitems.isNetworkAvailable
-import com.smorzhok.financeapp.ui.commonitems.retryWithBackoff
 import com.smorzhok.financeapp.ui.formatter.formatCurrencyCodeToSymbol
 import com.smorzhok.financeapp.ui.formatter.formatCurrencySymbolToCode
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import retrofit2.HttpException
 import java.io.IOException
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -63,23 +61,22 @@ class CheckScreenViewModel(
                 return@launch
             }
             try {
-                withContext(Dispatchers.IO) {
-                    updateAccountsUseCase(
-                        account
-                    )
-                    val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-                    val fromDate = LocalDate.of(2001, 1, 1)//нам неизвестна дата начала транзакций
-                    val toDate = LocalDate.now()
-                    val transactions = getTransactionsUseCase(
-                        account.id,
-                        fromDate.format(dateFormatter),
-                        toDate.format(dateFormatter)
-                    )
-                    transactions.forEach {
-                        val newCurrency = formatCurrencyCodeToSymbol(account.currency)
-                        val newTransaction = it.copy(currency = newCurrency)
-                        updateTransactionUseCase(newTransaction)
-                    }
+                updateAccountsUseCase(
+                    account
+                )
+                Log.d("Doing", "Обновили аккаунт = "+ balance.value)
+                val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+                val fromDate = LocalDate.of(2001, 1, 1)//нам неизвестна дата начала транзакций
+                val toDate = LocalDate.now()
+                val transactions = getTransactionsUseCase(
+                    account.id,
+                    fromDate.format(dateFormatter),
+                    toDate.format(dateFormatter)
+                )
+                transactions.forEach {
+                    val newCurrency = formatCurrencyCodeToSymbol(account.currency)
+                    val newTransaction = it.copy(currency = newCurrency)
+                    updateTransactionUseCase(newTransaction)
                 }
                 _checkState.value = UiState.Success(account)
                 _dialogueMessage.value = context.getString(R.string.account_updated_successfully)
@@ -107,13 +104,13 @@ class CheckScreenViewModel(
                 return@launch
             }
             try {
-                val accounts =
-                    withContext(Dispatchers.IO) { retryWithBackoff { getAccountUseCase() } }
+                val accounts = getAccountUseCase()
                 val firstAccount = accounts.firstOrNull()
                 if (firstAccount != null) {
                     _checkState.value = UiState.Success(firstAccount)
                     name.value = firstAccount.name
                     balance.value = firstAccount.balance.toString()
+                    Log.d("Doing", "Получили аккаунт = "+ balance.value)
                     currency.value = formatCurrencyCodeToSymbol(firstAccount.currency)
                     account = firstAccount
                 } else {
@@ -124,7 +121,11 @@ class CheckScreenViewModel(
                 _checkState.value = UiState.Error(e.message ?: R.string.network_error.toString())
             } catch (e: HttpException) {
                 e.printStackTrace()
-                _checkState.value = UiState.Error(e.message ?: (R.string.server_error).toString())
+                if (e.code() == 401) {
+                    _checkState.value = UiState.Error("Не авторизован")
+                } else {
+                    _checkState.value = UiState.Error(e.message ?: "server_error")
+                }
             }
         }
     }

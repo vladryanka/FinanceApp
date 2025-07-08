@@ -19,9 +19,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -47,7 +44,9 @@ fun CategoryScreen(
     )
 
     val categoryState by viewModel.categoryState.collectAsStateWithLifecycle()
-    var searchQuery by remember { mutableStateOf("") }
+
+    val filteredCategories by viewModel.filteredCategories.collectAsStateWithLifecycle()
+    val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
     LaunchedEffect(Unit) {
@@ -67,7 +66,7 @@ fun CategoryScreen(
             leadingContent = {
                 BasicTextField(
                     value = searchQuery,
-                    onValueChange = { searchQuery = it },
+                    onValueChange = {  viewModel.updateSearchQuery(it) },
                     singleLine = true,
                     textStyle = MaterialTheme.typography.bodyLarge.copy(
                         color = MaterialTheme.colorScheme.onSurface
@@ -108,10 +107,6 @@ fun CategoryScreen(
             }
 
             is UiState.Success -> {
-                val allCategories = state.data
-                val filteredCategories = allCategories.filter {
-                    it.textLeading.contains(searchQuery.trim(), ignoreCase = true)
-                }
                 LazyColumn {
                     itemsIndexed(filteredCategories) { _, item ->
                         ListItem(

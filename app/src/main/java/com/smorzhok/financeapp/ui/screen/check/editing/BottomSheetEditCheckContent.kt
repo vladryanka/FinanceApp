@@ -1,4 +1,4 @@
-package com.smorzhok.financeapp.ui.screen.check
+package com.smorzhok.financeapp.ui.screen.check.editing
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,11 +28,8 @@ fun BottomSheetEditCheckContent(
         modifier = Modifier
             .fillMaxWidth()
     ) {
-        val currencyList = listOf<Pair<String, Int>>(
-            "₽" to R.string.russian_rub,
-            "$" to R.string.american_dollar,
-            "€" to R.string.euro
-        )
+        val currencyList: List<Pair<String, Int>> =
+            CurrencyBottom.getAll().map { it.symbol to it.nameResId }
 
         LazyColumn {
             itemsIndexed(currencyList) { index, (symbol, nameRes) ->
@@ -59,7 +56,7 @@ fun BottomSheetEditCheckContent(
                         onClose()
                     },
                     backgroundColor = MaterialTheme.colorScheme.surface,
-                    verticalPadding = 23.5
+                    verticalPadding = 24.0
                 )
             }
         }
@@ -87,5 +84,19 @@ fun BottomSheetEditCheckContent(
             backgroundColor = MaterialTheme.colorScheme.error,
             verticalPadding = 23.5
         )
+    }
+}
+
+private enum class CurrencyBottom(
+    val isoCode: String,
+    val symbol: String,
+    val nameResId: Int
+) {
+    RUB("RUB", "₽", R.string.russian_rub),
+    USD("USD", "$", R.string.american_dollar),
+    EUR("EUR", "€", R.string.euro);
+
+    companion object {
+        fun getAll(): List<CurrencyBottom> = entries
     }
 }
