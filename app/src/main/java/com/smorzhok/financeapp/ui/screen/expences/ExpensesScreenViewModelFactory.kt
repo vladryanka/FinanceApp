@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.smorzhok.financeapp.domain.repository.AccountRepository
 import com.smorzhok.financeapp.domain.repository.TransactionRepository
 import com.smorzhok.financeapp.domain.usecase.account.GetAccountUseCase
-import com.smorzhok.financeapp.domain.usecase.transaction.GetCurrencyUseCase
 import com.smorzhok.financeapp.domain.usecase.transaction.GetTransactionsUseCase
 
 /*предоставляет ExpensesScreenViewModel, внедряя в нее GetTransactionsUseCase и GetAccountUseCase*/
@@ -19,11 +18,9 @@ class ExpensesScreenViewModelFactory(
         if (modelClass.isAssignableFrom(ExpensesScreenViewModel::class.java)) {
             val getTransactionUseCase = GetTransactionsUseCase(transactionRepository)
             val getAccountUseCase = GetAccountUseCase(accountRepository)
-            val getCurrencyUseCase = GetCurrencyUseCase(transactionRepository)
             return ExpensesScreenViewModel(
                 getTransactionUseCase,
-                getAccountUseCase,
-                getCurrencyUseCase
+                getAccountUseCase
             ) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")

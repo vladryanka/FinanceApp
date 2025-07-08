@@ -39,6 +39,7 @@
     <string name="unknown_error">Неизвестная ошибка</string>
     <string name="no_internet_connection">Отсутствует подключение к интернету</string>
     <string name="network_error">network_error</string>
+    <string name="not_authorized">Не авторизован</string>
     <string name="server_error">server_error</string>
     <string name="human_icon">Иконка человека</string>
     <string name="russian_rub">Российский рубль</string>
@@ -49,6 +50,7 @@
     <string name="cancel">Отмена</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="my_article">Мой счет</string>
 
 
 </resources>
