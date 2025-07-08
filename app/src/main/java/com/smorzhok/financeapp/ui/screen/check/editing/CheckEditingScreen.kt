@@ -43,7 +43,6 @@ import com.smorzhok.financeapp.domain.model.ScaffoldItem
 import com.smorzhok.financeapp.navigation.NavigationState
 import com.smorzhok.financeapp.ui.commonitems.UiState
 import com.smorzhok.financeapp.ui.screen.LocalAccountRepository
-import com.smorzhok.financeapp.ui.screen.LocalTransactionRepository
 import com.smorzhok.financeapp.ui.screen.check.CheckScreenViewModel
 import com.smorzhok.financeapp.ui.screen.check.CheckScreenViewModelFactory
 import com.smorzhok.financeapp.ui.screen.commonComposable.ErrorWithRetry
@@ -57,9 +56,8 @@ import com.smorzhok.financeapp.ui.theme.Green
 fun CheckEditingScreen(navState: NavigationState) {
     val context = LocalContext.current
     val accountRepository = LocalAccountRepository.current
-    val transactionRepository = LocalTransactionRepository.current
     val viewModel: CheckScreenViewModel = viewModel(
-        factory = CheckScreenViewModelFactory(accountRepository, transactionRepository)
+        factory = CheckScreenViewModelFactory(accountRepository)
     )
 
     val checkState by viewModel.checkState.collectAsStateWithLifecycle()

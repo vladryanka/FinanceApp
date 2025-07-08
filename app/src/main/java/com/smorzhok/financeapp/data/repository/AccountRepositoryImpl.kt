@@ -1,6 +1,5 @@
 package com.smorzhok.financeapp.data.repository
 
-import android.util.Log
 import com.smorzhok.financeapp.data.mapper.toAccountUpdateRequest
 import com.smorzhok.financeapp.data.mapper.toDomain
 import com.smorzhok.financeapp.data.remote.FinanceApiService
@@ -18,13 +17,10 @@ class AccountRepositoryImpl(
         api.getAccountList().map { it.toDomain() }
     }
 
-    override suspend fun updateAccount(account: Account) { //Todo что с запросом? ответ другой
+    override suspend fun updateAccount(account: Account) {
         val request = account.toAccountUpdateRequest()
-        Log.d("Doing", "Запрос на сервер = " + request.balance)
-        Log.d("Doing", account.id.toString())
         withContext(Dispatchers.IO) {
-            val resp = api.updateAccount(account.id, request)
-            Log.d("Doing", "Ответ с сервера = "+resp.body()?.toString())
+            api.updateAccount(account.id, request)
         }
     }
 }

@@ -33,7 +33,6 @@ import com.smorzhok.financeapp.ui.commonitems.UiState
 import com.smorzhok.financeapp.ui.formatter.formatCurrencyCodeToSymbol
 import com.smorzhok.financeapp.ui.formatter.formatPrice
 import com.smorzhok.financeapp.ui.screen.LocalAccountRepository
-import com.smorzhok.financeapp.ui.screen.LocalTransactionRepository
 import com.smorzhok.financeapp.ui.screen.check.CheckScreenViewModel
 import com.smorzhok.financeapp.ui.screen.check.CheckScreenViewModelFactory
 import com.smorzhok.financeapp.ui.screen.commonComposable.ErrorWithRetry
@@ -47,9 +46,8 @@ fun CheckScreen(
     onFabClick: () -> Unit
 ) {
     val accountRepository = LocalAccountRepository.current
-    val transactionRepository = LocalTransactionRepository.current
     val viewModel: CheckScreenViewModel = viewModel(
-        factory = CheckScreenViewModelFactory(accountRepository, transactionRepository)
+        factory = CheckScreenViewModelFactory(accountRepository)
     )
 
     val checkState by viewModel.checkState.collectAsStateWithLifecycle()

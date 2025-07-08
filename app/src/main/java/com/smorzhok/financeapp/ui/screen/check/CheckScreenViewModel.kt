@@ -2,7 +2,6 @@ package com.smorzhok.financeapp.ui.screen.check
 
 import android.content.Context
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -11,8 +10,6 @@ import com.smorzhok.financeapp.R
 import com.smorzhok.financeapp.domain.model.Account
 import com.smorzhok.financeapp.domain.usecase.account.GetAccountUseCase
 import com.smorzhok.financeapp.domain.usecase.account.UpdateAccountsUseCase
-import com.smorzhok.financeapp.domain.usecase.transaction.GetTransactionsUseCase
-import com.smorzhok.financeapp.domain.usecase.transaction.UpdateTransactionUseCase
 import com.smorzhok.financeapp.ui.commonitems.UiState
 import com.smorzhok.financeapp.ui.commonitems.isNetworkAvailable
 import com.smorzhok.financeapp.ui.formatter.formatCurrencyCodeToSymbol
@@ -22,15 +19,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 /*управление состоянием UI, связанным с загрузкой списка аккаунтов*/
 class CheckScreenViewModel(
     private val getAccountUseCase: GetAccountUseCase,
-    private val updateAccountsUseCase: UpdateAccountsUseCase,
-    private val updateTransactionUseCase: UpdateTransactionUseCase,
-    private val getTransactionsUseCase: GetTransactionsUseCase
+    private val updateAccountsUseCase: UpdateAccountsUseCase
 ) : ViewModel() {
     private val _checkState = MutableStateFlow<UiState<Account>>(UiState.Loading)
     val checkState: StateFlow<UiState<Account>> get() = _checkState
@@ -48,12 +41,13 @@ class CheckScreenViewModel(
     fun updateAccount(context: Context) {
         viewModelScope.launch {
             _checkState.value = UiState.Loading
-            val account = Account(
-                account.id,
-                name.value,
-                balance.value.toDouble(),
-                formatCurrencySymbolToCode(currency.value)
+            account = Account(
+                id = account.id,
+                name = name.value,
+                balance = balance.value.toDouble(),
+                currency = formatCurrencySymbolToCode(currency.value)
             )
+
             if (!isNetworkAvailable(context)) {
                 val error = context.getString(R.string.network_error)
                 _dialogueMessage.value = context.getString(R.string.error)
@@ -64,20 +58,7 @@ class CheckScreenViewModel(
                 updateAccountsUseCase(
                     account
                 )
-                Log.d("Doing", "Обновили аккаунт = "+ balance.value)
-                val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-                val fromDate = LocalDate.of(2001, 1, 1)//нам неизвестна дата начала транзакций
-                val toDate = LocalDate.now()
-                val transactions = getTransactionsUseCase(
-                    account.id,
-                    fromDate.format(dateFormatter),
-                    toDate.format(dateFormatter)
-                )
-                transactions.forEach {
-                    val newCurrency = formatCurrencyCodeToSymbol(account.currency)
-                    val newTransaction = it.copy(currency = newCurrency)
-                    updateTransactionUseCase(newTransaction)
-                }
+
                 _checkState.value = UiState.Success(account)
                 _dialogueMessage.value = context.getString(R.string.account_updated_successfully)
             } catch (e: Exception) {
@@ -110,7 +91,6 @@ class CheckScreenViewModel(
                     _checkState.value = UiState.Success(firstAccount)
                     name.value = firstAccount.name
                     balance.value = firstAccount.balance.toString()
-                    Log.d("Doing", "Получили аккаунт = "+ balance.value)
                     currency.value = formatCurrencyCodeToSymbol(firstAccount.currency)
                     account = firstAccount
                 } else {

@@ -1,7 +1,6 @@
 package com.smorzhok.financeapp.data.mapper
 
 import com.smorzhok.financeapp.R
-import com.smorzhok.financeapp.data.model.account.AccountBrief
 import com.smorzhok.financeapp.data.model.account.AccountDto
 import com.smorzhok.financeapp.data.model.account.AccountUpdateRequest
 import com.smorzhok.financeapp.data.model.category.CategoryDto
@@ -10,7 +9,6 @@ import com.smorzhok.financeapp.data.model.transaction.TransactionRequest
 import com.smorzhok.financeapp.domain.model.Account
 import com.smorzhok.financeapp.domain.model.Category
 import com.smorzhok.financeapp.domain.model.Transaction
-import kotlin.String
 
 fun TransactionDto.toDomain(): Transaction = Transaction(
     id = id,
@@ -26,18 +24,11 @@ fun TransactionDto.toDomain(): Transaction = Transaction(
 )
 
 fun Transaction.toTransactionRequest(): TransactionRequest = TransactionRequest(
-    accountId = this.id,
+    accountId = this.accountId.toInt(),
     categoryId = this.categoryId,
     amount = this.amount.toString(),
     transactionDate = this.time,
     comment = this.comment
-)
-
-fun Account.toAccountBrief(): AccountBrief = AccountBrief(
-    id = id.toInt(),
-    name = name,
-    balance = balance.toString(),
-    currency = currency
 )
 
 fun Account.toAccountUpdateRequest() = AccountUpdateRequest(
