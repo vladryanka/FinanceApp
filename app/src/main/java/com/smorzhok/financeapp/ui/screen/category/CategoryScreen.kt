@@ -25,23 +25,21 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.smorzhok.financeapp.R
 import com.smorzhok.financeapp.ui.commonitems.UiState
-import com.smorzhok.financeapp.ui.screen.LocalCategoryRepository
 import com.smorzhok.financeapp.ui.screen.commonComposable.ErrorWithRetry
 import com.smorzhok.financeapp.ui.screen.commonComposable.ListItem
 
 @Composable
 fun CategoryScreen(
+    viewModelFactory: ViewModelProvider.Factory,
     paddingValues: PaddingValues,
     onCategoryClicked: (Int) -> Unit
 ) {
-    val categoryRepository = LocalCategoryRepository.current
-    val viewModel: CategoryScreenViewModel = viewModel(
-        factory = CategoryScreenViewModelFactory(categoryRepository)
-    )
+    val viewModel: CategoryScreenViewModel = viewModel(factory = viewModelFactory)
 
     val categoryState by viewModel.categoryState.collectAsStateWithLifecycle()
 

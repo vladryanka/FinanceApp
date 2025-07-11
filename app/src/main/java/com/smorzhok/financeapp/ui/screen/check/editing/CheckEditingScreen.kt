@@ -36,15 +36,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.smorzhok.financeapp.R
 import com.smorzhok.financeapp.domain.model.ScaffoldItem
 import com.smorzhok.financeapp.navigation.NavigationState
 import com.smorzhok.financeapp.ui.commonitems.UiState
-import com.smorzhok.financeapp.ui.screen.LocalAccountRepository
 import com.smorzhok.financeapp.ui.screen.check.CheckScreenViewModel
-import com.smorzhok.financeapp.ui.screen.check.CheckScreenViewModelFactory
+import com.smorzhok.financeapp.ui.screen.commonComposable.BottomSheetContent
 import com.smorzhok.financeapp.ui.screen.commonComposable.ErrorWithRetry
 import com.smorzhok.financeapp.ui.screen.commonComposable.ListItem
 import com.smorzhok.financeapp.ui.screen.commonComposable.TopBarTextAndIcon
@@ -53,12 +53,13 @@ import com.smorzhok.financeapp.ui.theme.Green
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CheckEditingScreen(navState: NavigationState) {
+fun CheckEditingScreen(
+    viewModelFactory: ViewModelProvider.Factory,
+    navState: NavigationState
+) {
     val context = LocalContext.current
-    val accountRepository = LocalAccountRepository.current
-    val viewModel: CheckScreenViewModel = viewModel(
-        factory = CheckScreenViewModelFactory(accountRepository)
-    )
+    val viewModel: CheckScreenViewModel = viewModel(factory = viewModelFactory)
+
 
     val checkState by viewModel.checkState.collectAsStateWithLifecycle()
     val dialogueMessage by viewModel.dialogueMessage.collectAsStateWithLifecycle()
@@ -78,11 +79,14 @@ fun CheckEditingScreen(navState: NavigationState) {
             sheetState = bottomSheetState,
             containerColor = MaterialTheme.colorScheme.surface
         ) {
-            BottomSheetEditCheckContent(
+            val currencyList: List<Pair<String, Int>> =
+                CurrencyBottom.getAll().map { it.symbol to it.nameResId }
+            BottomSheetContent(
                 onClose = { showBottomSheet = false },
                 onCurrencySelected = { selectedCurrency ->
                     viewModel.currency.value = selectedCurrency
-                }
+                },
+                currencyList
             )
         }
     }
@@ -295,5 +299,19 @@ private fun CheckScreenForm(
             backgroundColor = MaterialTheme.colorScheme.surface,
             verticalPadding = 16.0
         )
+    }
+}
+
+private enum class CurrencyBottom(
+    val isoCode: String,
+    val symbol: String,
+    val nameResId: Int
+) {
+    RUB("RUB", "₽", R.string.russian_rub),
+    USD("USD", "$", R.string.american_dollar),
+    EUR("EUR", "€", R.string.euro);
+
+    companion object {
+        fun getAll(): List<CurrencyBottom> = entries
     }
 }

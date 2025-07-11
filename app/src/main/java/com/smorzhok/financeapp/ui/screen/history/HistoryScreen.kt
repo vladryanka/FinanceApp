@@ -1,6 +1,5 @@
 package com.smorzhok.financeapp.ui.screen.history
 
-import android.app.DatePickerDialog
 import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -32,20 +31,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.smorzhok.financeapp.R
 import com.smorzhok.financeapp.ui.commonitems.UiState
+import com.smorzhok.financeapp.ui.commonitems.showDatePicker
 import com.smorzhok.financeapp.ui.formatter.formatBackendTime
 import com.smorzhok.financeapp.ui.formatter.formatPrice
-import com.smorzhok.financeapp.ui.screen.LocalAccountRepository
-import com.smorzhok.financeapp.ui.screen.LocalTransactionRepository
 import com.smorzhok.financeapp.ui.screen.commonComposable.ErrorWithRetry
 import com.smorzhok.financeapp.ui.screen.commonComposable.ListItem
-import com.smorzhok.financeapp.ui.theme.FinanceAppTheme
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -53,15 +50,12 @@ import java.time.format.DateTimeFormatter
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HistoryScreen(
+    viewModelFactory: ViewModelProvider.Factory,
     isIncome: Boolean,
     onHistoryItemClicked: (Int) -> Unit,
     paddingValues: PaddingValues
 ) {
-    val transactionRepository = LocalTransactionRepository.current
-    val accountRepository = LocalAccountRepository.current
-    val viewModel: HistoryScreenViewModel = viewModel(
-        factory = HistoryScreenViewModelFactory(transactionRepository, accountRepository)
-    )
+    val viewModel: HistoryScreenViewModel = viewModel(factory = viewModelFactory)
 
     val displayDateFormatter = DateTimeFormatter.ofPattern("dd-MM-yy")
 
@@ -74,27 +68,6 @@ fun HistoryScreen(
     }
 
     val historyListState by viewModel.historyList.collectAsStateWithLifecycle()
-
-    fun showDatePicker(
-        initialDate: LocalDate,
-        onDateSelected: (LocalDate) -> Unit,
-        minDate: Long? = null,
-        maxDate: Long? = null
-    ) {
-        val datePickerDialog = DatePickerDialog(
-            context,
-            { _, year, month, dayOfMonth ->
-                val selected = LocalDate.of(year, month + 1, dayOfMonth)
-                onDateSelected(selected)
-            },
-            initialDate.year,
-            initialDate.monthValue - 1,
-            initialDate.dayOfMonth
-        )
-        minDate?.let { datePickerDialog.datePicker.minDate = it }
-        maxDate?.let { datePickerDialog.datePicker.maxDate = it }
-        datePickerDialog.show()
-    }
 
     Box(
         modifier = Modifier
@@ -154,7 +127,8 @@ fun HistoryScreen(
                                             fromDate = selected
                                         }
                                     },
-                                    maxDate = maxDateMillis
+                                    maxDate = maxDateMillis,
+                                    context = context
                                 )
                             },
                             isDivider = true
@@ -178,7 +152,8 @@ fun HistoryScreen(
                                             toDate = selected
                                         }
                                     },
-                                    minDate = minDateMillis
+                                    minDate = minDateMillis,
+                                    context = context
                                 )
                             },
                             isDivider = true
@@ -272,7 +247,6 @@ fun HistoryScreen(
     }
 }
 
-
 @Composable
 private fun GreenInfoItemClickable(
     leadingTextResId: Int,
@@ -316,13 +290,4 @@ private fun loadHistory(
     val fromStr = fromDate.format(formatter)
     val toStr = toDate.format(formatter)
     viewModel.loadHistory(fromStr, toStr, isIncome, context)
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
-@Preview
-@Composable
-fun HistoryPreview() {
-    FinanceAppTheme {
-        HistoryScreen(true, {}, PaddingValues(50.dp))
-    }
 }

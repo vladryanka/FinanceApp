@@ -11,6 +11,13 @@ sealed class Screen(val route: String) {
     object History : Screen(ROUTE_HISTORY) {
         fun createRoute(isIncome: Boolean) = "history/$isIncome"
     }
+    object AddTransaction: Screen(ROUTE_ADD_TRANSACTION) {
+        fun createRoute(transactionId: Int? = null): String {
+            return if (transactionId != null) {
+                "$route?transactionId=$transactionId"
+            } else route
+        }
+    }
 
     private companion object {
         const val ROUTE_EXPENSES = "expenses"
@@ -20,5 +27,6 @@ sealed class Screen(val route: String) {
         const val ROUTE_SETTINGS = "settings"
         const val ROUTE_CHECK_EDITING = "check_editing"
         const val ROUTE_HISTORY = "history/{isIncome}"
+        const val ROUTE_ADD_TRANSACTION = "add_transaction"
     }
 }

@@ -7,9 +7,10 @@ import com.smorzhok.financeapp.domain.model.Category
 import com.smorzhok.financeapp.domain.repository.CategoryRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 /*Имплементация репозитория для данных о категориях*/
-class CategoryRepositoryImpl(
+class CategoryRepositoryImpl @Inject constructor(
     private val api: FinanceApiService
 ) : CategoryRepository {
 

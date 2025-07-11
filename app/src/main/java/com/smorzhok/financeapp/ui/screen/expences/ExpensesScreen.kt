@@ -31,20 +31,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.smorzhok.financeapp.R
 import com.smorzhok.financeapp.domain.model.Transaction
 import com.smorzhok.financeapp.ui.commonitems.UiState
 import com.smorzhok.financeapp.ui.formatter.formatPrice
-import com.smorzhok.financeapp.ui.screen.LocalAccountRepository
-import com.smorzhok.financeapp.ui.screen.LocalTransactionRepository
 import com.smorzhok.financeapp.ui.screen.commonComposable.ErrorWithRetry
 import com.smorzhok.financeapp.ui.screen.commonComposable.ListItem
-import com.smorzhok.financeapp.ui.theme.FinanceAppTheme
 import com.smorzhok.financeapp.ui.theme.Green
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -53,15 +50,12 @@ import java.time.format.DateTimeFormatter
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExpensesScreen(
+    viewModelFactory: ViewModelProvider.Factory,
     paddingValues: PaddingValues,
     onExpenseClicked: (Int) -> Unit,
     onFabClick: () -> Unit
 ) {
-    val transactionRepository = LocalTransactionRepository.current
-    val accountRepository = LocalAccountRepository.current
-    val viewModel: ExpensesScreenViewModel = viewModel(
-        factory = ExpensesScreenViewModelFactory(transactionRepository, accountRepository)
-    )
+    val viewModel: ExpensesScreenViewModel = viewModel(factory = viewModelFactory)
     val expenseState by viewModel.expenseList.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
@@ -154,12 +148,13 @@ fun ExpensesScreen(
                                                 style = MaterialTheme.typography.bodyLarge,
                                             )
                                             item.comment?.let {
-                                                Text(
-                                                    text = it,
-                                                    style = MaterialTheme.typography.bodyMedium,
-                                                    maxLines = 1,
-                                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                                )
+                                                if (it.isNotBlank())
+                                                    Text(
+                                                        text = it,
+                                                        style = MaterialTheme.typography.bodyMedium,
+                                                        maxLines = 1,
+                                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                    )
                                             }
                                         }
                                     }
@@ -226,16 +221,4 @@ fun ExpensesScreen(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
-@Preview
-@Composable
-fun ExpensesScreenPreview() {
-    FinanceAppTheme {
-        ExpensesScreen(
-            paddingValues = PaddingValues(50.dp),
-            onExpenseClicked = { 1 },
-            {}
-        )
-    }
-}
 

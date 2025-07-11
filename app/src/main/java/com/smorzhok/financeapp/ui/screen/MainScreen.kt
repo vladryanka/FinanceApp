@@ -17,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.smorzhok.financeapp.R
 import com.smorzhok.financeapp.domain.model.ScaffoldItem
@@ -24,6 +25,7 @@ import com.smorzhok.financeapp.navigation.AppNavGraph
 import com.smorzhok.financeapp.navigation.Screen
 import com.smorzhok.financeapp.navigation.rememberNavigationState
 import com.smorzhok.financeapp.ui.commonitems.BottomNavigationItem
+import com.smorzhok.financeapp.ui.screen.add_transaction.AddTransactionScreen
 import com.smorzhok.financeapp.ui.screen.category.CategoryScreen
 import com.smorzhok.financeapp.ui.screen.check.editing.CheckEditingScreen
 import com.smorzhok.financeapp.ui.screen.check.main_check.CheckScreen
@@ -35,7 +37,7 @@ import com.smorzhok.financeapp.ui.screen.setting.SettingScreen
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun MainScreen() {
+fun MainScreen(viewModelFactory: ViewModelProvider.Factory) {
 
     val navState = rememberNavigationState()
     val navBackStackEntry by navState.navHostController.currentBackStackEntryAsState()
@@ -84,36 +86,42 @@ fun MainScreen() {
     Scaffold(
         topBar = {
             topBarContent?.let {
-                if (currentRouteState != Screen.CheckEditing.route) {
-                    TopBarTextAndIcon(
-                        it.textResId, trailingImageResId = it.trailingImageResId,
-                        leadingImageResId = it.leadingImageResId, onLeadingClicked = {
-                            navState.navHostController.popBackStack()
-                        }, onTrailingClicked = {
+                when (currentRouteState) {
+                    Screen.CheckEditing.route -> {}
+                    Screen.AddTransaction.route -> {}
+                    else ->
+                        TopBarTextAndIcon(
+                            it.textResId, trailingImageResId = it.trailingImageResId,
+                            leadingImageResId = it.leadingImageResId, onLeadingClicked = {
+                                navState.navHostController.popBackStack()
+                            }, onTrailingClicked = {
 
-                            when (currentRoute) {
-                                Screen.Expenses.route -> {
-                                    navState.navigateTo(
-                                        Screen.History.createRoute(false),
-                                        usePopUpTo = false
-                                    )
+                                when (currentRoute) {
+                                    Screen.Expenses.route -> {
+                                        navState.navigateTo(
+                                            Screen.History.createRoute(false),
+                                            usePopUpTo = false
+                                        )
+                                    }
+
+                                    Screen.Income.route -> {
+                                        navState.navigateTo(
+                                            Screen.History.createRoute(true),
+                                            usePopUpTo = false
+                                        )
+                                    }
+
+                                    Screen.Check.route -> {
+                                        navState.navigateTo(
+                                            Screen.CheckEditing.route,
+                                            usePopUpTo = false
+                                        )
+                                    }
+
+                                    Screen.History.route -> {}
                                 }
 
-                                Screen.Income.route -> {
-                                    navState.navigateTo(
-                                        Screen.History.createRoute(true),
-                                        usePopUpTo = false
-                                    )
-                                }
-
-                                Screen.Check.route -> {
-                                    navState.navigateTo(Screen.CheckEditing.route, usePopUpTo = false)
-                                }
-
-                                Screen.History.route -> {}
-                            }
-
-                        })
+                            })
                 }
             }
         },
@@ -156,30 +164,51 @@ fun MainScreen() {
                 }
             }
         }
-    ) {paddingValue ->
+    ) { paddingValue ->
 
         AppNavGraph(
             navState.navHostController,
             expensesScreenContent = {
-                ExpensesScreen(paddingValue, onExpenseClicked = {}, {})
+                ExpensesScreen(
+                    viewModelFactory,
+                    paddingValue,
+                    onExpenseClicked = { transactionId ->
+                        navState.navigateTo("${Screen.AddTransaction.route}?transactionId=$transactionId")
+                    },
+                    { navState.navigateTo(Screen.AddTransaction.route) })
             },
             incomeScreenContent = {
-                IncomeScreen(paddingValue, onIncomeClicked = {}, {})
+                IncomeScreen(
+                    viewModelFactory,paddingValue, onIncomeClicked = { transactionId ->
+                    navState.navigateTo("${Screen.AddTransaction.route}?transactionId=$transactionId")
+                }, {
+                    navState.navigateTo(Screen.AddTransaction.route)
+                })
             },
             checkScreenContent = {
-                CheckScreen(paddingValue, onCheckClicked = {}, {})
+                CheckScreen(
+                    viewModelFactory,paddingValue, onCheckClicked = {}, {})
             },
             checkEditingContent = {
-                CheckEditingScreen(navState)
+                CheckEditingScreen(
+                    viewModelFactory,navState)
             },
             categoryScreenContent = {
-                CategoryScreen(paddingValue, onCategoryClicked = {})
+                CategoryScreen(
+                    viewModelFactory,paddingValue, onCategoryClicked = {})
             },
             settingsScreenContent = {
-                SettingScreen(paddingValue, onSettingClicked = {})
+                SettingScreen(
+                    paddingValue, onSettingClicked = {})
             },
             historyScreenContent = { isIncome ->
-                HistoryScreen(isIncome, onHistoryItemClicked = {}, paddingValue)
+                HistoryScreen(
+                    viewModelFactory,isIncome, onHistoryItemClicked = {}, paddingValue)
+            },
+            addTransactionContent = {
+                transactionId ->
+                AddTransactionScreen(
+                    viewModelFactory,navState, transactionId)
             }
         )
     }

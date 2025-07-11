@@ -1,14 +1,12 @@
 package com.smorzhok.financeapp.data.model.transaction
 
-import com.smorzhok.financeapp.data.model.account.AccountBrief
-import com.smorzhok.financeapp.data.model.category.CategoryDto
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class TransactionResponse(
     val id: Int,
-    val account: AccountBrief,
-    val category: CategoryDto,
+    val accountId: Int,
+    val categoryId: Int,
     val amount: String,
     val transactionDate: String,
     val comment: String?,

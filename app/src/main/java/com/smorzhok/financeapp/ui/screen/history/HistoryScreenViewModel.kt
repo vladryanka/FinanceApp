@@ -14,12 +14,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
+import javax.inject.Inject
 
 /*
 управление состоянием UI, связанным с загрузкой списка
 транзакций по дате с учетом требования - расходы или доходы
 */
-class HistoryScreenViewModel(
+class HistoryScreenViewModel @Inject constructor(
     private val getTransactionsUseCase: GetTransactionsUseCase,
     private val getAccountUseCase: GetAccountUseCase
 ) : ViewModel() {
