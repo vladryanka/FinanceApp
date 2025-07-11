@@ -15,7 +15,9 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -40,6 +42,16 @@ interface FinanceApiService {
     suspend fun updateTransaction(
         @Path("id") id: Int,
         @Body request: TransactionRequest
+    ): Response<TransactionDto>
+
+    @GET("transactions/{id}")
+    suspend fun getTransactionsById(
+        @Path("id") id: Int,
+    ): TransactionDto
+
+    @POST("transactions")
+    suspend fun createTransaction(
+        @Body request: TransactionRequest
     ): Response<TransactionResponse>
 
     @GET("categories")
@@ -51,6 +63,9 @@ interface FinanceApiService {
         @Query("startDate") from: String,
         @Query("endDate") to: String
     ): List<TransactionDto>
+
+    @DELETE("transactions/{id}")
+    suspend fun deleteTransaction(@Path("id") id: Int):Response<Unit>
 }
 
 /*синглтон для создания сервиса и связи с сетью*/

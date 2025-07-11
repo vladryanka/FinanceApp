@@ -15,10 +15,11 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
+import javax.inject.Inject
 
 
 /*управление состоянием UI, связанным с загрузкой списка категорий*/
-class CategoryScreenViewModel(private val getCategoriesUseCase: GetCategoriesUseCase) :
+class CategoryScreenViewModel @Inject constructor(private val getCategoriesUseCase: GetCategoriesUseCase) :
 ViewModel() {
     private val _allCategories = MutableStateFlow<List<Category>>(emptyList())
     private val _searchQuery = MutableStateFlow("")

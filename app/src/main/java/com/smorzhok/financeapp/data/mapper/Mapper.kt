@@ -9,6 +9,7 @@ import com.smorzhok.financeapp.data.model.transaction.TransactionRequest
 import com.smorzhok.financeapp.domain.model.Account
 import com.smorzhok.financeapp.domain.model.Category
 import com.smorzhok.financeapp.domain.model.Transaction
+import com.smorzhok.financeapp.domain.model.TransactionEdit
 
 fun TransactionDto.toDomain(): Transaction = Transaction(
     id = id,
@@ -18,7 +19,7 @@ fun TransactionDto.toDomain(): Transaction = Transaction(
     currency = account.currency,
     categoryName = category.name,
     isIncome = category.isIncome,
-    amount = amount.toDoubleOrNull() ?: 0.0,
+    amount = this@toDomain.amount.toDoubleOrNull() ?: 0.0,
     time = transactionDate,
     comment = comment
 )
@@ -28,6 +29,16 @@ fun Transaction.toTransactionRequest(): TransactionRequest = TransactionRequest(
     categoryId = this.categoryId,
     amount = this.amount.toString(),
     transactionDate = this.time,
+    comment = this.comment
+)
+
+fun TransactionDto.toTransactionEdit() = TransactionEdit(
+    accountId = this.account.id,
+    currency = this.account.currency,
+    name = this.account.name.toString(),
+    amount = this.amount.toString(),
+    category = this.category.mapToCategory(),
+    dateTime = this.transactionDate,
     comment = this.comment
 )
 

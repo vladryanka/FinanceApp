@@ -26,28 +26,27 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.smorzhok.financeapp.R
 import com.smorzhok.financeapp.ui.commonitems.UiState
 import com.smorzhok.financeapp.ui.formatter.formatCurrencyCodeToSymbol
 import com.smorzhok.financeapp.ui.formatter.formatPrice
-import com.smorzhok.financeapp.ui.screen.LocalAccountRepository
 import com.smorzhok.financeapp.ui.screen.check.CheckScreenViewModel
-import com.smorzhok.financeapp.ui.screen.check.CheckScreenViewModelFactory
 import com.smorzhok.financeapp.ui.screen.commonComposable.ErrorWithRetry
 import com.smorzhok.financeapp.ui.screen.commonComposable.ListItem
 import com.smorzhok.financeapp.ui.theme.Green
 
 @Composable
 fun CheckScreen(
+    viewModelFactory: ViewModelProvider.Factory,
     paddingValues: PaddingValues,
     onCheckClicked: (Int) -> Unit,
     onFabClick: () -> Unit
 ) {
-    val accountRepository = LocalAccountRepository.current
     val viewModel: CheckScreenViewModel = viewModel(
-        factory = CheckScreenViewModelFactory(accountRepository)
+        factory = viewModelFactory
     )
 
     val checkState by viewModel.checkState.collectAsStateWithLifecycle()

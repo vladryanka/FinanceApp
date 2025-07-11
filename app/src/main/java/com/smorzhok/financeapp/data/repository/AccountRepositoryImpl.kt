@@ -7,9 +7,10 @@ import com.smorzhok.financeapp.domain.model.Account
 import com.smorzhok.financeapp.domain.repository.AccountRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 /*Имплементация репозитория для данных об аккаунте*/
-class AccountRepositoryImpl(
+class AccountRepositoryImpl @Inject constructor(
     private val api: FinanceApiService
 ) : AccountRepository {
 

@@ -19,9 +19,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
+import javax.inject.Inject
 
 /*управление состоянием UI, связанным с загрузкой списка аккаунтов*/
-class CheckScreenViewModel(
+class CheckScreenViewModel @Inject constructor(
     private val getAccountUseCase: GetAccountUseCase,
     private val updateAccountsUseCase: UpdateAccountsUseCase
 ) : ViewModel() {

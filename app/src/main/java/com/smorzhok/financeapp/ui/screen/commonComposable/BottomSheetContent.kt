@@ -1,4 +1,4 @@
-package com.smorzhok.financeapp.ui.screen.check.editing
+package com.smorzhok.financeapp.ui.screen.commonComposable
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,42 +17,42 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.smorzhok.financeapp.R
-import com.smorzhok.financeapp.ui.screen.commonComposable.ListItem
 
 @Composable
-fun BottomSheetEditCheckContent(
+fun BottomSheetContent(
     onClose: () -> Unit,
-    onCurrencySelected: (String) -> Unit
+    onCurrencySelected: (String) -> Unit,
+    itemsList:List<Pair<String, Int>>
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
     ) {
-        val currencyList: List<Pair<String, Int>> =
-            CurrencyBottom.getAll().map { it.symbol to it.nameResId }
 
         LazyColumn {
-            itemsIndexed(currencyList) { index, (symbol, nameRes) ->
+            itemsIndexed(itemsList) { index, (firstText, secRes) ->
                 ListItem(
                     leadingContent = {
                         Row(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                symbol,
+                                firstText,
                                 style = MaterialTheme.typography.bodyLarge,
                             )
-                            Text(
-                                text = stringResource(nameRes),
-                                modifier = Modifier.padding(start = 16.dp),
-                                style = MaterialTheme.typography.bodyLarge,
-                            )
+                            if (secRes != 0) {
+                                Text(
+                                    text = stringResource(secRes),
+                                    modifier = Modifier.padding(start = 16.dp),
+                                    style = MaterialTheme.typography.bodyLarge,
+                                )
+                            }
                         }
                     },
                     trailingContent = {},
                     downDivider = true,
                     onClick = {
-                        onCurrencySelected(symbol)
+                        onCurrencySelected(firstText)
                         onClose()
                     },
                     backgroundColor = MaterialTheme.colorScheme.surface,
@@ -87,16 +87,3 @@ fun BottomSheetEditCheckContent(
     }
 }
 
-private enum class CurrencyBottom(
-    val isoCode: String,
-    val symbol: String,
-    val nameResId: Int
-) {
-    RUB("RUB", "₽", R.string.russian_rub),
-    USD("USD", "$", R.string.american_dollar),
-    EUR("EUR", "€", R.string.euro);
-
-    companion object {
-        fun getAll(): List<CurrencyBottom> = entries
-    }
-}

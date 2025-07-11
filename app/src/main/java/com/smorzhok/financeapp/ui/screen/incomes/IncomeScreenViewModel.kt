@@ -14,9 +14,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
+import javax.inject.Inject
 
 /*управление состоянием UI, связанным с загрузкой списка транзакций и фильтрация на доходы*/
-class IncomeScreenViewModel(
+class IncomeScreenViewModel @Inject constructor(
     private val getTransactionsUseCase: GetTransactionsUseCase,
     private val getAccountUseCase: GetAccountUseCase
 ) : ViewModel() {
