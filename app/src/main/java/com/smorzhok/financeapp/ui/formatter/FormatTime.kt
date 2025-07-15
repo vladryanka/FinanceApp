@@ -37,3 +37,30 @@ fun combineDateTimeToIsoUtc(dateStr: String, timeStr: String): String {
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     return zonedDateTime.format(formatter)
 }
+enum class MonthName(val displayName: String) {
+    JANUARY("январь"),
+    FEBRUARY("февраль"),
+    MARCH("март"),
+    APRIL("апрель"),
+    MAY("май"),
+    JUNE("июнь"),
+    JULY("июль"),
+    AUGUST("август"),
+    SEPTEMBER("сентябрь"),
+    OCTOBER("октябрь"),
+    NOVEMBER("ноябрь"),
+    DECEMBER("декабрь");
+
+    companion object {
+        fun fromMonthNumber(month: Int): MonthName {
+            return entries[month - 1]
+        }
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun formatLocalDateToMonthYear(date: LocalDate): String {
+    val month = MonthName.fromMonthNumber(date.monthValue)
+    val year = date.year
+    return "${month.displayName} $year"
+}

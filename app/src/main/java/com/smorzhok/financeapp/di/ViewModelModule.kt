@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.smorzhok.financeapp.ui.ViewModelFactory
 import com.smorzhok.financeapp.ui.screen.add_transaction.AddTransactionViewModel
+import com.smorzhok.financeapp.ui.screen.analytics.AnalyticsScreenViewModel
 import com.smorzhok.financeapp.ui.screen.category.CategoryScreenViewModel
 import com.smorzhok.financeapp.ui.screen.check.CheckScreenViewModel
 import com.smorzhok.financeapp.ui.screen.expences.ExpensesScreenViewModel
@@ -33,6 +34,11 @@ interface ViewModelModule {
     @IntoMap
     @ViewModelKey(CheckScreenViewModel::class)
     fun bindsCheckScreenViewModel(viewModel: CheckScreenViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(AnalyticsScreenViewModel::class)
+    fun bindsAnalyticsScreenViewModel(viewModel: AnalyticsScreenViewModel): ViewModel
 
     @Binds
     @IntoMap

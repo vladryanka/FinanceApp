@@ -94,7 +94,8 @@ fun CheckEditingScreen(
     val topBarContent = ScaffoldItem(
         textResId = R.string.my_account,
         trailingImageResId = R.drawable.check_mark,
-        leadingImageResId = R.drawable.cross
+        leadingImageResId = R.drawable.cross,
+        backgroundColor = Green
     )
 
     Scaffold(
@@ -104,7 +105,8 @@ fun CheckEditingScreen(
                 trailingImageResId = topBarContent.trailingImageResId,
                 leadingImageResId = topBarContent.leadingImageResId,
                 onLeadingClicked = { navState.navHostController.popBackStack() },
-                onTrailingClicked = { viewModel.updateAccount(context) }
+                onTrailingClicked = { viewModel.updateAccount(context) },
+                backgroundColor = topBarContent.backgroundColor
             )
         }
     ) { paddingValues ->

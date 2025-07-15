@@ -19,7 +19,6 @@ import javax.inject.Inject
 class AnalyticsScreenViewModel @Inject constructor(
     private val getAccountUseCase: GetAccountUseCase,
     private val getTransactionsUseCase: GetTransactionsUseCase,
-
     ) : ViewModel() {
 
     private val _transactionList = MutableStateFlow<UiState<List<Transaction>>>(UiState.Loading)

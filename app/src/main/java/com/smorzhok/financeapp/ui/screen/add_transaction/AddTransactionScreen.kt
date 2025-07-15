@@ -80,7 +80,8 @@ fun AddTransactionScreen(viewModelFactory: ViewModelProvider.Factory,
     val topBarContent = ScaffoldItem(
         textResId = R.string.add_transaction,
         trailingImageResId = R.drawable.check_mark,
-        leadingImageResId = R.drawable.cross
+        leadingImageResId = R.drawable.cross,
+        backgroundColor = Green
     )
 
     LaunchedEffect(viewModel) {
@@ -134,7 +135,8 @@ fun AddTransactionScreen(viewModelFactory: ViewModelProvider.Factory,
                     if (transactionId == null) {
                         viewModel.createTransaction(context)
                     } else viewModel.updateTransaction(transactionId, context)
-                }
+                },
+                backgroundColor = topBarContent.backgroundColor
             )
         }
     ) { paddingValues ->

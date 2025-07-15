@@ -14,6 +14,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AssistChip
+import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -29,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -37,10 +41,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.smorzhok.financeapp.R
 import com.smorzhok.financeapp.ui.commonitems.UiState
+import com.smorzhok.financeapp.ui.commonitems.showDatePicker
 import com.smorzhok.financeapp.ui.formatter.formatBackendTime
+import com.smorzhok.financeapp.ui.formatter.formatLocalDateToMonthYear
 import com.smorzhok.financeapp.ui.formatter.formatPrice
 import com.smorzhok.financeapp.ui.screen.commonComposable.ErrorWithRetry
 import com.smorzhok.financeapp.ui.screen.commonComposable.ListItem
+import com.smorzhok.financeapp.ui.theme.Green
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -117,11 +124,25 @@ fun AnalyticsScreen(
                                     color = MaterialTheme.colorScheme.onSurface
                                 )
                             },
-                            trailingContent = {},//todo чипс,
+                            trailingContent = {
+                                GreenChip(
+                                    text = formatLocalDateToMonthYear(fromDate),
+                                    onClick = {
+                                        showDatePicker(
+                                            initialDate = fromDate,
+                                            onDateSelected = {
+                                                fromDate = it
+                                                loadTransactions(viewModel, fromDate, toDate, isIncome, context)
+                                            },
+                                            context = context
+                                        )
+                                    }
+                                )
+                            },
                             downDivider = true,
-                            onClick = {  },
-                            backgroundColor = MaterialTheme.colorScheme.secondary,
-                            verticalPadding = 16.0
+                            onClick = { },
+                            backgroundColor = MaterialTheme.colorScheme.surface,
+                            verticalPadding = 4.0
                         )
                     }
 
@@ -134,11 +155,26 @@ fun AnalyticsScreen(
                                     color = MaterialTheme.colorScheme.onSurface
                                 )
                             },
-                            trailingContent = {},//todo чипс,
+                            trailingContent = {
+                                GreenChip(
+                                    text = formatLocalDateToMonthYear(toDate),
+                                    onClick = {
+                                        showDatePicker(
+                                            initialDate = toDate,
+                                            onDateSelected = {
+                                                toDate = it
+                                                loadTransactions(viewModel, fromDate, toDate, isIncome, context)
+                                            },
+                                            minDate = fromDate.toEpochDay() * 24 * 60 * 60 * 1000,
+                                            context = context
+                                        )
+                                    }
+                                )
+                            },
                             downDivider = true,
-                            onClick = {  },
-                            backgroundColor = MaterialTheme.colorScheme.secondary,
-                            verticalPadding = 16.0
+                            onClick = { },
+                            backgroundColor = MaterialTheme.colorScheme.surface,
+                            verticalPadding = 4.0
                         )
                     }
 
@@ -160,8 +196,8 @@ fun AnalyticsScreen(
                             },
                             downDivider = true,
                             onClick = {},
-                            backgroundColor = MaterialTheme.colorScheme.secondary,
-                            verticalPadding = TODO(),
+                            backgroundColor = MaterialTheme.colorScheme.surface,
+                            verticalPadding = 16.0,
                         )
                     }
                     //todo канвас
@@ -257,4 +293,27 @@ private fun loadTransactions(
     val fromStr = fromDate.format(formatter)
     val toStr = toDate.format(formatter)
     viewModel.loadTransactions(fromStr, toStr, isIncome, context)
+}
+
+@Composable
+fun GreenChip(
+    text: String,
+    onClick: () -> Unit
+) {
+    AssistChip(
+        onClick = { onClick() },
+        label = {
+            Text(
+                text = text,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }, shape = RoundedCornerShape(50),
+        colors = AssistChipDefaults.assistChipColors(
+            containerColor = Green,
+            labelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        ),
+        border = null
+    )
 }

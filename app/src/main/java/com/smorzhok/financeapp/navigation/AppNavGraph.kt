@@ -18,7 +18,8 @@ fun AppNavGraph(
     categoryScreenContent: @Composable () -> Unit,
     settingsScreenContent: @Composable () -> Unit,
     historyScreenContent: @Composable (Boolean) -> Unit,
-    addTransactionContent: @Composable (Int?) -> Unit
+    addTransactionContent: @Composable (Int?) -> Unit,
+    analyticsScreenContent: @Composable (Boolean) -> Unit
 ) {
 
     NavHost(
@@ -61,6 +62,15 @@ fun AppNavGraph(
         ) { backStackEntry ->
             val transactionId = backStackEntry.arguments?.getInt("transactionId")?.takeIf { it != -1 }
             addTransactionContent(transactionId)
+        }
+        composable(
+            route = "${Screen.Analytics.route}?isIncome={isIncome}",
+            arguments = listOf(
+                navArgument("isIncome") { type = NavType.BoolType }
+            )
+        ) { backStackEntry ->
+            val isIncome = backStackEntry.arguments?.getBoolean("isIncome") ?: false
+            analyticsScreenContent(isIncome)
         }
     }
 }

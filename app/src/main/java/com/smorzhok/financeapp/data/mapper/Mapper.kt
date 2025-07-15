@@ -21,7 +21,7 @@ fun TransactionDto.toDomain(): Transaction = Transaction(
     isIncome = category.isIncome,
     amount = this@toDomain.amount.toDoubleOrNull() ?: 0.0,
     time = transactionDate,
-    comment = comment
+    comment = if (comment == "") null else comment
 )
 
 fun Transaction.toTransactionRequest(): TransactionRequest = TransactionRequest(

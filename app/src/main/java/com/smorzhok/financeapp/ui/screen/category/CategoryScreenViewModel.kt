@@ -1,6 +1,7 @@
 package com.smorzhok.financeapp.ui.screen.category
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.smorzhok.financeapp.domain.model.Category
@@ -38,6 +39,7 @@ ViewModel() {
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     fun updateSearchQuery(query: String) {
+        Log.d("TAG", query)
         _searchQuery.value = query
     }
 
