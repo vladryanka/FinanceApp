@@ -4,8 +4,9 @@ import android.content.Context
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.smorzhok.financeapp.domain.model.Transaction
+import com.smorzhok.financeapp.domain.model.AnalyticsCategory
 import com.smorzhok.financeapp.domain.usecase.account.GetAccountUseCase
+import com.smorzhok.financeapp.domain.usecase.category.GetCategoriesUseCase
 import com.smorzhok.financeapp.domain.usecase.transaction.GetTransactionsUseCase
 import com.smorzhok.financeapp.ui.commonitems.UiState
 import com.smorzhok.financeapp.ui.commonitems.isNetworkAvailable
@@ -15,49 +16,70 @@ import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
+import kotlin.math.round
 
 class AnalyticsScreenViewModel @Inject constructor(
     private val getAccountUseCase: GetAccountUseCase,
     private val getTransactionsUseCase: GetTransactionsUseCase,
+    private val getCategoriesUseCase: GetCategoriesUseCase
     ) : ViewModel() {
 
-    private val _transactionList = MutableStateFlow<UiState<List<Transaction>>>(UiState.Loading)
-    val transactionList: StateFlow<UiState<List<Transaction>>> get() = _transactionList
+    private val _analyticsCategory = MutableStateFlow<UiState<List<AnalyticsCategory>>>(UiState.Loading)
+    val analyticsCategory: StateFlow<UiState<List<AnalyticsCategory>>> get() = _analyticsCategory
+
     val currency = mutableStateOf("")
 
-    fun loadTransactions(from: String, to: String, isIncome: Boolean, context: Context) {
+    fun loadCategories(from: String, to: String, isIncome: Boolean, context: Context) {
         viewModelScope.launch {
-            _transactionList.value = UiState.Loading
+            _analyticsCategory.value = UiState.Loading
+
             if (!isNetworkAvailable(context)) {
-                _transactionList.value = UiState.Error("no_internet")
+                _analyticsCategory.value = UiState.Error("no_internet")
                 return@launch
             }
+
             try {
                 val accounts = getAccountUseCase()
                 if (accounts.isEmpty()) {
-                    _transactionList.value = UiState.Error("no_accounts")
+                    _analyticsCategory.value = UiState.Error("no_accounts")
                     return@launch
                 }
 
-                val id = accounts.first().id
-
-                val transactions = getTransactionsUseCase(id, from, to)
-                val transactionsFiltered = transactions
+                val accountId = accounts.first().id
+                val transactions = getTransactionsUseCase(accountId, from, to)
                     .filter { it.isIncome == isIncome }
                     .sortedBy { it.time }
+
                 currency.value = transactions.firstOrNull()?.currency ?: "RUB"
 
-                _transactionList.value = UiState.Success(transactionsFiltered)
+                val categories = getCategoriesUseCase()
+
+                val totalSum = transactions.sumOf { it.amount }
+
+                val grouped = transactions.groupBy { it.categoryId }
+
+                val spendings = grouped.mapNotNull { (categoryId, txList) ->
+                    val category = categories.find { it.id == categoryId } ?: return@mapNotNull null
+                    val sum = txList.sumOf { it.amount }
+                    val percent = if (totalSum != 0.0) round(sum / totalSum * 100).toInt() else 0
+
+                    AnalyticsCategory(
+                        categoryName = category.textLeading,
+                        categoryIcon = category.iconLeading,
+                        totalAmount = sum,
+                        percent = percent
+                    )
+                }.sortedByDescending { it.totalAmount }
+
+                _analyticsCategory.value = UiState.Success(spendings)
+
             } catch (e: IOException) {
                 e.printStackTrace()
-                _transactionList.value = UiState.Error(e.message)
+                _analyticsCategory.value = UiState.Error(e.message)
             } catch (e: HttpException) {
                 e.printStackTrace()
-                if (e.code() == 401) {
-                    _transactionList.value = UiState.Error("Не авторизован")
-                } else {
-                    _transactionList.value = UiState.Error(e.message ?: "server_error")
-                }
+                val message = if (e.code() == 401) "Не авторизован" else e.message ?: "server_error"
+                _analyticsCategory.value = UiState.Error(message)
             }
         }
     }

@@ -158,7 +158,7 @@ fun MainScreen(viewModelFactory: ViewModelProvider.Factory) {
                     NavigationBarItem(
                         selected = selected,
                         onClick = {
-                            navState.navigateTo(item.screen.route)
+                            navState.navigateToRoot(item.screen.route)
                         },
                         icon = {
                             Icon(
@@ -233,10 +233,7 @@ fun MainScreen(viewModelFactory: ViewModelProvider.Factory) {
                 AnalyticsScreen(
                     viewModelFactory = viewModelFactory,
                     paddingValues = paddingValue,
-                    isIncome = isIncome,
-                    onItemClicked = {
-
-                    }
+                    isIncome = isIncome
                 )
             }
         )

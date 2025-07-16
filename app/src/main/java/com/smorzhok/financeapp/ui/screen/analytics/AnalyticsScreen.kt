@@ -5,7 +5,6 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,7 +17,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,7 +28,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -42,7 +39,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.smorzhok.financeapp.R
 import com.smorzhok.financeapp.ui.commonitems.UiState
 import com.smorzhok.financeapp.ui.commonitems.showDatePicker
-import com.smorzhok.financeapp.ui.formatter.formatBackendTime
 import com.smorzhok.financeapp.ui.formatter.formatLocalDateToMonthYear
 import com.smorzhok.financeapp.ui.formatter.formatPrice
 import com.smorzhok.financeapp.ui.screen.commonComposable.ErrorWithRetry
@@ -56,19 +52,18 @@ import java.time.format.DateTimeFormatter
 fun AnalyticsScreen(
     viewModelFactory: ViewModelProvider.Factory,
     paddingValues: PaddingValues,
-    isIncome: Boolean,
-    onItemClicked: (Int) -> Unit
+    isIncome: Boolean
 ) {
     val viewModel: AnalyticsScreenViewModel = viewModel(factory = viewModelFactory)
 
-    val transactionsState by viewModel.transactionList.collectAsStateWithLifecycle()
+    val categoriesState by viewModel.analyticsCategory.collectAsStateWithLifecycle()
 
     var fromDate by remember { mutableStateOf(LocalDate.now().withDayOfMonth(1)) }
     var toDate by remember { mutableStateOf(LocalDate.now()) }
 
     val context = LocalContext.current
-    LaunchedEffect(Unit) {
-        loadTransactions(viewModel, fromDate, toDate, isIncome, context)
+    LaunchedEffect(fromDate, toDate, isIncome) {
+        loadCategories(viewModel, fromDate, toDate, isIncome, context)
     }
 
     Box(
@@ -81,7 +76,7 @@ fun AnalyticsScreen(
             return@Box
         }
 
-        when (val state = transactionsState) {
+        when (val state = categoriesState) {
             is UiState.Loading -> {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             }
@@ -93,7 +88,7 @@ fun AnalyticsScreen(
                     ErrorWithRetry(
                         message = state.message,
                         onRetryClick = {
-                            loadTransactions(viewModel, fromDate, toDate, isIncome, context)
+                            loadCategories(viewModel, fromDate, toDate, isIncome, context)
                         },
                         modifier = Modifier.align(Alignment.Center)
                     )
@@ -101,10 +96,9 @@ fun AnalyticsScreen(
             }
 
             is UiState.Success -> {
-                val transactionsList = state.data
-                val totalSum = transactionsList.sumOf { it.amount }
-                val currency = if (transactionsList.isEmpty()) viewModel.currency.value else
-                    transactionsList.get(0).currency
+                val categoryList = state.data
+                val totalSum = categoryList.sumOf { it.totalAmount }
+                val currency = viewModel.currency.value
                 val totalSumFormatted = formatPrice(totalSum, currency)
 
                 LazyColumn(
@@ -132,7 +126,6 @@ fun AnalyticsScreen(
                                             initialDate = fromDate,
                                             onDateSelected = {
                                                 fromDate = it
-                                                loadTransactions(viewModel, fromDate, toDate, isIncome, context)
                                             },
                                             context = context
                                         )
@@ -163,7 +156,6 @@ fun AnalyticsScreen(
                                             initialDate = toDate,
                                             onDateSelected = {
                                                 toDate = it
-                                                loadTransactions(viewModel, fromDate, toDate, isIncome, context)
                                             },
                                             minDate = fromDate.toEpochDay() * 24 * 60 * 60 * 1000,
                                             context = context
@@ -200,79 +192,65 @@ fun AnalyticsScreen(
                             verticalPadding = 16.0,
                         )
                     }
-                    //todo канвас
-
-                    itemsIndexed(transactionsList) { index, item ->
-                        ListItem(
-                            leadingContent = {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Box(
-                                        modifier = Modifier
-                                            .size(24.dp)
-                                            .background(
-                                                color = MaterialTheme.colorScheme.secondary,
-                                                shape = CircleShape
-                                            ),
-                                        contentAlignment = Alignment.Center
+                    if (categoryList.isEmpty()) {
+                        item {
+                            Text(
+                                stringResource(R.string.no_data_for_period),
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                modifier = Modifier
+                                    .padding(16.dp)
+                                    .fillMaxSize()
+                            )
+                        }
+                    } else {
+                        itemsIndexed(categoryList) { index, item ->
+                            ListItem(
+                                leadingContent = {
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically
                                     ) {
-                                        Text(
-                                            text = item.categoryEmoji,
-                                            color = MaterialTheme.colorScheme.onSurface,
-                                            fontSize = 10.sp
-                                        )
-                                    }
-
-                                    Column(
-                                        modifier = Modifier
-                                            .padding(start = 16.dp)
-                                            .align(Alignment.CenterVertically),
-                                    ) {
+                                        Box(
+                                            modifier = Modifier
+                                                .size(24.dp)
+                                                .background(
+                                                    color = MaterialTheme.colorScheme.secondary,
+                                                    shape = CircleShape
+                                                ),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            Text(
+                                                text = item.categoryIcon,
+                                                color = MaterialTheme.colorScheme.onSurface,
+                                                fontSize = 10.sp
+                                            )
+                                        }
                                         Text(
                                             text = item.categoryName,
                                             style = MaterialTheme.typography.bodyLarge,
-                                        )
-                                        item.comment?.let {
-                                            Text(
-                                                text = it,
-                                                style = MaterialTheme.typography.labelMedium,
-                                                maxLines = 1,
-                                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                                            )
-                                        }
-                                    }
-                                }
-                            },
-                            trailingContent = {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Column(
-                                        modifier = Modifier.align(Alignment.CenterVertically),
-                                    ) {
-                                        Text(
-                                            text = formatPrice(item.amount, item.currency) +
-                                                    "\n" + formatBackendTime(item.time),
-                                            style = MaterialTheme.typography.bodyLarge,
-                                            textAlign = TextAlign.End,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                            modifier = Modifier
+                                                .padding(start = 16.dp)
+                                                .align(Alignment.CenterVertically)
                                         )
                                     }
-                                    Icon(
-                                        painterResource(R.drawable.more_vert_icon),
-                                        contentDescription = null,
-                                        modifier = Modifier.padding(start = 16.dp)
+                                },
+                                trailingContent = {
+
+                                    Text(
+                                        text = item.percent.toString() +
+                                                "%\n" + formatPrice(item.totalAmount, currency),
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        textAlign = TextAlign.End,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
-                                }
-                            },
-                            downDivider = true,
-                            onClick = {
-                                onItemClicked(item.id)
-                            },
-                            backgroundColor = MaterialTheme.colorScheme.surface,
-                            verticalPadding = 10.5
-                        )
+
+                                },
+                                downDivider = true,
+                                onClick = {},
+                                backgroundColor = MaterialTheme.colorScheme.surface,
+                                verticalPadding = 10.5
+                            )
+                        }
                     }
                 }
             }
@@ -282,7 +260,7 @@ fun AnalyticsScreen(
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-private fun loadTransactions(
+private fun loadCategories(
     viewModel: AnalyticsScreenViewModel,
     fromDate: LocalDate,
     toDate: LocalDate,
@@ -292,7 +270,7 @@ private fun loadTransactions(
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
     val fromStr = fromDate.format(formatter)
     val toStr = toDate.format(formatter)
-    viewModel.loadTransactions(fromStr, toStr, isIncome, context)
+    viewModel.loadCategories(fromStr, toStr, isIncome, context)
 }
 
 @Composable

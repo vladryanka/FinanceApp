@@ -62,7 +62,8 @@ import java.time.format.DateTimeFormatter
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun AddTransactionScreen(viewModelFactory: ViewModelProvider.Factory,
+fun AddTransactionScreen(
+    viewModelFactory: ViewModelProvider.Factory,
     navState: NavigationState,
     transactionId: Int? = null
 ) {
