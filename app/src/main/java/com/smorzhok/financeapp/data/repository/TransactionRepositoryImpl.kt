@@ -1,57 +1,37 @@
 package com.smorzhok.financeapp.data.repository
 
-import com.smorzhok.financeapp.data.mapper.toDomain
-import com.smorzhok.financeapp.data.mapper.toTransactionEdit
-import com.smorzhok.financeapp.data.mapper.toTransactionRequest
-import com.smorzhok.financeapp.data.remote.FinanceApiService
-import com.smorzhok.financeapp.data.retryWithBackoff
 import com.smorzhok.financeapp.domain.model.Transaction
 import com.smorzhok.financeapp.domain.model.TransactionEdit
 import com.smorzhok.financeapp.domain.repository.TransactionRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import com.smorzhok.financeapp.domain.repository.local.TransactionLocalRepository
+import com.smorzhok.financeapp.domain.repository.remote.TransactionRemoteRepository
 import javax.inject.Inject
 
 /*Имплементация репозитория для данных о транзакциях*/
 class TransactionRepositoryImpl @Inject constructor(
-    private val api: FinanceApiService
+    private val remote: TransactionRemoteRepository,
+    private val local: TransactionLocalRepository
 ) : TransactionRepository {
 
-    override suspend fun getTransactions(
-        accountId: Int,
-        from: String,
-        to: String
-    ): List<Transaction> = withContext(Dispatchers.IO) {
-        retryWithBackoff {
-            api.getTransactionsByAccountAndPeriod(accountId, from, to)
-                .map { it.toDomain() }
-                .ifEmpty { emptyList() }
-        }
+    override suspend fun getTransactions(accountId: Int, from: String, to: String): List<Transaction> {
+        val transactions = remote.getTransactions(accountId, from, to)
+        local.saveTransactions(transactions)
+        return transactions
     }
 
     override suspend fun createTransaction(transaction: Transaction) {
-        withContext(Dispatchers.IO) {
-            val req = transaction.toTransactionRequest()
-            api.createTransaction(req)
-        }
+        remote.createTransaction(transaction)
     }
 
-    override suspend fun getTransactionById(id: Int): TransactionEdit =
-        withContext(Dispatchers.IO) {
-            api.getTransactionsById(id).toTransactionEdit()
-        }
+    override suspend fun getTransactionById(id: Int): TransactionEdit {
+        return remote.getTransactionById(id)
+    }
 
     override suspend fun updateTransaction(transaction: Transaction) {
-        withContext(Dispatchers.IO) {
-            val request = transaction.toTransactionRequest()
-            api.updateTransaction(transaction.id, request)
-        }
+        remote.updateTransaction(transaction)
     }
 
     override suspend fun deleteTransaction(id: Int) {
-        withContext(Dispatchers.IO) {
-            api.deleteTransaction(id)
-        }
+        remote.deleteTransaction(id)
     }
-
 }

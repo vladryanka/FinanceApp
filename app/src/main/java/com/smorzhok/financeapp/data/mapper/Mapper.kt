@@ -1,11 +1,14 @@
 package com.smorzhok.financeapp.data.mapper
 
 import com.smorzhok.financeapp.R
-import com.smorzhok.financeapp.data.model.account.AccountDto
-import com.smorzhok.financeapp.data.model.account.AccountUpdateRequest
-import com.smorzhok.financeapp.data.model.category.CategoryDto
-import com.smorzhok.financeapp.data.model.transaction.TransactionDto
-import com.smorzhok.financeapp.data.model.transaction.TransactionRequest
+import com.smorzhok.financeapp.data.model.dto.account.AccountDto
+import com.smorzhok.financeapp.data.model.dto.account.AccountUpdateRequest
+import com.smorzhok.financeapp.data.model.dto.category.CategoryDto
+import com.smorzhok.financeapp.data.model.dto.transaction.TransactionDto
+import com.smorzhok.financeapp.data.model.dto.transaction.TransactionRequest
+import com.smorzhok.financeapp.data.model.entity.AccountEntity
+import com.smorzhok.financeapp.data.model.entity.CategoryEntity
+import com.smorzhok.financeapp.data.model.entity.TransactionEntity
 import com.smorzhok.financeapp.domain.model.Account
 import com.smorzhok.financeapp.domain.model.Category
 import com.smorzhok.financeapp.domain.model.Transaction
@@ -63,3 +66,59 @@ fun CategoryDto.mapToCategory(): Category {
         isIncome = this.isIncome
     )
 }
+
+fun CategoryEntity.toDomain() = Category(
+    id = this.id,
+    iconLeading = this.iconLeading,
+    textLeading = this.textLeading,
+    isIncome = this.isIncome
+)
+
+fun Category.toEntity() = CategoryEntity(
+    id = this.id,
+    iconLeading = this.iconLeading,
+    textLeading = this.textLeading,
+    isIncome = this.isIncome
+)
+
+fun TransactionEntity.toDomain() = Transaction(
+    id = id,
+    accountId = this.accountId,
+    categoryId = categoryId,
+    categoryEmoji = this.categoryEmoji,
+    currency = this.currency,
+    categoryName = this.categoryName,
+    isIncome = this.isIncome,
+    amount = this.amount,
+    time = this.time,
+    comment = if (comment == "") null else comment
+)
+fun Transaction.toEntity() = TransactionEntity(
+    id = id,
+    accountId = this.accountId,
+    categoryId = categoryId,
+    categoryEmoji = this.categoryEmoji,
+    currency = this.currency,
+    categoryName = this.categoryName,
+    isIncome = this.isIncome,
+    amount = this.amount,
+    time = this.time,
+    comment = if (comment == "") null else comment
+)
+
+fun AccountEntity.toDomain() = Account(
+    id = this.id,
+    name = this.name,
+    balance = this.balance,
+    currency = this.currency
+)
+
+fun Account.toEntity() = AccountEntity(
+    id = this.id,
+    name = this.name,
+    balance = this.balance,
+    currency = this.currency
+)
+
+
+

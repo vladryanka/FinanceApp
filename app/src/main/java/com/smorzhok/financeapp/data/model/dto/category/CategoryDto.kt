@@ -1,4 +1,4 @@
-package com.smorzhok.financeapp.data.model.category
+package com.smorzhok.financeapp.data.model.dto.category
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
