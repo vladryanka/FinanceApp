@@ -15,5 +15,6 @@ data class TransactionEntity(
     val isIncome: Boolean,
     val amount: Double,
     val time: String,
+    val date: String,
     val comment: String?
 )

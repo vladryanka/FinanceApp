@@ -315,12 +315,12 @@ fun AddTransactionScreen(
             } else if (categoryListState is UiState.Loading || accountState is UiState.Loading) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             } else {
-                val error = (categoryListState as? UiState.Error)?.message
-                    ?: (accountState as? UiState.Error)?.message
+                val error = (categoryListState as? UiState.Error)?.error
+                    ?: (accountState as? UiState.Error)?.error
                     ?: stringResource(R.string.unknown_error)
 
                 ErrorWithRetry(
-                    message = error,
+                    message = error.toString(),
                     onRetryClick = { viewModel.loadAccount(context) },
                     modifier = Modifier.align(Alignment.Center)
                 )

@@ -10,14 +10,20 @@ import com.smorzhok.financeapp.data.model.entity.TransactionEntity
 
 @Dao
 interface TransactionDao {
-    @Query("SELECT * FROM transactions WHERE accountId = :accountId AND time BETWEEN :from AND :to")
+    @Query("SELECT * FROM transactions WHERE accountId = :accountId AND date BETWEEN :from AND :to")
     suspend fun getTransactionsForPeriod(accountId: Int, from: String, to: String): List<TransactionEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertTransactions(transactions: List<TransactionEntity>)
+    suspend fun insertTransactionList(transactions: List<TransactionEntity>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertTransaction(transaction: TransactionEntity)
 
     @Query("SELECT * FROM transactions")
     suspend fun getAllTransactions(): List<TransactionEntity>
+
+    @Query("SELECT * FROM transactions WHERE id = :id")
+    suspend fun getTransactionById(id:Int): TransactionEntity
 
     @Update
     suspend fun updateTransaction(transaction: TransactionEntity)

@@ -26,7 +26,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -56,13 +55,11 @@ fun IncomeScreen(
 
     val incomeState by viewModel.incomeList.collectAsStateWithLifecycle()
 
-    val context = LocalContext.current
-
     LaunchedEffect(Unit) {
         val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         val today = LocalDate.now()
         val to = today.format(dateFormatter)
-        viewModel.loadIncomes(to, to, context)
+        viewModel.loadIncomes(to, to)
     }
 
     Box(
@@ -80,12 +77,12 @@ fun IncomeScreen(
                     modifier = Modifier.fillMaxSize()
                 ) {
                     ErrorWithRetry(
-                        message = state.message,
+                        message = state.error.toString(),
                         onRetryClick = {
                             val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
                             val today = LocalDate.now()
                             val to = today.format(dateFormatter)
-                            viewModel.loadIncomes(to, to, context)
+                            viewModel.loadIncomes(to, to)
                         },
                         modifier = Modifier.align(Alignment.Center)
                     )

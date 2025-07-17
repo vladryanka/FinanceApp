@@ -1,6 +1,5 @@
 package com.smorzhok.financeapp.ui.screen.analytics
 
-import android.content.Context
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,8 +7,8 @@ import com.smorzhok.financeapp.domain.model.AnalyticsCategory
 import com.smorzhok.financeapp.domain.usecase.account.GetAccountUseCase
 import com.smorzhok.financeapp.domain.usecase.category.GetCategoriesUseCase
 import com.smorzhok.financeapp.domain.usecase.transaction.GetTransactionsUseCase
+import com.smorzhok.financeapp.ui.commonitems.ErrorList
 import com.smorzhok.financeapp.ui.commonitems.UiState
-import com.smorzhok.financeapp.ui.commonitems.isNetworkAvailable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -22,26 +21,22 @@ class AnalyticsScreenViewModel @Inject constructor(
     private val getAccountUseCase: GetAccountUseCase,
     private val getTransactionsUseCase: GetTransactionsUseCase,
     private val getCategoriesUseCase: GetCategoriesUseCase
-    ) : ViewModel() {
+) : ViewModel() {
 
-    private val _analyticsCategory = MutableStateFlow<UiState<List<AnalyticsCategory>>>(UiState.Loading)
+    private val _analyticsCategory =
+        MutableStateFlow<UiState<List<AnalyticsCategory>>>(UiState.Loading)
     val analyticsCategory: StateFlow<UiState<List<AnalyticsCategory>>> get() = _analyticsCategory
 
     val currency = mutableStateOf("")
 
-    fun loadCategories(from: String, to: String, isIncome: Boolean, context: Context) {
+    fun loadCategories(from: String, to: String, isIncome: Boolean) {
         viewModelScope.launch {
             _analyticsCategory.value = UiState.Loading
-
-            if (!isNetworkAvailable(context)) {
-                _analyticsCategory.value = UiState.Error("no_internet")
-                return@launch
-            }
 
             try {
                 val accounts = getAccountUseCase()
                 if (accounts.isEmpty()) {
-                    _analyticsCategory.value = UiState.Error("no_accounts")
+                    _analyticsCategory.value = UiState.Error(ErrorList.NoAccount)
                     return@launch
                 }
 
@@ -53,7 +48,6 @@ class AnalyticsScreenViewModel @Inject constructor(
                 currency.value = transactions.firstOrNull()?.currency ?: "RUB"
 
                 val categories = getCategoriesUseCase()
-
                 val totalSum = transactions.sumOf { it.amount }
 
                 val grouped = transactions.groupBy { it.categoryId }
@@ -73,14 +67,20 @@ class AnalyticsScreenViewModel @Inject constructor(
 
                 _analyticsCategory.value = UiState.Success(spendings)
 
-            } catch (e: IOException) {
-                e.printStackTrace()
-                _analyticsCategory.value = UiState.Error(e.message)
             } catch (e: HttpException) {
                 e.printStackTrace()
-                val message = if (e.code() == 401) "Не авторизован" else e.message ?: "server_error"
-                _analyticsCategory.value = UiState.Error(message)
+                _analyticsCategory.value = when (e.code()) {
+                    401 -> UiState.Error(ErrorList.NotAuthorized)
+                    else -> UiState.Error(ErrorList.ServerError)
+                }
+            } catch (e: IOException) {
+                e.printStackTrace()
+                _analyticsCategory.value = UiState.Error(ErrorList.NoInternet)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                _analyticsCategory.value = UiState.Error(ErrorList.ServerError)
             }
         }
     }
+
 }

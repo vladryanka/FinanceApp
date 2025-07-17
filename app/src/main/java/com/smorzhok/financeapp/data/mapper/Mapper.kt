@@ -1,5 +1,7 @@
 package com.smorzhok.financeapp.data.mapper
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.smorzhok.financeapp.R
 import com.smorzhok.financeapp.data.model.dto.account.AccountDto
 import com.smorzhok.financeapp.data.model.dto.account.AccountUpdateRequest
@@ -13,6 +15,7 @@ import com.smorzhok.financeapp.domain.model.Account
 import com.smorzhok.financeapp.domain.model.Category
 import com.smorzhok.financeapp.domain.model.Transaction
 import com.smorzhok.financeapp.domain.model.TransactionEdit
+import java.time.OffsetDateTime
 
 fun TransactionDto.toDomain(): Transaction = Transaction(
     id = id,
@@ -35,13 +38,18 @@ fun Transaction.toTransactionRequest(): TransactionRequest = TransactionRequest(
     comment = this.comment
 )
 
-fun TransactionDto.toTransactionEdit() = TransactionEdit(
-    accountId = this.account.id,
-    currency = this.account.currency,
-    name = this.account.name.toString(),
+fun Transaction.toTransactionEdit() = TransactionEdit(
+    accountId = this.accountId.toInt(),
+    currency = this.currency,
+    name = this.categoryName,
     amount = this.amount.toString(),
-    category = this.category.mapToCategory(),
-    dateTime = this.transactionDate,
+    category = Category(
+        id = categoryId,
+        iconLeading = categoryEmoji,
+        textLeading = categoryName,
+        isIncome = isIncome
+    ),
+    dateTime = this.time,
     comment = this.comment
 )
 
@@ -90,21 +98,30 @@ fun TransactionEntity.toDomain() = Transaction(
     categoryName = this.categoryName,
     isIncome = this.isIncome,
     amount = this.amount,
-    time = this.time,
+    time = "${date}T${time}:00.000Z",
     comment = if (comment == "") null else comment
 )
-fun Transaction.toEntity() = TransactionEntity(
-    id = id,
-    accountId = this.accountId,
-    categoryId = categoryId,
-    categoryEmoji = this.categoryEmoji,
-    currency = this.currency,
-    categoryName = this.categoryName,
-    isIncome = this.isIncome,
-    amount = this.amount,
-    time = this.time,
-    comment = if (comment == "") null else comment
-)
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun Transaction.toEntity(): TransactionEntity {
+    val parsedDateTime = OffsetDateTime.parse(this.time)
+    val date = parsedDateTime.toLocalDate().toString()
+    val time = parsedDateTime.toLocalTime().withSecond(0).withNano(0).toString()
+
+    return TransactionEntity(
+        id = id,
+        accountId = this.accountId,
+        categoryId = categoryId,
+        categoryEmoji = this.categoryEmoji,
+        currency = this.currency,
+        categoryName = this.categoryName,
+        isIncome = this.isIncome,
+        amount = this.amount,
+        time = time,
+        date = date,
+        comment = if (comment == "") null else comment
+    )
+}
 
 fun AccountEntity.toDomain() = Account(
     id = this.id,

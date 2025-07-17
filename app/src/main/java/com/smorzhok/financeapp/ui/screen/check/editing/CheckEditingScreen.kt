@@ -68,7 +68,7 @@ fun CheckEditingScreen(
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     LaunchedEffect(Unit) {
-        viewModel.loadAccount(context)
+        viewModel.loadAccount()
     }
 
     CheckScreenAlertDialog(dialogueMessage, checkState, viewModel)
@@ -111,7 +111,7 @@ fun CheckEditingScreen(
         }
     ) { paddingValues ->
         CheckScreenContent(paddingValues, checkState, viewModel, onRetry = {
-            viewModel.loadAccount(context)
+            viewModel.loadAccount()
         }, onCurrencyClick = { showBottomSheet = true })
     }
 }
@@ -178,7 +178,7 @@ private fun CheckScreenContent(
                 is UiState.Loading -> CheckScreenLoading()
                 is UiState.Success -> CheckScreenForm(viewModel, onCurrencyClick)
                 is UiState.Error -> CheckScreenError(
-                    checkState.message.toString(),
+                    checkState.error.toString(),
                     onRetry
                 )
             }

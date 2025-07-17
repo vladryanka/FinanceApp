@@ -23,7 +23,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
@@ -51,9 +50,8 @@ fun CheckScreen(
 
     val checkState by viewModel.checkState.collectAsStateWithLifecycle()
 
-    val context = LocalContext.current
     LaunchedEffect(Unit) {
-        viewModel.loadAccount(context)
+        viewModel.loadAccount()
     }
 
     Box(
@@ -154,8 +152,8 @@ fun CheckScreen(
                         modifier = Modifier.fillMaxSize()
                     ) {
                         ErrorWithRetry(
-                            message = state.message,
-                            onRetryClick = { viewModel.loadAccount(context) },
+                            message = state.error.toString(),
+                            onRetryClick = { viewModel.loadAccount() },
                             modifier = Modifier.align(Alignment.Center)
                         )
                     }

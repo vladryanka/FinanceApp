@@ -1,6 +1,5 @@
 package com.smorzhok.financeapp.ui.screen.history
 
-import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
@@ -64,7 +63,7 @@ fun HistoryScreen(
     val context = LocalContext.current
 
     LaunchedEffect(fromDate, toDate, isIncome) {
-        loadHistory(viewModel, fromDate, toDate, isIncome, context)
+        loadHistory(viewModel, fromDate, toDate, isIncome)
     }
 
     val historyListState by viewModel.historyList.collectAsStateWithLifecycle()
@@ -89,9 +88,9 @@ fun HistoryScreen(
                     modifier = Modifier.fillMaxSize()
                 ) {
                     ErrorWithRetry(
-                        message = state.message,
+                        message = state.error.toString(),
                         onRetryClick = {
-                            loadHistory(viewModel, fromDate, toDate, isIncome, context)
+                            loadHistory(viewModel, fromDate, toDate, isIncome)
                         },
                         modifier = Modifier.align(Alignment.Center)
                     )
@@ -102,7 +101,7 @@ fun HistoryScreen(
                 val historyList = state.data
                 val totalSum = historyList.sumOf { it.amount }
                 val currency = if (historyList.isEmpty()) viewModel.currency.value else
-                    historyList.get(0).currency
+                    historyList[0].currency
                 val totalSumFormatted = formatPrice(totalSum, currency)
 
                 LazyColumn(
@@ -283,11 +282,10 @@ private fun loadHistory(
     viewModel: HistoryScreenViewModel,
     fromDate: LocalDate,
     toDate: LocalDate,
-    isIncome: Boolean,
-    context: Context
+    isIncome: Boolean
 ) {
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
     val fromStr = fromDate.format(formatter)
     val toStr = toDate.format(formatter)
-    viewModel.loadHistory(fromStr, toStr, isIncome, context)
+    viewModel.loadHistory(fromStr, toStr, isIncome)
 }

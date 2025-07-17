@@ -1,5 +1,7 @@
 package com.smorzhok.financeapp.data.repository.local
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.smorzhok.financeapp.data.dao.TransactionDao
 import com.smorzhok.financeapp.data.mapper.toDomain
 import com.smorzhok.financeapp.data.mapper.toEntity
@@ -13,11 +15,30 @@ class TransactionLocalRepositoryImpl @Inject constructor(
     private val dao: TransactionDao
 ) : TransactionLocalRepository {
 
-    override suspend fun saveTransactions(transactions: List<Transaction>) = withContext(Dispatchers.IO) {
-        dao.insertTransactions(transactions.map { it.toEntity() })
+    @RequiresApi(Build.VERSION_CODES.O)
+    override suspend fun saveTransactions(transactions: List<Transaction>) =
+        withContext(Dispatchers.IO) {
+            dao.insertTransactionList(transactions.map { it.toEntity() })
+        }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override suspend fun addTransaction(transaction: Transaction) = withContext(Dispatchers.IO) {
+        dao.insertTransaction(transaction.toEntity())
     }
 
-    override suspend fun getCachedTransactions(): List<Transaction> = withContext(Dispatchers.IO) {
-        dao.getAllTransactions().map { it.toDomain() }
+    override suspend fun getTransactionById(id: Int): Transaction = withContext(Dispatchers.IO) {
+        dao.getTransactionById(id).toDomain()
     }
+
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override suspend fun getCachedTransactions(
+        accountId: Int,
+        from: String,
+        to: String
+    ): List<Transaction> =
+        withContext(Dispatchers.IO) {
+            dao.getTransactionsForPeriod(accountId, from, to).map { it.toDomain() }
+        }
+
 }

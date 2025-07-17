@@ -30,6 +30,7 @@
     <string name="add_expense">Добавить расход</string>
     <string name="my_history">Моя история</string>
     <string name="analytics">Анализ</string>
+    <string name="no_internet_showing_cached">Нет интернета. Отображаются сохранённые данные</string>
     <string name="start">Начало</string>
     <string name="period_start">Период: начало</string>
     <string name="no_data_for_period">Отсутствуют данные за этот период</string>
@@ -46,6 +47,7 @@
     <string name="no_internet_connection">Отсутствует подключение к интернету</string>
     <string name="network_error">network_error</string>
     <string name="not_authorized">Не авторизован</string>
+    <string name="no_account_found">Аккаунт не найден</string>
     <string name="server_error">server_error</string>
     <string name="human_icon">Иконка человека</string>
     <string name="russian_rub">Российский рубль</string>

@@ -1,6 +1,5 @@
 package com.smorzhok.financeapp.ui.screen.analytics
 
-import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
@@ -63,7 +62,7 @@ fun AnalyticsScreen(
 
     val context = LocalContext.current
     LaunchedEffect(fromDate, toDate, isIncome) {
-        loadCategories(viewModel, fromDate, toDate, isIncome, context)
+        loadCategories(viewModel, fromDate, toDate, isIncome)
     }
 
     Box(
@@ -86,9 +85,9 @@ fun AnalyticsScreen(
                     modifier = Modifier.fillMaxSize()
                 ) {
                     ErrorWithRetry(
-                        message = state.message,
+                        message = state.error.toString(),
                         onRetryClick = {
-                            loadCategories(viewModel, fromDate, toDate, isIncome, context)
+                            loadCategories(viewModel, fromDate, toDate, isIncome)
                         },
                         modifier = Modifier.align(Alignment.Center)
                     )
@@ -264,13 +263,12 @@ private fun loadCategories(
     viewModel: AnalyticsScreenViewModel,
     fromDate: LocalDate,
     toDate: LocalDate,
-    isIncome: Boolean,
-    context: Context
+    isIncome: Boolean
 ) {
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
     val fromStr = fromDate.format(formatter)
     val toStr = toDate.format(formatter)
-    viewModel.loadCategories(fromStr, toStr, isIncome, context)
+    viewModel.loadCategories(fromStr, toStr, isIncome)
 }
 
 @Composable

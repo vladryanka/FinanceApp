@@ -19,6 +19,7 @@ import com.smorzhok.financeapp.domain.usecase.transaction.CreateTransactionUseCa
 import com.smorzhok.financeapp.domain.usecase.transaction.DeleteTransactionUseCase
 import com.smorzhok.financeapp.domain.usecase.transaction.GetTransactionByIdUseCase
 import com.smorzhok.financeapp.domain.usecase.transaction.UpdateTransactionUseCase
+import com.smorzhok.financeapp.ui.commonitems.ErrorList
 import com.smorzhok.financeapp.ui.commonitems.UiState
 import com.smorzhok.financeapp.ui.commonitems.isNetworkAvailable
 import com.smorzhok.financeapp.ui.formatter.combineDateTimeToIsoUtc
@@ -92,14 +93,14 @@ class AddTransactionViewModel @Inject constructor(
             _account.value = UiState.Loading
             _categoryList.value = UiState.Loading
             if (!isNetworkAvailable(context)) {
-                _account.value = UiState.Error("no_internet")
+                _account.value = UiState.Error(ErrorList.NoInternet)
                 return@launch
             }
 
             try {
                 val accounts = getAccountUseCase()
                 if (accounts.isEmpty()) {
-                    _account.value = UiState.Error("no_account")
+                    _account.value = UiState.Error(ErrorList.NoAccount)
                     return@launch
                 }
                 val firstAccount = accounts.first()
@@ -111,13 +112,13 @@ class AddTransactionViewModel @Inject constructor(
 
             } catch (e: IOException) {
                 e.printStackTrace()
-                _account.value = UiState.Error(e.message)
+                _account.value = UiState.Error(ErrorList.NoInternet)
             } catch (e: HttpException) {
                 e.printStackTrace()
                 if (e.code() == 401) {
-                    _account.value = UiState.Error("Не авторизован")
+                    _account.value = UiState.Error(ErrorList.NotAuthorized)
                 } else {
-                    _account.value = UiState.Error(e.message ?: "server_error")
+                    _account.value = UiState.Error(ErrorList.ServerError)
                 }
             }
         }
@@ -163,40 +164,44 @@ class AddTransactionViewModel @Inject constructor(
     fun loadTransactionForEdit(transactionId: Int, context: Context) {
         viewModelScope.launch {
             if (!isNetworkAvailable(context)) {
-                _account.value = UiState.Error("no_internet")
+                _account.value = UiState.Error(ErrorList.NoInternet)
                 return@launch
             }
 
             try {
                 val transaction = getTransactionByIdUseCase(transactionId)
-                editableAccountName = transaction.name
-                editableAmount = transaction.amount.toString()
-                val cat = getCategoriesUseCase()
-                _categoryList.value = UiState.Success(cat)
-                selectedCategory = transaction.category
-                _account.value = UiState.Success(
-                    Account(
-                        id = transaction.accountId,
-                        name = transaction.name,
-                        balance = transaction.amount.toDouble(),
-                        currency = transaction.currency
+                if (transaction != null) {
+                    editableAccountName = transaction.name
+                    editableAmount = transaction.amount.toString()
+                    selectedCategory = transaction.category
+                    _account.value = UiState.Success(
+                        Account(
+                            id = transaction.accountId,
+                            name = transaction.name,
+                            balance = transaction.amount.toDouble(),
+                            currency = transaction.currency
+                        )
                     )
-                )
-                selectedDate = extractDateAndTime(transaction.dateTime).first
-                selectedTime = extractDateAndTime(transaction.dateTime).second
+                    val (date, time) = extractDateAndTime(transaction.dateTime)
+                    selectedDate = date
+                    selectedTime = time
+                }
+
+                val categories = getCategoriesUseCase()
+                _categoryList.value = UiState.Success(categories)
+
             } catch (e: IOException) {
                 e.printStackTrace()
-                _account.value = UiState.Error(e.message)
+                _account.value = UiState.Error(ErrorList.NoInternet)
             } catch (e: HttpException) {
                 e.printStackTrace()
-                if (e.code() == 401) {
-                    _account.value = UiState.Error("Не авторизован")
+                _account.value = if (e.code() == 401) {
+                    UiState.Error(ErrorList.NotAuthorized)
                 } else {
-                    _account.value = UiState.Error(e.message ?: "server_error")
+                    UiState.Error(ErrorList.ServerError)
                 }
             }
         }
-
     }
 
     fun onCommentChanged(value: String) {
