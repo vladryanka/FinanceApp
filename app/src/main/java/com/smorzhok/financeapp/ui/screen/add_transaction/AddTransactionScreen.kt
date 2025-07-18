@@ -87,9 +87,9 @@ fun AddTransactionScreen(
 
     LaunchedEffect(viewModel) {
         if (transactionId != null) {
-            viewModel.loadTransactionForEdit(transactionId, context)
+            viewModel.loadTransactionForEdit(transactionId)
         } else {
-            viewModel.loadAccount(context)
+            viewModel.loadAccount()
         }
     }
 
@@ -321,7 +321,7 @@ fun AddTransactionScreen(
 
                 ErrorWithRetry(
                     message = error.toString(),
-                    onRetryClick = { viewModel.loadAccount(context) },
+                    onRetryClick = { viewModel.loadAccount() },
                     modifier = Modifier.align(Alignment.Center)
                 )
             }

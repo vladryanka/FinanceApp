@@ -12,7 +12,8 @@ import dagger.Component
         ViewModelModule::class,
         DatabaseModule::class,
         RemoteDataModule::class,
-        LocalDataModule::class
+        LocalDataModule::class,
+        WorkerBindingModule:: class
     ]
 )
 interface ApplicationComponent {

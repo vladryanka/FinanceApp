@@ -9,7 +9,7 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModelProvider
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.WorkManager
-import com.smorzhok.financeapp.data.SyncWorker
+import com.smorzhok.financeapp.data.worker.SyncWorker
 import com.smorzhok.financeapp.di.FinanceApp
 import com.smorzhok.financeapp.ui.screen.FinanceRoot
 import com.smorzhok.financeapp.ui.theme.FinanceAppTheme

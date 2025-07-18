@@ -1,4 +1,4 @@
-package com.smorzhok.financeapp.data
+package com.smorzhok.financeapp.data.worker
 
 import android.content.Context
 import androidx.work.Constraints
@@ -18,11 +18,12 @@ import java.util.concurrent.TimeUnit
 
 class SyncWorker(
     context: Context,
-    workerParameters: WorkerParameters
+    workerParameters: WorkerParameters,
+    database: FinanceDatabase
 ) : CoroutineWorker(context, workerParameters) {
 
-    private val transactionDao = FinanceDatabase.getInstance(context).transactionDao()
-    private val accountDao = FinanceDatabase.getInstance(context).accountDao()
+    private val transactionDao = database.transactionDao()
+    private val accountDao = database.accountDao()
     private val api = FinanceApi.service
 
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
