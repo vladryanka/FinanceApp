@@ -68,7 +68,7 @@ fun CheckEditingScreen(
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     LaunchedEffect(Unit) {
-        viewModel.loadAccount(context)
+        viewModel.loadAccount()
     }
 
     CheckScreenAlertDialog(dialogueMessage, checkState, viewModel)
@@ -94,7 +94,8 @@ fun CheckEditingScreen(
     val topBarContent = ScaffoldItem(
         textResId = R.string.my_account,
         trailingImageResId = R.drawable.check_mark,
-        leadingImageResId = R.drawable.cross
+        leadingImageResId = R.drawable.cross,
+        backgroundColor = Green
     )
 
     Scaffold(
@@ -104,12 +105,13 @@ fun CheckEditingScreen(
                 trailingImageResId = topBarContent.trailingImageResId,
                 leadingImageResId = topBarContent.leadingImageResId,
                 onLeadingClicked = { navState.navHostController.popBackStack() },
-                onTrailingClicked = { viewModel.updateAccount(context) }
+                onTrailingClicked = { viewModel.updateAccount(context) },
+                backgroundColor = topBarContent.backgroundColor
             )
         }
     ) { paddingValues ->
         CheckScreenContent(paddingValues, checkState, viewModel, onRetry = {
-            viewModel.loadAccount(context)
+            viewModel.loadAccount()
         }, onCurrencyClick = { showBottomSheet = true })
     }
 }
@@ -176,7 +178,7 @@ private fun CheckScreenContent(
                 is UiState.Loading -> CheckScreenLoading()
                 is UiState.Success -> CheckScreenForm(viewModel, onCurrencyClick)
                 is UiState.Error -> CheckScreenError(
-                    checkState.message.toString(),
+                    checkState.error.toString(),
                     onRetry
                 )
             }

@@ -62,7 +62,8 @@ import java.time.format.DateTimeFormatter
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun AddTransactionScreen(viewModelFactory: ViewModelProvider.Factory,
+fun AddTransactionScreen(
+    viewModelFactory: ViewModelProvider.Factory,
     navState: NavigationState,
     transactionId: Int? = null
 ) {
@@ -80,14 +81,15 @@ fun AddTransactionScreen(viewModelFactory: ViewModelProvider.Factory,
     val topBarContent = ScaffoldItem(
         textResId = R.string.add_transaction,
         trailingImageResId = R.drawable.check_mark,
-        leadingImageResId = R.drawable.cross
+        leadingImageResId = R.drawable.cross,
+        backgroundColor = Green
     )
 
     LaunchedEffect(viewModel) {
         if (transactionId != null) {
-            viewModel.loadTransactionForEdit(transactionId, context)
+            viewModel.loadTransactionForEdit(transactionId)
         } else {
-            viewModel.loadAccount(context)
+            viewModel.loadAccount()
         }
     }
 
@@ -134,7 +136,8 @@ fun AddTransactionScreen(viewModelFactory: ViewModelProvider.Factory,
                     if (transactionId == null) {
                         viewModel.createTransaction(context)
                     } else viewModel.updateTransaction(transactionId, context)
-                }
+                },
+                backgroundColor = topBarContent.backgroundColor
             )
         }
     ) { paddingValues ->
@@ -312,13 +315,13 @@ fun AddTransactionScreen(viewModelFactory: ViewModelProvider.Factory,
             } else if (categoryListState is UiState.Loading || accountState is UiState.Loading) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             } else {
-                val error = (categoryListState as? UiState.Error)?.message
-                    ?: (accountState as? UiState.Error)?.message
+                val error = (categoryListState as? UiState.Error)?.error
+                    ?: (accountState as? UiState.Error)?.error
                     ?: stringResource(R.string.unknown_error)
 
                 ErrorWithRetry(
-                    message = error,
-                    onRetryClick = { viewModel.loadAccount(context) },
+                    message = error.toString(),
+                    onRetryClick = { viewModel.loadAccount() },
                     modifier = Modifier.align(Alignment.Center)
                 )
             }

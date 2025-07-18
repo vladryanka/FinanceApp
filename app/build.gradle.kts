@@ -5,7 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.jetbrains.kotlin.serialization)
-    kotlin("kapt")
+    id("kotlin-kapt")
 }
 
 val localProperties = Properties().apply {
@@ -75,7 +75,11 @@ dependencies {
     implementation(libs.lottie.compose)
 
     implementation(libs.dagger)
+    implementation(libs.androidx.work.runtime.ktx)
     kapt(libs.dagger.compiler)
+    kapt(libs.androidx.room.compiler)
+    implementation (libs.assisted.inject.annotations.dagger2)
+    kapt (libs.assisted.inject.processor.dagger2)
 
 
     implementation(libs.retrofit)
@@ -87,6 +91,9 @@ dependencies {
 
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.firebase.crashlytics.buildtools)
+
+    implementation (libs.androidx.room.runtime)
+    implementation (libs.room.ktx)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

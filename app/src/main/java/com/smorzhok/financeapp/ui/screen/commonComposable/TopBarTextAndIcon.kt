@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -25,7 +26,8 @@ fun TopBarTextAndIcon(
     leadingImageResId: Int?,
     trailingImageResId: Int?,
     onTrailingClicked: () -> Unit,
-    onLeadingClicked: () -> Unit
+    onLeadingClicked: () -> Unit,
+    backgroundColor: Color
 ) {
     CenterAlignedTopAppBar(
         title = {
@@ -60,7 +62,7 @@ fun TopBarTextAndIcon(
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Green
+            containerColor = backgroundColor
         )
     )
 }
@@ -71,6 +73,13 @@ private const val ALPHA = 0.8f
 @Composable
 fun TopBarTextAndIconPreview() {
     FinanceAppTheme {
-        TopBarTextAndIcon(R.string.expenses_today, R.drawable.refresh, R.drawable.refresh, {}, {})
+        TopBarTextAndIcon(
+            R.string.expenses_today,
+            R.drawable.refresh,
+            R.drawable.refresh,
+            {},
+            {},
+            Green
+        )
     }
 }

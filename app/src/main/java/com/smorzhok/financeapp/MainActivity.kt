@@ -7,6 +7,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModelProvider
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.WorkManager
+import com.smorzhok.financeapp.data.worker.SyncWorker
 import com.smorzhok.financeapp.di.FinanceApp
 import com.smorzhok.financeapp.ui.screen.FinanceRoot
 import com.smorzhok.financeapp.ui.theme.FinanceAppTheme
@@ -30,6 +33,12 @@ class MainActivity : ComponentActivity() {
                 FinanceRoot(viewModelFactory)
             }
         }
+
+        WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
+            SyncWorker.WORK_NAME,
+            ExistingPeriodicWorkPolicy.KEEP,
+            SyncWorker.makeRequest()
+        )
     }
 }
 

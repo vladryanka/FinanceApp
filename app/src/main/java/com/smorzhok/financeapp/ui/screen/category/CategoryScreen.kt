@@ -21,7 +21,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -46,9 +45,8 @@ fun CategoryScreen(
     val filteredCategories by viewModel.filteredCategories.collectAsStateWithLifecycle()
     val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
 
-    val context = LocalContext.current
     LaunchedEffect(Unit) {
-        viewModel.loadCategories(context)
+        viewModel.loadCategories()
     }
 
     Column(
@@ -146,8 +144,8 @@ fun CategoryScreen(
                     modifier = Modifier.fillMaxSize()
                 ) {
                     ErrorWithRetry(
-                        message = state.message,
-                        onRetryClick = { viewModel.loadCategories(context) },
+                        message = state.error.toString(),
+                        onRetryClick = { viewModel.loadCategories() },
                         modifier = Modifier.align(Alignment.Center)
                     )
                 }

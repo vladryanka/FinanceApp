@@ -12,8 +12,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -26,6 +24,7 @@ import com.smorzhok.financeapp.navigation.Screen
 import com.smorzhok.financeapp.navigation.rememberNavigationState
 import com.smorzhok.financeapp.ui.commonitems.BottomNavigationItem
 import com.smorzhok.financeapp.ui.screen.add_transaction.AddTransactionScreen
+import com.smorzhok.financeapp.ui.screen.analytics.AnalyticsScreen
 import com.smorzhok.financeapp.ui.screen.category.CategoryScreen
 import com.smorzhok.financeapp.ui.screen.check.editing.CheckEditingScreen
 import com.smorzhok.financeapp.ui.screen.check.main_check.CheckScreen
@@ -34,6 +33,7 @@ import com.smorzhok.financeapp.ui.screen.expences.ExpensesScreen
 import com.smorzhok.financeapp.ui.screen.history.HistoryScreen
 import com.smorzhok.financeapp.ui.screen.incomes.IncomeScreen
 import com.smorzhok.financeapp.ui.screen.setting.SettingScreen
+import com.smorzhok.financeapp.ui.theme.Green
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -41,43 +41,56 @@ fun MainScreen(viewModelFactory: ViewModelProvider.Factory) {
 
     val navState = rememberNavigationState()
     val navBackStackEntry by navState.navHostController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
+    val currentRoute = extractBaseRoute(navBackStackEntry?.destination?.route)
 
-    val currentRouteState by remember(currentRoute) { mutableStateOf(currentRoute) }
+    val currentRouteState = currentRoute
 
     val topBarContent = when (currentRoute) {
         Screen.Expenses.route -> ScaffoldItem(
             textResId = R.string.expenses_today,
             trailingImageResId = R.drawable.refresh,
-            leadingImageResId = null
+            leadingImageResId = null,
+            backgroundColor = Green
         )
 
         Screen.Settings.route -> ScaffoldItem(
             textResId = R.string.settings, trailingImageResId = null,
-            leadingImageResId = null
+            leadingImageResId = null,
+            backgroundColor = Green
         )
 
         Screen.Category.route -> ScaffoldItem(
             textResId = R.string.my_articles, trailingImageResId = null,
-            leadingImageResId = null
+            leadingImageResId = null,
+            backgroundColor = Green
         )
 
         Screen.Income.route -> ScaffoldItem(
             textResId = R.string.income_today,
             trailingImageResId = R.drawable.refresh,
-            leadingImageResId = null
+            leadingImageResId = null,
+            backgroundColor = Green
         )
 
         Screen.Check.route -> ScaffoldItem(
             textResId = R.string.my_account,
             trailingImageResId = R.drawable.pencil,
-            leadingImageResId = null
+            leadingImageResId = null,
+            backgroundColor = Green
         )
 
         Screen.History.route -> ScaffoldItem(
             textResId = R.string.my_history,
             trailingImageResId = R.drawable.analysis_icon,
-            leadingImageResId = R.drawable.back_icon
+            leadingImageResId = R.drawable.back_icon,
+            backgroundColor = Green
+        )
+
+        Screen.Analytics.route -> ScaffoldItem(
+            textResId = R.string.analytics,
+            trailingImageResId = null,
+            leadingImageResId = R.drawable.back_icon,
+            backgroundColor = MaterialTheme.colorScheme.surface
         )
 
         else -> null
@@ -118,10 +131,16 @@ fun MainScreen(viewModelFactory: ViewModelProvider.Factory) {
                                         )
                                     }
 
-                                    Screen.History.route -> {}
+                                    Screen.History.route -> {
+                                        val isIncome = navBackStackEntry?.arguments?.getBoolean("isIncome") ?: false
+                                        navState.navigateTo(
+                                            Screen.Analytics.createRoute(isIncome),
+                                            usePopUpTo = false
+                                        )
+                                    }
                                 }
-
-                            })
+                            },
+                            backgroundColor = it.backgroundColor)
                 }
             }
         },
@@ -139,7 +158,7 @@ fun MainScreen(viewModelFactory: ViewModelProvider.Factory) {
                     NavigationBarItem(
                         selected = selected,
                         onClick = {
-                            navState.navigateTo(item.screen.route)
+                            navState.navigateToRoot(item.screen.route)
                         },
                         icon = {
                             Icon(
@@ -209,7 +228,17 @@ fun MainScreen(viewModelFactory: ViewModelProvider.Factory) {
                 transactionId ->
                 AddTransactionScreen(
                     viewModelFactory,navState, transactionId)
+            },
+            analyticsScreenContent = { isIncome ->
+                AnalyticsScreen(
+                    viewModelFactory = viewModelFactory,
+                    paddingValues = paddingValue,
+                    isIncome = isIncome
+                )
             }
         )
     }
+}
+private fun extractBaseRoute(route: String?): String? {
+    return route?.substringBefore("?")
 }

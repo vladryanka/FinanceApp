@@ -28,7 +28,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -58,12 +57,11 @@ fun ExpensesScreen(
     val viewModel: ExpensesScreenViewModel = viewModel(factory = viewModelFactory)
     val expenseState by viewModel.expenseList.collectAsStateWithLifecycle()
 
-    val context = LocalContext.current
     LaunchedEffect(Unit) {
         val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         val today = LocalDate.now()
         val to = today.format(dateFormatter)
-        viewModel.loadTransactions(to, to, context)
+        viewModel.loadTransactions(to, to)
     }
 
     Box(
@@ -188,12 +186,12 @@ fun ExpensesScreen(
 
             is UiState.Error -> {
                 ErrorWithRetry(
-                    message = state.message,
+                    message = state.error.toString(),
                     onRetryClick = {
                         val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
                         val today = LocalDate.now()
                         val to = today.format(dateFormatter)
-                        viewModel.loadTransactions(to, to, context)
+                        viewModel.loadTransactions(to, to)
                     },
                     modifier = Modifier.align(Alignment.Center)
                 )

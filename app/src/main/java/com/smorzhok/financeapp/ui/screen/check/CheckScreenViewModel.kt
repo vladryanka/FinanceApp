@@ -10,8 +10,8 @@ import com.smorzhok.financeapp.R
 import com.smorzhok.financeapp.domain.model.Account
 import com.smorzhok.financeapp.domain.usecase.account.GetAccountUseCase
 import com.smorzhok.financeapp.domain.usecase.account.UpdateAccountsUseCase
+import com.smorzhok.financeapp.ui.commonitems.ErrorList
 import com.smorzhok.financeapp.ui.commonitems.UiState
-import com.smorzhok.financeapp.ui.commonitems.isNetworkAvailable
 import com.smorzhok.financeapp.ui.formatter.formatCurrencyCodeToSymbol
 import com.smorzhok.financeapp.ui.formatter.formatCurrencySymbolToCode
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -49,12 +49,6 @@ class CheckScreenViewModel @Inject constructor(
                 currency = formatCurrencySymbolToCode(currency.value)
             )
 
-            if (!isNetworkAvailable(context)) {
-                val error = context.getString(R.string.network_error)
-                _dialogueMessage.value = context.getString(R.string.error)
-                _checkState.value = UiState.Error(error)
-                return@launch
-            }
             try {
                 updateAccountsUseCase(
                     account
@@ -64,11 +58,11 @@ class CheckScreenViewModel @Inject constructor(
                 _dialogueMessage.value = context.getString(R.string.account_updated_successfully)
             } catch (e: Exception) {
                 val error = when (e) {
-                    is IOException -> e.message ?: context.getString(R.string.network_error)
-                    is HttpException -> e.message ?: context.getString(R.string.server_error)
-                    else -> context.getString(R.string.unknown_error)
+                    is IOException -> ErrorList.NoInternet
+                    is HttpException -> ErrorList.NotAuthorized
+                    else -> ErrorList.ServerError
                 }
-                _dialogueMessage.value = error
+                _dialogueMessage.value = error.toString()
                 _checkState.value = UiState.Error(error)
             }
         }
@@ -78,16 +72,14 @@ class CheckScreenViewModel @Inject constructor(
         _dialogueMessage.value = null
     }
 
-    fun loadAccount(context: Context) {
+    fun loadAccount() {
         viewModelScope.launch {
             _checkState.value = UiState.Loading
-            if (!isNetworkAvailable(context)) {
-                _checkState.value = UiState.Error("no_internet")
-                return@launch
-            }
+
             try {
                 val accounts = getAccountUseCase()
                 val firstAccount = accounts.firstOrNull()
+
                 if (firstAccount != null) {
                     _checkState.value = UiState.Success(firstAccount)
                     name.value = firstAccount.name
@@ -95,18 +87,18 @@ class CheckScreenViewModel @Inject constructor(
                     currency.value = formatCurrencyCodeToSymbol(firstAccount.currency)
                     account = firstAccount
                 } else {
-                    _checkState.value = UiState.Error("no_accounts")
+                    _checkState.value = UiState.Error(ErrorList.NoAccount)
                 }
-            } catch (e: IOException) {
-                e.printStackTrace()
-                _checkState.value = UiState.Error(e.message ?: R.string.network_error.toString())
+
             } catch (e: HttpException) {
                 e.printStackTrace()
-                if (e.code() == 401) {
-                    _checkState.value = UiState.Error("Не авторизован")
-                } else {
-                    _checkState.value = UiState.Error(e.message ?: "server_error")
+                _checkState.value = when (e.code()) {
+                    401 -> UiState.Error(ErrorList.NotAuthorized)
+                    else -> UiState.Error(ErrorList.ServerError)
                 }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                _checkState.value = UiState.Error(ErrorList.ServerError)
             }
         }
     }

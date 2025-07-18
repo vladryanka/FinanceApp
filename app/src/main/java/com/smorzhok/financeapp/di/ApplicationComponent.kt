@@ -1,6 +1,6 @@
 package com.smorzhok.financeapp.di
 
-import android.content.Context
+import android.app.Application
 import dagger.BindsInstance
 import dagger.Component
 
@@ -9,15 +9,22 @@ import dagger.Component
     modules = [
         NetworkModule::class,
         DataModule::class,
-        ViewModelModule::class
+        ViewModelModule::class,
+        DatabaseModule::class,
+        RemoteDataModule::class,
+        LocalDataModule::class,
+        WorkerBindingModule:: class
     ]
 )
 interface ApplicationComponent {
 
     fun activityComponent(): ActivityComponent.Factory
+    fun inject(app: FinanceApp)
 
     @Component.Factory
     interface Factory {
-        fun create(@BindsInstance context: Context): ApplicationComponent
+        fun create(
+            @BindsInstance application: Application
+        ): ApplicationComponent
     }
 }

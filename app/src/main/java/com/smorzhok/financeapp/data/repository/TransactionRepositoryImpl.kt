@@ -1,57 +1,78 @@
 package com.smorzhok.financeapp.data.repository
 
-import com.smorzhok.financeapp.data.mapper.toDomain
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.smorzhok.financeapp.data.mapper.toTransactionEdit
-import com.smorzhok.financeapp.data.mapper.toTransactionRequest
-import com.smorzhok.financeapp.data.remote.FinanceApiService
-import com.smorzhok.financeapp.data.retryWithBackoff
 import com.smorzhok.financeapp.domain.model.Transaction
 import com.smorzhok.financeapp.domain.model.TransactionEdit
 import com.smorzhok.financeapp.domain.repository.TransactionRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import com.smorzhok.financeapp.domain.repository.local.TransactionLocalRepository
+import com.smorzhok.financeapp.domain.repository.remote.TransactionRemoteRepository
+import java.io.IOException
 import javax.inject.Inject
 
 /*Имплементация репозитория для данных о транзакциях*/
 class TransactionRepositoryImpl @Inject constructor(
-    private val api: FinanceApiService
+    private val remote: TransactionRemoteRepository,
+    private val local: TransactionLocalRepository
 ) : TransactionRepository {
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override suspend fun getTransactions(
         accountId: Int,
         from: String,
         to: String
-    ): List<Transaction> = withContext(Dispatchers.IO) {
-        retryWithBackoff {
-            api.getTransactionsByAccountAndPeriod(accountId, from, to)
-                .map { it.toDomain() }
-                .ifEmpty { emptyList() }
+    ): List<Transaction> {
+        return try {
+            val transactions = remote.getTransactions(accountId, from, to)
+            local.saveTransactions(transactions)
+            transactions
+        } catch (_: IOException) {
+            local.getCachedTransactions(accountId, from, to)
         }
     }
 
     override suspend fun createTransaction(transaction: Transaction) {
-        withContext(Dispatchers.IO) {
-            val req = transaction.toTransactionRequest()
-            api.createTransaction(req)
+        try {
+            remote.createTransaction(transaction)
+            local.addTransaction(transaction, true)
+        } catch (_: IOException) {
+            local.addTransaction(transaction, false)
         }
     }
 
-    override suspend fun getTransactionById(id: Int): TransactionEdit =
-        withContext(Dispatchers.IO) {
-            api.getTransactionsById(id).toTransactionEdit()
+    override suspend fun getTransactionById(id: Int): TransactionEdit {
+        return try {
+            val transaction = remote.getTransactionById(id)
+            local.addTransaction(transaction, true)
+            transaction.toTransactionEdit()
+        } catch (_: IOException) {
+            local.getTransactionById(id).toTransactionEdit()
         }
+    }
 
     override suspend fun updateTransaction(transaction: Transaction) {
-        withContext(Dispatchers.IO) {
-            val request = transaction.toTransactionRequest()
-            api.updateTransaction(transaction.id, request)
+        try {
+            remote.updateTransaction(transaction)
+            local.addTransaction(transaction, true)
+        } catch (_: IOException) {
+            local.addTransaction(transaction, false)
         }
     }
 
     override suspend fun deleteTransaction(id: Int) {
-        withContext(Dispatchers.IO) {
-            api.deleteTransaction(id)
+        try {
+            remote.deleteTransaction(id)
+            local.deleteTransaction(id)
+        } catch (_: Exception) {
         }
     }
 
+    override suspend fun getUnsyncedTransactions(): List<Transaction> {
+        return local.getUnsyncedTransactions()
+    }
+
+    override suspend fun markAsSynced(id: Int) {
+        local.markAsSynced(id)
+    }
 }
