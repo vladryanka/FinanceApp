@@ -75,8 +75,11 @@ dependencies {
     implementation(libs.lottie.compose)
 
     implementation(libs.dagger)
+    implementation(libs.androidx.work.runtime.ktx)
     kapt(libs.dagger.compiler)
     kapt(libs.androidx.room.compiler)
+    implementation (libs.assisted.inject.annotations.dagger2)
+    kapt (libs.assisted.inject.processor.dagger2)
 
 
     implementation(libs.retrofit)

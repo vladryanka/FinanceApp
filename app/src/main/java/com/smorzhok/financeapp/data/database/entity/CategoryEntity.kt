@@ -1,4 +1,4 @@
-package com.smorzhok.financeapp.data.model.entity
+package com.smorzhok.financeapp.data.database.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

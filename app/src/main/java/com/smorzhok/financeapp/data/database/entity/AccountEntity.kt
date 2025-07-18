@@ -1,4 +1,4 @@
-package com.smorzhok.financeapp.data.model.entity
+package com.smorzhok.financeapp.data.database.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -9,6 +9,7 @@ data class AccountEntity(
     val id: Int,
     val name: String,
     val balance: Double,
-    val currency: String
+    val currency: String,
+    val isSynced: Boolean = false
 )
 

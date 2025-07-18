@@ -1,10 +1,10 @@
-package com.smorzhok.financeapp.data.dao
+package com.smorzhok.financeapp.data.database.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.smorzhok.financeapp.data.model.entity.CategoryEntity
+import com.smorzhok.financeapp.data.database.entity.CategoryEntity
 
 @Dao
 interface CategoryDao {

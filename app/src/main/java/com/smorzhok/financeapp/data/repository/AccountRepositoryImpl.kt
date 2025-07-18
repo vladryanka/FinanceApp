@@ -1,9 +1,9 @@
 package com.smorzhok.financeapp.data.repository
 
 import com.smorzhok.financeapp.domain.model.Account
+import com.smorzhok.financeapp.domain.repository.AccountRepository
 import com.smorzhok.financeapp.domain.repository.local.AccountLocalRepository
 import com.smorzhok.financeapp.domain.repository.remote.AccountRemoteRepository
-import com.smorzhok.financeapp.domain.repository.AccountRepository
 import java.io.IOException
 import javax.inject.Inject
 
@@ -24,6 +24,11 @@ class AccountRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateAccount(account: Account) {
-        remote.updateAccount(account)
+        try {
+            remote.updateAccount(account)
+            local.updateAccount(account, true)
+        } catch (_: IOException) {
+            local.updateAccount(account, false)
+        }
     }
 }

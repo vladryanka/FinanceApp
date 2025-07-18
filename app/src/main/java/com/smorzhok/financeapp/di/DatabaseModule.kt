@@ -1,11 +1,11 @@
 package com.smorzhok.financeapp.di
 
-import android.content.Context
+import android.app.Application
 import androidx.room.Room
-import com.smorzhok.financeapp.data.dao.AccountDao
-import com.smorzhok.financeapp.data.dao.CategoryDao
-import com.smorzhok.financeapp.data.dao.TransactionDao
 import com.smorzhok.financeapp.data.database.FinanceDatabase
+import com.smorzhok.financeapp.data.database.dao.AccountDao
+import com.smorzhok.financeapp.data.database.dao.CategoryDao
+import com.smorzhok.financeapp.data.database.dao.TransactionDao
 import dagger.Module
 import dagger.Provides
 
@@ -14,9 +14,9 @@ object DatabaseModule {
 
     @AppScope
     @Provides
-    fun provideFinanceDatabase(context: Context): FinanceDatabase {
+    fun provideFinanceDatabase(application: Application): FinanceDatabase {
         return Room.databaseBuilder(
-            context,
+            application,
             FinanceDatabase::class.java,
             "finance_db"
         ).build()

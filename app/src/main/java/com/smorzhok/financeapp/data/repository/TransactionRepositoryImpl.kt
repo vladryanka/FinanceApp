@@ -28,18 +28,23 @@ class TransactionRepositoryImpl @Inject constructor(
             local.saveTransactions(transactions)
             transactions
         } catch (_: IOException) {
-           local.getCachedTransactions(accountId, from, to)
+            local.getCachedTransactions(accountId, from, to)
         }
     }
 
     override suspend fun createTransaction(transaction: Transaction) {
-        remote.createTransaction(transaction)
+        try {
+            remote.createTransaction(transaction)
+            local.addTransaction(transaction, true)
+        } catch (_: IOException) {
+            local.addTransaction(transaction, false)
+        }
     }
 
     override suspend fun getTransactionById(id: Int): TransactionEdit {
         return try {
             val transaction = remote.getTransactionById(id)
-            local.addTransaction(transaction)
+            local.addTransaction(transaction, true)
             transaction.toTransactionEdit()
         } catch (_: IOException) {
             local.getTransactionById(id).toTransactionEdit()
@@ -47,10 +52,27 @@ class TransactionRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateTransaction(transaction: Transaction) {
-        remote.updateTransaction(transaction)
+        try {
+            remote.updateTransaction(transaction)
+            local.addTransaction(transaction, true)
+        } catch (_: IOException) {
+            local.addTransaction(transaction, false)
+        }
     }
 
     override suspend fun deleteTransaction(id: Int) {
-        remote.deleteTransaction(id)
+        try {
+            remote.deleteTransaction(id)
+            local.deleteTransaction(id)
+        } catch (_: Exception) {
+        }
+    }
+
+    override suspend fun getUnsyncedTransactions(): List<Transaction> {
+        return local.getUnsyncedTransactions()
+    }
+
+    override suspend fun markAsSynced(id: Int) {
+        local.markAsSynced(id)
     }
 }

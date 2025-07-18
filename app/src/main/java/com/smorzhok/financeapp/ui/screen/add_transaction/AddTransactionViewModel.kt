@@ -34,6 +34,7 @@ import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
+import kotlin.random.Random
 
 @RequiresApi(Build.VERSION_CODES.O)
 class AddTransactionViewModel @Inject constructor(
@@ -88,14 +89,10 @@ class AddTransactionViewModel @Inject constructor(
         _dialogueMessage.value = null
     }
 
-    fun loadAccount(context: Context) {
+    fun loadAccount() {
         viewModelScope.launch {
             _account.value = UiState.Loading
             _categoryList.value = UiState.Loading
-            if (!isNetworkAvailable(context)) {
-                _account.value = UiState.Error(ErrorList.NoInternet)
-                return@launch
-            }
 
             try {
                 val accounts = getAccountUseCase()
@@ -129,11 +126,6 @@ class AddTransactionViewModel @Inject constructor(
             val acc = (account.value as? UiState.Success)?.data ?: return@launch
             val cat = selectedCategory ?: return@launch
 
-            if (!isNetworkAvailable(context)) {
-                _dialogueMessage.value =
-                    DialogueType.ERROR to context.getString(R.string.network_error)
-                return@launch
-            }
             try {
                 val transaction = Transaction(
                     id = transactionId,
@@ -161,12 +153,8 @@ class AddTransactionViewModel @Inject constructor(
         }
     }
 
-    fun loadTransactionForEdit(transactionId: Int, context: Context) {
+    fun loadTransactionForEdit(transactionId: Int) {
         viewModelScope.launch {
-            if (!isNetworkAvailable(context)) {
-                _account.value = UiState.Error(ErrorList.NoInternet)
-                return@launch
-            }
 
             try {
                 val transaction = getTransactionByIdUseCase(transactionId)
@@ -221,16 +209,11 @@ class AddTransactionViewModel @Inject constructor(
             val acc = (account.value as? UiState.Success)?.data ?: return@launch
             val cat = selectedCategory ?: return@launch
 
-            if (!isNetworkAvailable(context)) {
-                _dialogueMessage.value =
-                    DialogueType.ERROR to context.getString(R.string.network_error)
-                return@launch
-            }
             try {
 
                 val timeFormatted = selectedTime.format(DateTimeFormatter.ofPattern("HH:mm"))
                 val transaction = Transaction(
-                    id = 0,
+                    id = Random.nextInt(1, Int.MAX_VALUE),
                     accountId = acc.id.toString(),
                     categoryId = cat.id,
                     categoryName = cat.textLeading,

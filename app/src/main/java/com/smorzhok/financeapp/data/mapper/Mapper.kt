@@ -8,9 +8,9 @@ import com.smorzhok.financeapp.data.model.dto.account.AccountUpdateRequest
 import com.smorzhok.financeapp.data.model.dto.category.CategoryDto
 import com.smorzhok.financeapp.data.model.dto.transaction.TransactionDto
 import com.smorzhok.financeapp.data.model.dto.transaction.TransactionRequest
-import com.smorzhok.financeapp.data.model.entity.AccountEntity
-import com.smorzhok.financeapp.data.model.entity.CategoryEntity
-import com.smorzhok.financeapp.data.model.entity.TransactionEntity
+import com.smorzhok.financeapp.data.database.entity.AccountEntity
+import com.smorzhok.financeapp.data.database.entity.CategoryEntity
+import com.smorzhok.financeapp.data.database.entity.TransactionEntity
 import com.smorzhok.financeapp.domain.model.Account
 import com.smorzhok.financeapp.domain.model.Category
 import com.smorzhok.financeapp.domain.model.Transaction

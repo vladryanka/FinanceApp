@@ -1,4 +1,4 @@
-package com.smorzhok.financeapp.data.model.entity
+package com.smorzhok.financeapp.data.database.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -16,5 +16,6 @@ data class TransactionEntity(
     val amount: Double,
     val time: String,
     val date: String,
-    val comment: String?
+    val comment: String?,
+    val isSynced: Boolean = false
 )

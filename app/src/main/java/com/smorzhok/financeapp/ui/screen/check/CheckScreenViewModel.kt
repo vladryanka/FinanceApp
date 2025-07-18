@@ -12,7 +12,6 @@ import com.smorzhok.financeapp.domain.usecase.account.GetAccountUseCase
 import com.smorzhok.financeapp.domain.usecase.account.UpdateAccountsUseCase
 import com.smorzhok.financeapp.ui.commonitems.ErrorList
 import com.smorzhok.financeapp.ui.commonitems.UiState
-import com.smorzhok.financeapp.ui.commonitems.isNetworkAvailable
 import com.smorzhok.financeapp.ui.formatter.formatCurrencyCodeToSymbol
 import com.smorzhok.financeapp.ui.formatter.formatCurrencySymbolToCode
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -50,11 +49,6 @@ class CheckScreenViewModel @Inject constructor(
                 currency = formatCurrencySymbolToCode(currency.value)
             )
 
-            if (!isNetworkAvailable(context)) {
-                _dialogueMessage.value = context.getString(R.string.error)
-                _checkState.value = UiState.Error(ErrorList.NoInternet)
-                return@launch
-            }
             try {
                 updateAccountsUseCase(
                     account

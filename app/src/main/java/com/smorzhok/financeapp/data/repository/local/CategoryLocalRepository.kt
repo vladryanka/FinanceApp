@@ -1,6 +1,6 @@
 package com.smorzhok.financeapp.data.repository.local
 
-import com.smorzhok.financeapp.data.dao.CategoryDao
+import com.smorzhok.financeapp.data.database.dao.CategoryDao
 import com.smorzhok.financeapp.data.mapper.toDomain
 import com.smorzhok.financeapp.data.mapper.toEntity
 import com.smorzhok.financeapp.domain.model.Category
