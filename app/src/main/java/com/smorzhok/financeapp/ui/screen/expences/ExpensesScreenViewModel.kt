@@ -1,5 +1,6 @@
 package com.smorzhok.financeapp.ui.screen.expences
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -48,6 +49,8 @@ class ExpensesScreenViewModel @Inject constructor(
                     401 -> UiState.Error(ErrorList.NotAuthorized)
                     else -> UiState.Error(ErrorList.ServerError)
                 }
+
+                Log.d("Doing", e.message())
 
             } catch (e: Exception) {
                 e.printStackTrace()

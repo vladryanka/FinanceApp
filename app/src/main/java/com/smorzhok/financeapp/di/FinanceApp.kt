@@ -2,6 +2,8 @@ package com.smorzhok.financeapp.di
 
 import android.app.Application
 import androidx.work.Configuration
+import com.smorzhok.financeapp.BuildConfig
+import com.smorzhok.financeapp.data.remote.FinanceApi
 import com.smorzhok.financeapp.data.worker.DaggerWorkerFactory
 import javax.inject.Inject
 
@@ -19,6 +21,7 @@ class FinanceApp : Application(), Configuration.Provider {
 
         appComponent = DaggerApplicationComponent.factory().create(this)
         appComponent.inject(this)
+        FinanceApi.setAuthToken(BuildConfig.FINANCE_API_KEY)
     }
 
     override val workManagerConfiguration: Configuration
