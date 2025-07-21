@@ -22,6 +22,6 @@ suspend fun <T> retryWithBackoff(
 }
 
 private const val DEFAULT_RETRIES = 3
-private const val DEFAULT_DELAY_MILLIS = 2000L
+private const val DEFAULT_DELAY_MILLIS = 100L
 private const val FIFEHUNDRED_CODE = 500
 private const val FOURHUNDRED_x_CODE = 500

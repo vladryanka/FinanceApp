@@ -3,6 +3,7 @@ package com.smorzhok.financeapp.ui.screen
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -11,6 +12,7 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -33,11 +35,17 @@ import com.smorzhok.financeapp.ui.screen.expences.ExpensesScreen
 import com.smorzhok.financeapp.ui.screen.history.HistoryScreen
 import com.smorzhok.financeapp.ui.screen.incomes.IncomeScreen
 import com.smorzhok.financeapp.ui.screen.setting.SettingScreen
+import com.smorzhok.financeapp.ui.screen.setting.ThemeViewModel
 import com.smorzhok.financeapp.ui.theme.Green
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun MainScreen(viewModelFactory: ViewModelProvider.Factory) {
+fun MainScreen(
+    viewModelFactory: ViewModelProvider.Factory,
+    themeViewModel: ThemeViewModel
+) {
+
+    val isDarkTheme = themeViewModel.isDarkMode.collectAsState().value ?: isSystemInDarkTheme()
 
     val navState = rememberNavigationState()
     val navBackStackEntry by navState.navHostController.currentBackStackEntryAsState()
@@ -132,7 +140,9 @@ fun MainScreen(viewModelFactory: ViewModelProvider.Factory) {
                                     }
 
                                     Screen.History.route -> {
-                                        val isIncome = navBackStackEntry?.arguments?.getBoolean("isIncome") ?: false
+                                        val isIncome =
+                                            navBackStackEntry?.arguments?.getBoolean("isIncome")
+                                                ?: false
                                         navState.navigateTo(
                                             Screen.Analytics.createRoute(isIncome),
                                             usePopUpTo = false
@@ -140,7 +150,8 @@ fun MainScreen(viewModelFactory: ViewModelProvider.Factory) {
                                     }
                                 }
                             },
-                            backgroundColor = it.backgroundColor)
+                            backgroundColor = it.backgroundColor
+                        )
                 }
             }
         },
@@ -198,36 +209,41 @@ fun MainScreen(viewModelFactory: ViewModelProvider.Factory) {
             },
             incomeScreenContent = {
                 IncomeScreen(
-                    viewModelFactory,paddingValue, onIncomeClicked = { transactionId ->
-                    navState.navigateTo("${Screen.AddTransaction.route}?transactionId=$transactionId")
-                }, {
-                    navState.navigateTo(Screen.AddTransaction.route)
-                })
+                    viewModelFactory, paddingValue, onIncomeClicked = { transactionId ->
+                        navState.navigateTo("${Screen.AddTransaction.route}?transactionId=$transactionId")
+                    }, {
+                        navState.navigateTo(Screen.AddTransaction.route)
+                    })
             },
             checkScreenContent = {
                 CheckScreen(
-                    viewModelFactory,paddingValue, onCheckClicked = {}, {})
+                    viewModelFactory, paddingValue, onCheckClicked = {}, {})
             },
             checkEditingContent = {
                 CheckEditingScreen(
-                    viewModelFactory,navState)
+                    viewModelFactory, navState
+                )
             },
             categoryScreenContent = {
                 CategoryScreen(
-                    viewModelFactory,paddingValue, onCategoryClicked = {})
+                    viewModelFactory, paddingValue, onCategoryClicked = {})
             },
             settingsScreenContent = {
                 SettingScreen(
-                    paddingValue, onSettingClicked = {})
+                    paddingValues = paddingValue,
+                    onSettingClicked = { },// todo
+                    isDarkTheme = isDarkTheme,
+                    onToggleDarkMode = { themeViewModel.toggleTheme(it) })
             },
             historyScreenContent = { isIncome ->
                 HistoryScreen(
-                    viewModelFactory,isIncome, onHistoryItemClicked = {}, paddingValue)
+                    viewModelFactory, isIncome, onHistoryItemClicked = {}, paddingValue
+                )
             },
-            addTransactionContent = {
-                transactionId ->
+            addTransactionContent = { transactionId ->
                 AddTransactionScreen(
-                    viewModelFactory,navState, transactionId)
+                    viewModelFactory, navState, transactionId
+                )
             },
             analyticsScreenContent = { isIncome ->
                 AnalyticsScreen(
@@ -239,6 +255,7 @@ fun MainScreen(viewModelFactory: ViewModelProvider.Factory) {
         )
     }
 }
+
 private fun extractBaseRoute(route: String?): String? {
     return route?.substringBefore("?")
 }

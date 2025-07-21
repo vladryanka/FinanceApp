@@ -10,6 +10,7 @@ import com.smorzhok.financeapp.ui.screen.check.CheckScreenViewModel
 import com.smorzhok.financeapp.ui.screen.expences.ExpensesScreenViewModel
 import com.smorzhok.financeapp.ui.screen.history.HistoryScreenViewModel
 import com.smorzhok.financeapp.ui.screen.incomes.IncomeScreenViewModel
+import com.smorzhok.financeapp.ui.screen.setting.ThemeViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -54,5 +55,10 @@ interface ViewModelModule {
     @IntoMap
     @ViewModelKey(IncomeScreenViewModel::class)
     fun bindsIncomeScreenViewModel(viewModel: IncomeScreenViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ThemeViewModel::class)
+    fun bindThemeViewModel(viewModel: ThemeViewModel): ViewModel
 
 }

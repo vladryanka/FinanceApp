@@ -34,11 +34,11 @@ import com.smorzhok.financeapp.ui.theme.Green
 @Composable
 fun SettingScreen(
     paddingValues: PaddingValues,
-    onSettingClicked: (Int) -> Unit
+    onSettingClicked: (Int) -> Unit,
+    isDarkTheme: Boolean,
+    onToggleDarkMode: (Boolean) -> Unit
 ) {
     val settingsList = remember { getSettingsList() }
-
-    var checked by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -65,8 +65,8 @@ fun SettingScreen(
                             contentAlignment = Alignment.Center
                         ) {
                             Switch(
-                                checked = checked,
-                                onCheckedChange = { checked = it },
+                                checked = isDarkTheme,
+                                onCheckedChange = onToggleDarkMode,
                                 modifier = Modifier.size(32.dp),
                                 colors = SwitchDefaults.colors(
                                     checkedBorderColor = Green,
@@ -85,6 +85,7 @@ fun SettingScreen(
                     verticalPadding = 16.0
                 )
             }
+
             itemsIndexed(settingsList) { index, item ->
                 ListItem(
                     leadingContent = {
@@ -94,7 +95,7 @@ fun SettingScreen(
                             maxLines = 1,
                         )
                     },
-                    {
+                    trailingContent = {
                         Box(
                             modifier = Modifier.size(24.dp),
                             contentAlignment = Alignment.Center
@@ -105,7 +106,6 @@ fun SettingScreen(
                                 tint = MaterialTheme.colorScheme.surfaceVariant
                             )
                         }
-
                     },
                     downDivider = true,
                     onClick = { onSettingClicked(item.id) },
@@ -129,10 +129,14 @@ private fun getSettingsList(): List<Settings> = listOf(
 @Preview
 @Composable
 fun SettingPreview() {
-    FinanceAppTheme {
+    var isDarkTheme by remember { mutableStateOf(true) }
+
+    FinanceAppTheme(darkTheme = isDarkTheme) {
         SettingScreen(
             paddingValues = PaddingValues(50.dp),
-            onSettingClicked = {}
+            onSettingClicked = {},
+            isDarkTheme = isDarkTheme,
+            onToggleDarkMode = { isDarkTheme = it }
         )
     }
 }
