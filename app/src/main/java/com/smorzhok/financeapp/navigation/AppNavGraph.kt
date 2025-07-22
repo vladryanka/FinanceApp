@@ -23,6 +23,7 @@ fun AppNavGraph(
     colorSelectionScreenContent: @Composable () -> Unit,
     hapticScreenContent: @Composable () -> Unit,
     passwordScreenContent: @Composable () -> Unit,
+    infoScreenContent: @Composable () -> Unit,
 ) {
 
     NavHost(
@@ -86,5 +87,10 @@ fun AppNavGraph(
         composable(Screen.PinSetup.route){
             passwordScreenContent()
         }
+        composable(Screen.Info.route){
+            infoScreenContent()
+        }
+
+
     }
 }

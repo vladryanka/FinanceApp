@@ -41,7 +41,7 @@ fun HapticScreen(
 
     Column(
         modifier = Modifier.padding(
-            vertical = paddingValues.calculateTopPadding(),
+            vertical = paddingValues.calculateTopPadding()+8.dp,
             horizontal = 16.dp
         )
     ) {

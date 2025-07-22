@@ -43,6 +43,7 @@ import com.smorzhok.financeapp.ui.screen.history.HistoryScreen
 import com.smorzhok.financeapp.ui.screen.incomes.IncomeScreen
 import com.smorzhok.financeapp.ui.screen.setting.ColorSelectionScreen
 import com.smorzhok.financeapp.ui.screen.setting.HapticScreen
+import com.smorzhok.financeapp.ui.screen.setting.InfoScreen
 import com.smorzhok.financeapp.ui.screen.setting.PinSetupScreen
 import com.smorzhok.financeapp.ui.screen.setting.SettingScreen
 import com.smorzhok.financeapp.ui.screen.setting.performHapticFeedback
@@ -88,6 +89,11 @@ fun MainScreen(
         )
 
         Screen.PinSetup.route -> ScaffoldItem(
+            textResId = R.string.settings, trailingImageResId = null,
+            leadingImageResId = R.drawable.back_icon,
+            backgroundColor = MaterialTheme.colorScheme.primary
+        )
+        Screen.Info.route -> ScaffoldItem(
             textResId = R.string.settings, trailingImageResId = null,
             leadingImageResId = R.drawable.back_icon,
             backgroundColor = MaterialTheme.colorScheme.primary
@@ -283,7 +289,7 @@ fun MainScreen(
                             5 -> { /* Навигация к языку */
                             }
 
-                            6 -> { /* Навигация к "О программе" */
+                            6 -> { navState.navigateTo(Screen.Info.route)
                             }
                         }
                     },
@@ -336,6 +342,9 @@ fun MainScreen(
                     pinCodeManager = pinCodeManager,
                     paddingValues = paddingValue
                 )
+            },
+            infoScreenContent = {
+                InfoScreen(paddingValues = paddingValue)
             }
         )
     }

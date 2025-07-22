@@ -44,7 +44,7 @@ fun PinSetupScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = paddingValues.calculateTopPadding())
+            .padding(horizontal = 16.dp, vertical = paddingValues.calculateTopPadding()+8.dp)
     ) {
         Text(
             text = stringResource(R.string.enter_pin),

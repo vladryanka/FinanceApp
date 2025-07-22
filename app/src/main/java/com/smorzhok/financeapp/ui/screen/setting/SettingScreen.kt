@@ -29,7 +29,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.smorzhok.financeapp.R
-import com.smorzhok.financeapp.data.datastore.PinCodeManager
 import com.smorzhok.financeapp.domain.model.Settings
 import com.smorzhok.financeapp.ui.screen.commonComposable.ListItem
 import com.smorzhok.financeapp.ui.theme.FinanceAppTheme

@@ -34,7 +34,7 @@ fun ColorSelectionScreen(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = padding.calculateTopPadding(), horizontal = 16.dp)
+            .padding(vertical = padding.calculateTopPadding()+8.dp, horizontal = 16.dp)
     ) {
         Text(
             text = stringResource(R.string.choose_main_color),
