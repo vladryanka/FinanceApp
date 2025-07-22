@@ -20,16 +20,6 @@ class NavigationState(
             }
         }
     }
-    fun navigateToRoot(route: String) {
-        navHostController.navigate(route) {
-            popUpTo(navHostController.graph.startDestinationId) {
-                inclusive = false
-                saveState = true
-            }
-            launchSingleTop = true
-            restoreState = true
-        }
-    }
 }
 
 /*Создаёт и запоминает экземпляр NavigationState для управления навигацией в Compose*/

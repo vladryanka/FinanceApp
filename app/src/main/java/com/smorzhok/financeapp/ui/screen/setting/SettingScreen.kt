@@ -1,5 +1,7 @@
 package com.smorzhok.financeapp.ui.screen.setting
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,16 +32,19 @@ import com.smorzhok.financeapp.R
 import com.smorzhok.financeapp.domain.model.Settings
 import com.smorzhok.financeapp.ui.screen.commonComposable.ListItem
 import com.smorzhok.financeapp.ui.theme.FinanceAppTheme
-import com.smorzhok.financeapp.ui.theme.Green
 
+@RequiresApi(Build.VERSION_CODES.Q)
 @Composable
 fun SettingScreen(
+    hapticEffectType: String,
     paddingValues: PaddingValues,
     onSettingClicked: (Int) -> Unit,
     isDarkTheme: Boolean,
     onToggleDarkMode: (Boolean) -> Unit
 ) {
     val settingsList = remember { getSettingsList() }
+
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -69,9 +75,9 @@ fun SettingScreen(
                                 onCheckedChange = onToggleDarkMode,
                                 modifier = Modifier.size(32.dp),
                                 colors = SwitchDefaults.colors(
-                                    checkedBorderColor = Green,
+                                    checkedBorderColor = MaterialTheme.colorScheme.primary,
                                     uncheckedBorderColor = MaterialTheme.colorScheme.outline,
-                                    checkedThumbColor = Green,
+                                    checkedThumbColor = MaterialTheme.colorScheme.primary,
                                     checkedTrackColor = MaterialTheme.colorScheme.secondary,
                                     uncheckedThumbColor = MaterialTheme.colorScheme.outline,
                                     uncheckedTrackColor = MaterialTheme.colorScheme.surfaceContainerHigh,
@@ -80,7 +86,12 @@ fun SettingScreen(
                         }
                     },
                     downDivider = true,
-                    onClick = { },
+                    onClick = {
+                        performHapticFeedback(
+                            context = context,
+                            effect = hapticEffectType
+                        )
+                    },
                     backgroundColor = MaterialTheme.colorScheme.surface,
                     verticalPadding = 16.0
                 )
@@ -108,7 +119,10 @@ fun SettingScreen(
                         }
                     },
                     downDivider = true,
-                    onClick = { onSettingClicked(item.id) },
+                    onClick = {
+                        performHapticFeedback(context = context, effect = hapticEffectType)
+                        onSettingClicked(item.id)
+                    },
                     backgroundColor = MaterialTheme.colorScheme.surface,
                     verticalPadding = 15.5
                 )
@@ -116,6 +130,7 @@ fun SettingScreen(
         }
     }
 }
+
 private fun getSettingsList(): List<Settings> = listOf(
     Settings(0, R.string.main_color, R.drawable.triangle_vert),
     Settings(1, R.string.sounds, R.drawable.triangle_vert),
@@ -126,6 +141,7 @@ private fun getSettingsList(): List<Settings> = listOf(
     Settings(6, R.string.about_the_program, R.drawable.triangle_vert),
 )
 
+@RequiresApi(Build.VERSION_CODES.Q)
 @Preview
 @Composable
 fun SettingPreview() {
@@ -133,6 +149,7 @@ fun SettingPreview() {
 
     FinanceAppTheme(darkTheme = isDarkTheme) {
         SettingScreen(
+            hapticEffectType = "CLICK",
             paddingValues = PaddingValues(50.dp),
             onSettingClicked = {},
             isDarkTheme = isDarkTheme,

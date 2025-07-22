@@ -37,7 +37,6 @@ import com.smorzhok.financeapp.ui.commonitems.UiState
 import com.smorzhok.financeapp.ui.formatter.formatPrice
 import com.smorzhok.financeapp.ui.screen.commonComposable.ErrorWithRetry
 import com.smorzhok.financeapp.ui.screen.commonComposable.ListItem
-import com.smorzhok.financeapp.ui.theme.Green
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -174,7 +173,7 @@ fun IncomeScreen(
                     bottom = paddingValues.calculateBottomPadding() + 14.dp
                 ),
             shape = CircleShape,
-            containerColor = Green,
+            containerColor = MaterialTheme.colorScheme.primary,
             elevation = FloatingActionButtonDefaults.elevation(0.dp)
         ) {
             Icon(

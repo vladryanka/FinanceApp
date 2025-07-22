@@ -48,14 +48,14 @@ import com.smorzhok.financeapp.ui.screen.commonComposable.BottomSheetContent
 import com.smorzhok.financeapp.ui.screen.commonComposable.ErrorWithRetry
 import com.smorzhok.financeapp.ui.screen.commonComposable.ListItem
 import com.smorzhok.financeapp.ui.screen.commonComposable.TopBarTextAndIcon
-import com.smorzhok.financeapp.ui.theme.Green
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CheckEditingScreen(
     viewModelFactory: ViewModelProvider.Factory,
-    navState: NavigationState
+    navState: NavigationState,
+    hapticEffectType: String
 ) {
     val context = LocalContext.current
     val viewModel: CheckScreenViewModel = viewModel(factory = viewModelFactory)
@@ -86,7 +86,8 @@ fun CheckEditingScreen(
                 onCurrencySelected = { selectedCurrency ->
                     viewModel.currency.value = selectedCurrency
                 },
-                currencyList
+                currencyList,
+                hapticEffectType = hapticEffectType
             )
         }
     }
@@ -95,7 +96,7 @@ fun CheckEditingScreen(
         textResId = R.string.my_account,
         trailingImageResId = R.drawable.check_mark,
         leadingImageResId = R.drawable.cross,
-        backgroundColor = Green
+        backgroundColor = MaterialTheme.colorScheme.primary
     )
 
     Scaffold(
@@ -141,7 +142,7 @@ private fun CheckScreenAlertDialog(
                 Button(
                     onClick = { viewModel.dialogueShown() },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Green,
+                        containerColor = MaterialTheme.colorScheme.primary,
                         contentColor = Color.White
                     )
                 ) {

@@ -10,6 +10,7 @@
     <string name="my_account">Мой счет</string>
     <string name="check_name">Название счета:</string>
     <string name="my_articles">Мои статьи</string>
+    <string name="choose_main_color">Выберите основной цвет</string>
     <string name="expenses_today">Расходы сегодня</string>
     <string name="history">История</string>
     <string name="products_placeholder">Продукты</string>

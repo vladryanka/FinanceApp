@@ -1,5 +1,6 @@
 package com.smorzhok.financeapp.ui.screen.add_transaction
 
+import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
@@ -54,18 +55,19 @@ import com.smorzhok.financeapp.ui.screen.commonComposable.BottomSheetContent
 import com.smorzhok.financeapp.ui.screen.commonComposable.ErrorWithRetry
 import com.smorzhok.financeapp.ui.screen.commonComposable.ListItem
 import com.smorzhok.financeapp.ui.screen.commonComposable.TopBarTextAndIcon
-import com.smorzhok.financeapp.ui.theme.Green
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
+@SuppressLint("NewApi")
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AddTransactionScreen(
     viewModelFactory: ViewModelProvider.Factory,
     navState: NavigationState,
-    transactionId: Int? = null
+    transactionId: Int? = null,
+    hapticEffectType: String
 ) {
 
     val viewModel: AddTransactionViewModel = viewModel(factory = viewModelFactory)
@@ -82,7 +84,7 @@ fun AddTransactionScreen(
         textResId = R.string.add_transaction,
         trailingImageResId = R.drawable.check_mark,
         leadingImageResId = R.drawable.cross,
-        backgroundColor = Green
+        backgroundColor = MaterialTheme.colorScheme.primary
     )
 
     LaunchedEffect(viewModel) {
@@ -104,7 +106,8 @@ fun AddTransactionScreen(
                 onCurrencySelected = {
                     viewModel.onCategoryNameSelected(it)
                 },
-                onClose = { showCategoryBottomSheet = false }
+                onClose = { showCategoryBottomSheet = false },
+                hapticEffectType = hapticEffectType
             )
         }
     }
@@ -345,7 +348,7 @@ private fun CheckScreenAlertDialog(
         }
         val titleColor = when (type) {
             DialogueType.ERROR -> MaterialTheme.colorScheme.error
-            DialogueType.SUCCESS -> Green
+            DialogueType.SUCCESS -> MaterialTheme.colorScheme.primary
         }
 
         AlertDialog(
@@ -359,7 +362,7 @@ private fun CheckScreenAlertDialog(
             confirmButton = {
                 Button(
                     onClick = { viewModel.dialogueShown() },
-                    colors = ButtonDefaults.buttonColors(containerColor = Green)
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                 ) {
                     Text(stringResource(R.string.ok), color = Color.White)
                 }

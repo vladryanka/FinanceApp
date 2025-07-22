@@ -35,7 +35,6 @@ import com.smorzhok.financeapp.ui.formatter.formatPrice
 import com.smorzhok.financeapp.ui.screen.check.CheckScreenViewModel
 import com.smorzhok.financeapp.ui.screen.commonComposable.ErrorWithRetry
 import com.smorzhok.financeapp.ui.screen.commonComposable.ListItem
-import com.smorzhok.financeapp.ui.theme.Green
 
 @Composable
 fun CheckScreen(
@@ -169,7 +168,7 @@ fun CheckScreen(
                     bottom = paddingValues.calculateBottomPadding() + 14.dp
                 ),
             shape = CircleShape,
-            containerColor = Green,
+            containerColor = MaterialTheme.colorScheme.primary,
             elevation = FloatingActionButtonDefaults.elevation(0.dp)
         ) {
             Icon(

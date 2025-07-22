@@ -1,5 +1,7 @@
 package com.smorzhok.financeapp.ui.screen.commonComposable
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,17 +15,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.smorzhok.financeapp.R
+import com.smorzhok.financeapp.ui.screen.setting.performHapticFeedback
 
+@RequiresApi(Build.VERSION_CODES.Q)
 @Composable
 fun BottomSheetContent(
     onClose: () -> Unit,
     onCurrencySelected: (String) -> Unit,
-    itemsList:List<Pair<String, Int>>
+    itemsList: List<Pair<String, Int>>,
+    hapticEffectType: String
 ) {
+
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -52,6 +60,7 @@ fun BottomSheetContent(
                     trailingContent = {},
                     downDivider = true,
                     onClick = {
+                        performHapticFeedback(context, hapticEffectType)
                         onCurrencySelected(firstText)
                         onClose()
                     },
@@ -80,7 +89,10 @@ fun BottomSheetContent(
             },
             trailingContent = {},
             downDivider = true,
-            onClick = onClose,
+            onClick = {
+                performHapticFeedback(context, hapticEffectType)
+                onClose
+            },
             backgroundColor = MaterialTheme.colorScheme.error,
             verticalPadding = 23.5
         )

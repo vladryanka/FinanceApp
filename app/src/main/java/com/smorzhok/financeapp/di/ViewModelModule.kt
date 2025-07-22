@@ -3,6 +3,7 @@ package com.smorzhok.financeapp.di
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.smorzhok.financeapp.ui.ViewModelFactory
+import com.smorzhok.financeapp.ui.commonitems.HapticViewModel
 import com.smorzhok.financeapp.ui.screen.add_transaction.AddTransactionViewModel
 import com.smorzhok.financeapp.ui.screen.analytics.AnalyticsScreenViewModel
 import com.smorzhok.financeapp.ui.screen.category.CategoryScreenViewModel
@@ -10,7 +11,7 @@ import com.smorzhok.financeapp.ui.screen.check.CheckScreenViewModel
 import com.smorzhok.financeapp.ui.screen.expences.ExpensesScreenViewModel
 import com.smorzhok.financeapp.ui.screen.history.HistoryScreenViewModel
 import com.smorzhok.financeapp.ui.screen.incomes.IncomeScreenViewModel
-import com.smorzhok.financeapp.ui.screen.setting.ThemeViewModel
+import com.smorzhok.financeapp.ui.commonitems.ThemeViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -25,6 +26,11 @@ interface ViewModelModule {
     @IntoMap
     @ViewModelKey(AddTransactionViewModel::class)
     fun bindsAddTransactionViewModel(viewModel: AddTransactionViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(HapticViewModel::class)
+    fun bindsHapticViewModel(viewModel: HapticViewModel): ViewModel
 
     @Binds
     @IntoMap

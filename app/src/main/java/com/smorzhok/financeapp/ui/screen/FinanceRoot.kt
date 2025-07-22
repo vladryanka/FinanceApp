@@ -8,7 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModelProvider
-import com.smorzhok.financeapp.ui.screen.setting.ThemeViewModel
+import com.smorzhok.financeapp.ui.commonitems.ThemeViewModel
 import com.smorzhok.financeapp.ui.screen.splash.LottieSplashScreen
 
 @RequiresApi(Build.VERSION_CODES.O)

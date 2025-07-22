@@ -1,5 +1,6 @@
 package com.smorzhok.financeapp.ui.screen.analytics
 
+import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
@@ -42,6 +43,7 @@ import com.smorzhok.financeapp.ui.formatter.formatLocalDateToMonthYear
 import com.smorzhok.financeapp.ui.formatter.formatPrice
 import com.smorzhok.financeapp.ui.screen.commonComposable.ErrorWithRetry
 import com.smorzhok.financeapp.ui.screen.commonComposable.ListItem
+import com.smorzhok.financeapp.ui.screen.setting.performHapticFeedback
 import com.smorzhok.financeapp.ui.theme.Green
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -49,6 +51,7 @@ import java.time.format.DateTimeFormatter
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AnalyticsScreen(
+    hapticEffectType: String,
     viewModelFactory: ViewModelProvider.Factory,
     paddingValues: PaddingValues,
     isIncome: Boolean
@@ -87,6 +90,7 @@ fun AnalyticsScreen(
                     ErrorWithRetry(
                         message = state.error.toString(),
                         onRetryClick = {
+                            performHapticFeedback(context = context, effect = hapticEffectType)
                             loadCategories(viewModel, fromDate, toDate, isIncome)
                         },
                         modifier = Modifier.align(Alignment.Center)
@@ -128,11 +132,18 @@ fun AnalyticsScreen(
                                             },
                                             context = context
                                         )
-                                    }
+                                    },
+                                    context = context,
+                                    hapticEffectType = hapticEffectType
                                 )
                             },
                             downDivider = true,
-                            onClick = { },
+                            onClick = {
+                                performHapticFeedback(
+                                    context = context,
+                                    effect = hapticEffectType
+                                )
+                            },
                             backgroundColor = MaterialTheme.colorScheme.surface,
                             verticalPadding = 4.0
                         )
@@ -159,11 +170,18 @@ fun AnalyticsScreen(
                                             minDate = fromDate.toEpochDay() * 24 * 60 * 60 * 1000,
                                             context = context
                                         )
-                                    }
+                                    },
+                                    context = context,
+                                    hapticEffectType = hapticEffectType
                                 )
                             },
                             downDivider = true,
-                            onClick = { },
+                            onClick = {
+                                performHapticFeedback(
+                                    context = context,
+                                    effect = hapticEffectType
+                                )
+                            },
                             backgroundColor = MaterialTheme.colorScheme.surface,
                             verticalPadding = 4.0
                         )
@@ -186,7 +204,12 @@ fun AnalyticsScreen(
                                 )
                             },
                             downDivider = true,
-                            onClick = {},
+                            onClick = {
+                                performHapticFeedback(
+                                    context = context,
+                                    effect = hapticEffectType
+                                )
+                            },
                             backgroundColor = MaterialTheme.colorScheme.surface,
                             verticalPadding = 16.0,
                         )
@@ -245,7 +268,12 @@ fun AnalyticsScreen(
 
                                 },
                                 downDivider = true,
-                                onClick = {},
+                                onClick = {
+                                    performHapticFeedback(
+                                        context = context,
+                                        effect = hapticEffectType
+                                    )
+                                },
                                 backgroundColor = MaterialTheme.colorScheme.surface,
                                 verticalPadding = 10.5
                             )
@@ -274,10 +302,14 @@ private fun loadCategories(
 @Composable
 fun GreenChip(
     text: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    hapticEffectType: String, context: Context
 ) {
     AssistChip(
-        onClick = { onClick() },
+        onClick = {
+            performHapticFeedback(context = context, effect = hapticEffectType)
+            onClick()
+        },
         label = {
             Text(
                 text = text,

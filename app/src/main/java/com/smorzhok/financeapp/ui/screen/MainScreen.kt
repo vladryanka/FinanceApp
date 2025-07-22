@@ -1,6 +1,7 @@
 package com.smorzhok.financeapp.ui.screen
 
 
+import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -14,10 +15,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.smorzhok.financeapp.R
 import com.smorzhok.financeapp.domain.model.ScaffoldItem
@@ -25,6 +28,8 @@ import com.smorzhok.financeapp.navigation.AppNavGraph
 import com.smorzhok.financeapp.navigation.Screen
 import com.smorzhok.financeapp.navigation.rememberNavigationState
 import com.smorzhok.financeapp.ui.commonitems.BottomNavigationItem
+import com.smorzhok.financeapp.ui.commonitems.HapticViewModel
+import com.smorzhok.financeapp.ui.commonitems.ThemeViewModel
 import com.smorzhok.financeapp.ui.screen.add_transaction.AddTransactionScreen
 import com.smorzhok.financeapp.ui.screen.analytics.AnalyticsScreen
 import com.smorzhok.financeapp.ui.screen.category.CategoryScreen
@@ -34,10 +39,12 @@ import com.smorzhok.financeapp.ui.screen.commonComposable.TopBarTextAndIcon
 import com.smorzhok.financeapp.ui.screen.expences.ExpensesScreen
 import com.smorzhok.financeapp.ui.screen.history.HistoryScreen
 import com.smorzhok.financeapp.ui.screen.incomes.IncomeScreen
+import com.smorzhok.financeapp.ui.screen.setting.ColorSelectionScreen
+import com.smorzhok.financeapp.ui.screen.setting.HapticScreen
 import com.smorzhok.financeapp.ui.screen.setting.SettingScreen
-import com.smorzhok.financeapp.ui.screen.setting.ThemeViewModel
-import com.smorzhok.financeapp.ui.theme.Green
+import com.smorzhok.financeapp.ui.screen.setting.performHapticFeedback
 
+@SuppressLint("NewApi")
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainScreen(
@@ -52,46 +59,61 @@ fun MainScreen(
     val currentRoute = extractBaseRoute(navBackStackEntry?.destination?.route)
 
     val currentRouteState = currentRoute
+    val settingsViewModel: HapticViewModel = viewModel(factory = viewModelFactory)
+    val hapticEffectType by settingsViewModel.hapticEffect.collectAsState()
+    val context = LocalContext.current
 
     val topBarContent = when (currentRoute) {
         Screen.Expenses.route -> ScaffoldItem(
             textResId = R.string.expenses_today,
             trailingImageResId = R.drawable.refresh,
             leadingImageResId = null,
-            backgroundColor = Green
+            backgroundColor = MaterialTheme.colorScheme.primary
         )
 
         Screen.Settings.route -> ScaffoldItem(
             textResId = R.string.settings, trailingImageResId = null,
             leadingImageResId = null,
-            backgroundColor = Green
+            backgroundColor = MaterialTheme.colorScheme.primary
+        )
+
+        Screen.ColorSelection.route -> ScaffoldItem(
+            textResId = R.string.settings, trailingImageResId = null,
+            leadingImageResId = R.drawable.back_icon,
+            backgroundColor = MaterialTheme.colorScheme.primary
+        )
+
+        Screen.Haptics.route -> ScaffoldItem(
+            textResId = R.string.settings, trailingImageResId = null,
+            leadingImageResId = R.drawable.back_icon,
+            backgroundColor = MaterialTheme.colorScheme.primary
         )
 
         Screen.Category.route -> ScaffoldItem(
             textResId = R.string.my_articles, trailingImageResId = null,
             leadingImageResId = null,
-            backgroundColor = Green
+            backgroundColor = MaterialTheme.colorScheme.primary
         )
 
         Screen.Income.route -> ScaffoldItem(
             textResId = R.string.income_today,
             trailingImageResId = R.drawable.refresh,
             leadingImageResId = null,
-            backgroundColor = Green
+            backgroundColor = MaterialTheme.colorScheme.primary
         )
 
         Screen.Check.route -> ScaffoldItem(
             textResId = R.string.my_account,
             trailingImageResId = R.drawable.pencil,
             leadingImageResId = null,
-            backgroundColor = Green
+            backgroundColor = MaterialTheme.colorScheme.primary
         )
 
         Screen.History.route -> ScaffoldItem(
             textResId = R.string.my_history,
             trailingImageResId = R.drawable.analysis_icon,
             leadingImageResId = R.drawable.back_icon,
-            backgroundColor = Green
+            backgroundColor = MaterialTheme.colorScheme.primary
         )
 
         Screen.Analytics.route -> ScaffoldItem(
@@ -169,7 +191,8 @@ fun MainScreen(
                     NavigationBarItem(
                         selected = selected,
                         onClick = {
-                            navState.navigateToRoot(item.screen.route)
+                            performHapticFeedback(context = context, effect = hapticEffectType)
+                            navState.navigateTo(item.screen.route)
                         },
                         icon = {
                             Icon(
@@ -221,35 +244,80 @@ fun MainScreen(
             },
             checkEditingContent = {
                 CheckEditingScreen(
-                    viewModelFactory, navState
+                    viewModelFactory, navState, hapticEffectType
                 )
             },
             categoryScreenContent = {
                 CategoryScreen(
-                    viewModelFactory, paddingValue, onCategoryClicked = {})
+                    viewModelFactory = viewModelFactory,
+                    paddingValues = paddingValue,
+                    onCategoryClicked = {},
+                    hapticEffectType = hapticEffectType
+                )
             },
             settingsScreenContent = {
                 SettingScreen(
+                    hapticEffectType,
                     paddingValues = paddingValue,
-                    onSettingClicked = { },// todo
+                    onSettingClicked = { id ->
+                        when (id) {
+                            0 -> navState.navigateTo(Screen.ColorSelection.route)
+                            1 -> { /* Навигация к звукам */
+                            }
+
+                            2 -> navState.navigateTo(Screen.Haptics.route)
+                            3 -> { /* Навигация к паролю */
+                            }
+
+                            4 -> { /* Навигация к синхронизации */
+                            }
+
+                            5 -> { /* Навигация к языку */
+                            }
+
+                            6 -> { /* Навигация к "О программе" */
+                            }
+                        }
+                    },
                     isDarkTheme = isDarkTheme,
-                    onToggleDarkMode = { themeViewModel.toggleTheme(it) })
+                    onToggleDarkMode = { themeViewModel.toggleTheme(it) }
+                )
             },
             historyScreenContent = { isIncome ->
                 HistoryScreen(
+                    hapticEffectType,
                     viewModelFactory, isIncome, onHistoryItemClicked = {}, paddingValue
                 )
             },
             addTransactionContent = { transactionId ->
                 AddTransactionScreen(
-                    viewModelFactory, navState, transactionId
+                    viewModelFactory, navState, transactionId, hapticEffectType
                 )
             },
             analyticsScreenContent = { isIncome ->
                 AnalyticsScreen(
+                    hapticEffectType,
                     viewModelFactory = viewModelFactory,
                     paddingValues = paddingValue,
                     isIncome = isIncome
+                )
+            },
+            colorSelectionScreenContent = {
+                val selectedColor by themeViewModel.appColor.collectAsState()
+                ColorSelectionScreen(
+                    hapticEffectType,
+                    padding = paddingValue,
+                    selectedColor = selectedColor,
+                    onColorSelected = { newColor ->
+                        themeViewModel.setMainColor(newColor)
+                        navState.navHostController.popBackStack()
+                    }
+                )
+            },
+            hapticScreenContent = {
+                HapticScreen(
+                    paddingValues = paddingValue,
+                    viewModel = viewModel(factory = viewModelFactory)
                 )
             }
         )

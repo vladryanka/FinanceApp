@@ -19,7 +19,9 @@ fun AppNavGraph(
     settingsScreenContent: @Composable () -> Unit,
     historyScreenContent: @Composable (Boolean) -> Unit,
     addTransactionContent: @Composable (Int?) -> Unit,
-    analyticsScreenContent: @Composable (Boolean) -> Unit
+    analyticsScreenContent: @Composable (Boolean) -> Unit,
+    colorSelectionScreenContent: @Composable () -> Unit,
+    hapticScreenContent: @Composable () ->Unit
 ) {
 
     NavHost(
@@ -60,7 +62,8 @@ fun AppNavGraph(
                 }
             )
         ) { backStackEntry ->
-            val transactionId = backStackEntry.arguments?.getInt("transactionId")?.takeIf { it != -1 }
+            val transactionId =
+                backStackEntry.arguments?.getInt("transactionId")?.takeIf { it != -1 }
             addTransactionContent(transactionId)
         }
         composable(
@@ -71,6 +74,13 @@ fun AppNavGraph(
         ) { backStackEntry ->
             val isIncome = backStackEntry.arguments?.getBoolean("isIncome") ?: false
             analyticsScreenContent(isIncome)
+        }
+
+        composable(Screen.ColorSelection.route) {
+            colorSelectionScreenContent()
+        }
+        composable(Screen.Haptics.route) {
+            hapticScreenContent()
         }
     }
 }

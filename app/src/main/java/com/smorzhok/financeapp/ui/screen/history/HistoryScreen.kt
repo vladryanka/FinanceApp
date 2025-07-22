@@ -1,5 +1,6 @@
 package com.smorzhok.financeapp.ui.screen.history
 
+import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
@@ -42,13 +43,16 @@ import com.smorzhok.financeapp.ui.formatter.formatBackendTime
 import com.smorzhok.financeapp.ui.formatter.formatPrice
 import com.smorzhok.financeapp.ui.screen.commonComposable.ErrorWithRetry
 import com.smorzhok.financeapp.ui.screen.commonComposable.ListItem
+import com.smorzhok.financeapp.ui.screen.setting.performHapticFeedback
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
+@SuppressLint("NewApi")
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HistoryScreen(
+    hapticEffectType: String,
     viewModelFactory: ViewModelProvider.Factory,
     isIncome: Boolean,
     onHistoryItemClicked: (Int) -> Unit,
@@ -90,6 +94,7 @@ fun HistoryScreen(
                     ErrorWithRetry(
                         message = state.error.toString(),
                         onRetryClick = {
+                            performHapticFeedback(context = context, effect = hapticEffectType)
                             loadHistory(viewModel, fromDate, toDate, isIncome)
                         },
                         modifier = Modifier.align(Alignment.Center)
@@ -117,6 +122,7 @@ fun HistoryScreen(
                             leadingTextResId = R.string.start,
                             trailingText = fromDate.format(displayDateFormatter),
                             onClick = {
+                                performHapticFeedback(context = context, effect = hapticEffectType)
                                 val maxDateMillis = toDate.atStartOfDay(ZoneId.systemDefault())
                                     .toInstant().toEpochMilli()
                                 showDatePicker(
@@ -163,7 +169,12 @@ fun HistoryScreen(
                         GreenInfoItemClickable(
                             leadingTextResId = R.string.sum,
                             trailingText = totalSumFormatted,
-                            onClick = {},
+                            onClick = {
+                                performHapticFeedback(
+                                    context = context,
+                                    effect = hapticEffectType
+                                )
+                            },
                             isDivider = false
                         )
                     }
@@ -234,6 +245,7 @@ fun HistoryScreen(
                             },
                             downDivider = true,
                             onClick = {
+                                performHapticFeedback(context = context, effect = hapticEffectType)
                                 onHistoryItemClicked(item.id)
                             },
                             backgroundColor = MaterialTheme.colorScheme.surface,

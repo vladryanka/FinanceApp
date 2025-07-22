@@ -15,7 +15,7 @@ import androidx.work.WorkManager
 import com.smorzhok.financeapp.data.worker.SyncWorker
 import com.smorzhok.financeapp.di.FinanceApp
 import com.smorzhok.financeapp.ui.screen.FinanceRoot
-import com.smorzhok.financeapp.ui.screen.setting.ThemeViewModel
+import com.smorzhok.financeapp.ui.commonitems.ThemeViewModel
 import com.smorzhok.financeapp.ui.theme.FinanceAppTheme
 import jakarta.inject.Inject
 
@@ -37,8 +37,9 @@ class MainActivity : ComponentActivity() {
             val themeViewModel: ThemeViewModel = viewModel(factory = viewModelFactory)
             val isDarkTheme = themeViewModel.isDarkMode.collectAsState().value
             val systemTheme = isSystemInDarkTheme()
+            val colorTheme = themeViewModel.appColor.collectAsState().value
             val useDark = isDarkTheme ?: systemTheme
-            FinanceAppTheme(darkTheme = useDark) {
+            FinanceAppTheme(darkTheme = useDark, colorTheme = colorTheme) {
                 FinanceRoot(viewModelFactory, themeViewModel)
             }
         }

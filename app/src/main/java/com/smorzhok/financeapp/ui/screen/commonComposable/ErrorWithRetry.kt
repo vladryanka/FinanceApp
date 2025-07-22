@@ -14,7 +14,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.smorzhok.financeapp.R
-import com.smorzhok.financeapp.ui.theme.Green
 
 @Composable
 fun ErrorWithRetry(
@@ -43,7 +42,7 @@ fun ErrorWithRetry(
             onClick = onRetryClick,
             modifier = Modifier.padding(top = 16.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Green,
+                containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = Color.White
             )
         ) {
