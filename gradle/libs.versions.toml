@@ -24,6 +24,7 @@ firebaseCrashlyticsBuildtools = "3.0.4"
 roomCompiler = "2.7.2"
 roomKtx = "2.7.2"
 roomRuntime = "2.7.2"
+securityCrypto = "1.1.0-beta01"
 workRuntimeKtx = "2.10.2"
 
 [libraries]
@@ -33,6 +34,7 @@ androidx-datastore-preferences = { module = "androidx.datastore:datastore-prefer
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomCompiler" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
+androidx-security-crypto = { module = "androidx.security:security-crypto", version.ref = "securityCrypto" }
 assisted-inject-annotations-dagger2 = { module = "com.squareup.inject:assisted-inject-annotations-dagger2", version.ref = "assistedInjectAnnotationsDagger2" }
 assisted-inject-processor-dagger2 = { module = "com.squareup.inject:assisted-inject-processor-dagger2", version.ref = "assistedInjectAnnotationsDagger2" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }

@@ -21,7 +21,8 @@ fun AppNavGraph(
     addTransactionContent: @Composable (Int?) -> Unit,
     analyticsScreenContent: @Composable (Boolean) -> Unit,
     colorSelectionScreenContent: @Composable () -> Unit,
-    hapticScreenContent: @Composable () ->Unit
+    hapticScreenContent: @Composable () -> Unit,
+    passwordScreenContent: @Composable () -> Unit,
 ) {
 
     NavHost(
@@ -81,6 +82,9 @@ fun AppNavGraph(
         }
         composable(Screen.Haptics.route) {
             hapticScreenContent()
+        }
+        composable(Screen.PinSetup.route){
+            passwordScreenContent()
         }
     }
 }

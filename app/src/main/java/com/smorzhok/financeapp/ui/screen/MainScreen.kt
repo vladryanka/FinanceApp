@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -23,6 +24,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.smorzhok.financeapp.R
+import com.smorzhok.financeapp.data.datastore.PinCodeManager
 import com.smorzhok.financeapp.domain.model.ScaffoldItem
 import com.smorzhok.financeapp.navigation.AppNavGraph
 import com.smorzhok.financeapp.navigation.Screen
@@ -41,6 +43,7 @@ import com.smorzhok.financeapp.ui.screen.history.HistoryScreen
 import com.smorzhok.financeapp.ui.screen.incomes.IncomeScreen
 import com.smorzhok.financeapp.ui.screen.setting.ColorSelectionScreen
 import com.smorzhok.financeapp.ui.screen.setting.HapticScreen
+import com.smorzhok.financeapp.ui.screen.setting.PinSetupScreen
 import com.smorzhok.financeapp.ui.screen.setting.SettingScreen
 import com.smorzhok.financeapp.ui.screen.setting.performHapticFeedback
 
@@ -62,6 +65,7 @@ fun MainScreen(
     val settingsViewModel: HapticViewModel = viewModel(factory = viewModelFactory)
     val hapticEffectType by settingsViewModel.hapticEffect.collectAsState()
     val context = LocalContext.current
+    val pinCodeManager = remember { PinCodeManager(context) }
 
     val topBarContent = when (currentRoute) {
         Screen.Expenses.route -> ScaffoldItem(
@@ -78,6 +82,12 @@ fun MainScreen(
         )
 
         Screen.ColorSelection.route -> ScaffoldItem(
+            textResId = R.string.settings, trailingImageResId = null,
+            leadingImageResId = R.drawable.back_icon,
+            backgroundColor = MaterialTheme.colorScheme.primary
+        )
+
+        Screen.PinSetup.route -> ScaffoldItem(
             textResId = R.string.settings, trailingImageResId = null,
             leadingImageResId = R.drawable.back_icon,
             backgroundColor = MaterialTheme.colorScheme.primary
@@ -266,9 +276,7 @@ fun MainScreen(
                             }
 
                             2 -> navState.navigateTo(Screen.Haptics.route)
-                            3 -> { /* Навигация к паролю */
-                            }
-
+                            3 -> navState.navigateTo(Screen.PinSetup.route)
                             4 -> { /* Навигация к синхронизации */
                             }
 
@@ -318,6 +326,15 @@ fun MainScreen(
                 HapticScreen(
                     paddingValues = paddingValue,
                     viewModel = viewModel(factory = viewModelFactory)
+                )
+            },
+            passwordScreenContent = {
+                PinSetupScreen(
+                    onPinSet = {
+                        navState.navHostController.popBackStack()
+                    },
+                    pinCodeManager = pinCodeManager,
+                    paddingValues = paddingValue
                 )
             }
         )

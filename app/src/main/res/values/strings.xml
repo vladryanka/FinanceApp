@@ -63,6 +63,12 @@
     <string name="my_article">Мой счет</string>
     <string name="add_transaction">Добавить транзакцию</string>
     <string name="delete">Удалить</string>
+    <string name="_continue">Продолжить</string>
+    <string name="pin_do_not_match">PIN-коды не совпадают</string>
+    <string name="enter_pin">Введите PIN-код</string>
+    <string name="access_pin">Подтвердите PIN-код</string>
+    <string name="invalid_pin">Неверный PIN</string>
+    <string name="unblock">Разблокировать</string>
 
 
 </resources>
