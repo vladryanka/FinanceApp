@@ -13,9 +13,12 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -24,6 +27,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.smorzhok.financeapp.R
+import com.smorzhok.financeapp.data.datastore.LocalePreference
 import com.smorzhok.financeapp.data.datastore.PinCodeManager
 import com.smorzhok.financeapp.domain.model.ScaffoldItem
 import com.smorzhok.financeapp.navigation.AppNavGraph
@@ -44,6 +48,7 @@ import com.smorzhok.financeapp.ui.screen.incomes.IncomeScreen
 import com.smorzhok.financeapp.ui.screen.setting.ColorSelectionScreen
 import com.smorzhok.financeapp.ui.screen.setting.HapticScreen
 import com.smorzhok.financeapp.ui.screen.setting.InfoScreen
+import com.smorzhok.financeapp.ui.screen.setting.LanguageScreen
 import com.smorzhok.financeapp.ui.screen.setting.PinSetupScreen
 import com.smorzhok.financeapp.ui.screen.setting.SettingScreen
 import com.smorzhok.financeapp.ui.screen.setting.performHapticFeedback
@@ -67,6 +72,11 @@ fun MainScreen(
     val hapticEffectType by settingsViewModel.hapticEffect.collectAsState()
     val context = LocalContext.current
     val pinCodeManager = remember { PinCodeManager(context) }
+    val localePreference = remember { LocalePreference(context) }
+    var currentLanguage by remember { mutableStateOf("ru") }
+    LaunchedEffect(Unit) {
+        currentLanguage = localePreference.getLanguage()
+    }
 
     val topBarContent = when (currentRoute) {
         Screen.Expenses.route -> ScaffoldItem(
@@ -285,12 +295,8 @@ fun MainScreen(
                             3 -> navState.navigateTo(Screen.PinSetup.route)
                             4 -> { /* Навигация к синхронизации */
                             }
-
-                            5 -> { /* Навигация к языку */
-                            }
-
-                            6 -> { navState.navigateTo(Screen.Info.route)
-                            }
+                            5 -> navState.navigateTo(Screen.Language.route)
+                            6 -> navState.navigateTo(Screen.Info.route)
                         }
                     },
                     isDarkTheme = isDarkTheme,
@@ -345,6 +351,13 @@ fun MainScreen(
             },
             infoScreenContent = {
                 InfoScreen(paddingValues = paddingValue)
+            },
+            languageScreenContent = {
+                LanguageScreen(
+                    paddingValues = paddingValue,
+                    currentLanguage = currentLanguage,
+                    localePreference = localePreference
+                )
             }
         )
     }

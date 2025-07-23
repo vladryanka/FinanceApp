@@ -2,6 +2,7 @@ package com.smorzhok.financeapp.di
 
 import android.app.Application
 import com.smorzhok.financeapp.data.datastore.HapticPreference
+import com.smorzhok.financeapp.data.datastore.LocalePreference
 import com.smorzhok.financeapp.data.datastore.ThemeColorPreference
 import com.smorzhok.financeapp.data.datastore.ThemePreference
 import dagger.Module
@@ -27,4 +28,12 @@ object PreferenceModule {
     fun provideHapticPreference(application: Application): HapticPreference {
         return HapticPreference(application)
     }
+
+    @Provides
+    @AppScope
+    fun provideLocalePreference(application: Application): LocalePreference {
+        return LocalePreference(application)
+    }
+
+
 }

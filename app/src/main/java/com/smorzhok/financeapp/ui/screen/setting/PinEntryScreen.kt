@@ -48,7 +48,7 @@ fun PinEntryScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Введите PIN", style = MaterialTheme.typography.headlineSmall)
+            Text(stringResource(R.string.enter_pin), style = MaterialTheme.typography.headlineSmall)
 
             Spacer(Modifier.height(24.dp))
 

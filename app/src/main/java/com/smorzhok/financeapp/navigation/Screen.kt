@@ -23,6 +23,7 @@ sealed class Screen(val route: String) {
     object Haptics : Screen(ROUTE_HAPTICS)
     object PinSetup : Screen(ROUTE_PINSETUP)
     object Info : Screen(ROUTE_INFO)
+    object Language : Screen(ROUTE_LANGUAGE)
 
     private companion object {
         const val ROUTE_EXPENSES = "expenses"
@@ -38,5 +39,6 @@ sealed class Screen(val route: String) {
         private const val ROUTE_HAPTICS = "haptics"
         private const val ROUTE_PINSETUP = "pin_setup"
         private const val ROUTE_INFO = "info"
+        private const val ROUTE_LANGUAGE = "language"
     }
 }

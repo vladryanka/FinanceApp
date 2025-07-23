@@ -9,6 +9,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.smorzhok.financeapp.data.model.colors.AppColorTheme
 import com.smorzhok.financeapp.di.AppScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -73,5 +74,19 @@ class HapticPreference @Inject constructor(@AppScope private val context: Contex
 
     suspend fun setEffect(effect: String) {
         context.appDataStore.edit { it[HapticPreferenceKeys.EFFECT] = effect }
+    }
+}
+
+class LocalePreference @Inject constructor(@AppScope private val context: Context) {
+    private val LANGUAGE_KEY = stringPreferencesKey("language")
+
+    suspend fun saveLanguage(langCode: String) {
+        context.appDataStore.edit { prefs ->
+            prefs[LANGUAGE_KEY] = langCode
+        }
+    }
+
+    suspend fun getLanguage(): String {
+        return context.appDataStore.data.map { it[LANGUAGE_KEY] ?: "ru" }.first()
     }
 }

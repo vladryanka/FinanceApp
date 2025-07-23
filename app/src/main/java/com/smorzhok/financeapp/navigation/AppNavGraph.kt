@@ -24,6 +24,7 @@ fun AppNavGraph(
     hapticScreenContent: @Composable () -> Unit,
     passwordScreenContent: @Composable () -> Unit,
     infoScreenContent: @Composable () -> Unit,
+    languageScreenContent: @Composable () -> Unit,
 ) {
 
     NavHost(
@@ -77,7 +78,6 @@ fun AppNavGraph(
             val isIncome = backStackEntry.arguments?.getBoolean("isIncome") ?: false
             analyticsScreenContent(isIncome)
         }
-
         composable(Screen.ColorSelection.route) {
             colorSelectionScreenContent()
         }
@@ -90,7 +90,8 @@ fun AppNavGraph(
         composable(Screen.Info.route){
             infoScreenContent()
         }
-
-
+        composable(Screen.Language.route) {
+            languageScreenContent()
+        }
     }
 }
