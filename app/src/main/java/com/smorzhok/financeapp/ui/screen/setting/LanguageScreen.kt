@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -47,9 +46,8 @@ fun LanguageScreen(
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(paddingValues)
-            .padding(horizontal = 16.dp, vertical = 24.dp)
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = paddingValues.calculateTopPadding()+8.dp)
     ) {
         Text(
             text = stringResource(id = R.string.language),

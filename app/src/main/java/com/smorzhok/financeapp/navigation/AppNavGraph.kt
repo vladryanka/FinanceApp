@@ -25,6 +25,7 @@ fun AppNavGraph(
     passwordScreenContent: @Composable () -> Unit,
     infoScreenContent: @Composable () -> Unit,
     languageScreenContent: @Composable () -> Unit,
+    syncScreenContent: @Composable () ->Unit
 ) {
 
     NavHost(
@@ -84,14 +85,17 @@ fun AppNavGraph(
         composable(Screen.Haptics.route) {
             hapticScreenContent()
         }
-        composable(Screen.PinSetup.route){
+        composable(Screen.PinSetup.route) {
             passwordScreenContent()
         }
-        composable(Screen.Info.route){
+        composable(Screen.Info.route) {
             infoScreenContent()
         }
         composable(Screen.Language.route) {
             languageScreenContent()
+        }
+        composable(Screen.Sync.route) {
+            syncScreenContent()
         }
     }
 }

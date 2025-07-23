@@ -69,4 +69,8 @@
     <string name="access_pin">Confirm PIN code</string>
     <string name="invalid_pin">Invalid PIN</string>
     <string name="unblock">Unblock</string>
+    <string name="click">Short</string>
+    <string name="text_handle_move">Long</string>
+    <string name="enable_haptics">Enable Haptics</string>
+    <string name="choose_effect">Choose Effect:</string>
 </resources>

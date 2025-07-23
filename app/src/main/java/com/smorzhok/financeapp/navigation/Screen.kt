@@ -24,6 +24,7 @@ sealed class Screen(val route: String) {
     object PinSetup : Screen(ROUTE_PINSETUP)
     object Info : Screen(ROUTE_INFO)
     object Language : Screen(ROUTE_LANGUAGE)
+    object Sync : Screen(ROUTE_SYNC)
 
     private companion object {
         const val ROUTE_EXPENSES = "expenses"
@@ -40,5 +41,6 @@ sealed class Screen(val route: String) {
         private const val ROUTE_PINSETUP = "pin_setup"
         private const val ROUTE_INFO = "info"
         private const val ROUTE_LANGUAGE = "language"
+        private const val ROUTE_SYNC = "sync"
     }
 }

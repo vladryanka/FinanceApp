@@ -2,6 +2,7 @@ package com.smorzhok.financeapp.ui.screen
 
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -26,9 +27,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.WorkManager
 import com.smorzhok.financeapp.R
 import com.smorzhok.financeapp.data.datastore.LocalePreference
 import com.smorzhok.financeapp.data.datastore.PinCodeManager
+import com.smorzhok.financeapp.data.datastore.SyncPreference
+import com.smorzhok.financeapp.data.worker.SyncWorker
 import com.smorzhok.financeapp.domain.model.ScaffoldItem
 import com.smorzhok.financeapp.navigation.AppNavGraph
 import com.smorzhok.financeapp.navigation.Screen
@@ -51,6 +56,7 @@ import com.smorzhok.financeapp.ui.screen.setting.InfoScreen
 import com.smorzhok.financeapp.ui.screen.setting.LanguageScreen
 import com.smorzhok.financeapp.ui.screen.setting.PinSetupScreen
 import com.smorzhok.financeapp.ui.screen.setting.SettingScreen
+import com.smorzhok.financeapp.ui.screen.setting.SyncScreen
 import com.smorzhok.financeapp.ui.screen.setting.performHapticFeedback
 
 @SuppressLint("NewApi")
@@ -103,6 +109,7 @@ fun MainScreen(
             leadingImageResId = R.drawable.back_icon,
             backgroundColor = MaterialTheme.colorScheme.primary
         )
+
         Screen.Info.route -> ScaffoldItem(
             textResId = R.string.settings, trailingImageResId = null,
             leadingImageResId = R.drawable.back_icon,
@@ -149,6 +156,19 @@ fun MainScreen(
             backgroundColor = MaterialTheme.colorScheme.surface
         )
 
+        Screen.Sync.route -> ScaffoldItem(
+            textResId = R.string.settings,
+            trailingImageResId = null,
+            leadingImageResId = R.drawable.back_icon,
+            backgroundColor = MaterialTheme.colorScheme.primary
+        )
+        Screen.Language.route -> ScaffoldItem(
+            textResId = R.string.settings,
+            trailingImageResId = null,
+            leadingImageResId = R.drawable.back_icon,
+            backgroundColor = MaterialTheme.colorScheme.primary
+        )
+
         else -> null
     }
 
@@ -189,8 +209,7 @@ fun MainScreen(
 
                                     Screen.History.route -> {
                                         val isIncome =
-                                            navBackStackEntry?.arguments?.getBoolean("isIncome")
-                                                ?: false
+                                            navBackStackEntry?.arguments?.getBoolean("isIncome") == true
                                         navState.navigateTo(
                                             Screen.Analytics.createRoute(isIncome),
                                             usePopUpTo = false
@@ -287,16 +306,16 @@ fun MainScreen(
                     paddingValues = paddingValue,
                     onSettingClicked = { id ->
                         when (id) {
-                            0 -> navState.navigateTo(Screen.ColorSelection.route)
-                            1 -> { /* Навигация к звукам */
-                            }
-
-                            2 -> navState.navigateTo(Screen.Haptics.route)
-                            3 -> navState.navigateTo(Screen.PinSetup.route)
-                            4 -> { /* Навигация к синхронизации */
-                            }
-                            5 -> navState.navigateTo(Screen.Language.route)
-                            6 -> navState.navigateTo(Screen.Info.route)
+                            0 -> navState.navigateTo(
+                                Screen.ColorSelection.route,
+                                usePopUpTo = false
+                            )
+                            1 -> { /* Навигация к звукам */}
+                            2 -> navState.navigateTo(Screen.Haptics.route, usePopUpTo = false)
+                            3 -> navState.navigateTo(Screen.PinSetup.route, usePopUpTo = false)
+                            4 -> navState.navigateTo(Screen.Sync.route, usePopUpTo = false)
+                            5 -> navState.navigateTo(Screen.Language.route, usePopUpTo = false)
+                            6 -> navState.navigateTo(Screen.Info.route, usePopUpTo = false)
                         }
                     },
                     isDarkTheme = isDarkTheme,
@@ -358,6 +377,16 @@ fun MainScreen(
                     currentLanguage = currentLanguage,
                     localePreference = localePreference
                 )
+            },
+            syncScreenContent = {
+                SyncScreen(
+                    paddingValues = paddingValue,
+                    currentIntervalHours = SyncPreference(context).getIntervalHours(),
+                    onIntervalChange = {
+                        SyncPreference(context).setIntervalHours(it)
+                        restartWorker(it, context)
+                    }
+                )
             }
         )
     }
@@ -365,4 +394,14 @@ fun MainScreen(
 
 private fun extractBaseRoute(route: String?): String? {
     return route?.substringBefore("?")
+}
+
+private fun restartWorker(interval: Int, context: Context) {
+    val workRequest = SyncWorker.makeRequest(interval)
+
+    WorkManager.getInstance(context).enqueueUniquePeriodicWork(
+        SyncWorker.WORK_NAME,
+        ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE,
+        workRequest
+    )
 }

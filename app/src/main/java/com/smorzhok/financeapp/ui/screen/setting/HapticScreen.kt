@@ -26,6 +26,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.smorzhok.financeapp.ui.commonitems.HapticViewModel
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.res.stringResource
+import com.smorzhok.financeapp.R
 
 @RequiresApi(Build.VERSION_CODES.Q)
 @Composable
@@ -36,7 +38,7 @@ fun HapticScreen(
     val hapticEnabled by viewModel.hapticEnabled.collectAsState()
     val currentEffect by viewModel.hapticEffect.collectAsState()
 
-    val effects = listOf("CLICK", "TEXT_HANDLE_MOVE")
+    val effects = listOf(stringResource(R.string.click), stringResource(R.string.text_handle_move))
     val context = LocalContext.current
 
     Column(
@@ -45,13 +47,13 @@ fun HapticScreen(
             horizontal = 16.dp
         )
     ) {
-        Text("Haptics", style = MaterialTheme.typography.titleLarge)
+        Text(stringResource(R.string.haptics), style = MaterialTheme.typography.titleLarge)
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(vertical = 16.dp)
         ) {
-            Text("Enable Haptics")
+            Text(stringResource(R.string.enable_haptics))
             Spacer(modifier = Modifier.weight(1f))
             Switch(checked = hapticEnabled, onCheckedChange = {
                 viewModel.toggleHaptic(it)
@@ -59,7 +61,7 @@ fun HapticScreen(
         }
 
         if (hapticEnabled) {
-            Text("Choose Effect:")
+            Text(stringResource(R.string.choose_effect))
             Spacer(Modifier.height(8.dp))
             effects.forEach { effect ->
                 Row(

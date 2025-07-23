@@ -51,7 +51,7 @@ class MainActivity : ComponentActivity() {
         WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
             SyncWorker.WORK_NAME,
             ExistingPeriodicWorkPolicy.KEEP,
-            SyncWorker.makeRequest()
+            SyncWorker.makeRequest(1)
         )
     }
     override fun attachBaseContext(newBase: Context) {
@@ -61,5 +61,7 @@ class MainActivity : ComponentActivity() {
         val context = LocaleManager.setLocale(newBase, localeCode)
         super.attachBaseContext(context)
     }
+
 }
+
 

@@ -106,4 +106,6 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.core)
     implementation (libs.androidx.security.crypto)
+
+    implementation(libs.androidx.startup.runtime)
 }

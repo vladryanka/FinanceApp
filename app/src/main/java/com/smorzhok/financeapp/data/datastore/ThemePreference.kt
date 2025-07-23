@@ -90,3 +90,15 @@ class LocalePreference @Inject constructor(@AppScope private val context: Contex
         return context.appDataStore.data.map { it[LANGUAGE_KEY] ?: "ru" }.first()
     }
 }
+
+class SyncPreference @Inject constructor(context: Context) {
+    private val prefs = context.getSharedPreferences("sync_prefs", Context.MODE_PRIVATE)
+
+    fun getIntervalHours(): Int {
+        return prefs.getInt("interval_hours", 2)
+    }
+
+    fun setIntervalHours(hours: Int) {
+        prefs.edit().putInt("interval_hours", hours).apply()
+    }
+}
