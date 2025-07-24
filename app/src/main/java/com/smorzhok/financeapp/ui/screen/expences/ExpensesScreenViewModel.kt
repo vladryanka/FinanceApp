@@ -1,5 +1,6 @@
 package com.smorzhok.financeapp.ui.screen.expences
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -29,6 +30,8 @@ class ExpensesScreenViewModel @Inject constructor(
         viewModelScope.launch {
             _expenseList.value = UiState.Loading
 
+            Log.d("Doing", "мы тут")
+
             try {
                 val accounts = getAccountUseCase()
                 if (accounts.isEmpty()) {
@@ -52,6 +55,7 @@ class ExpensesScreenViewModel @Inject constructor(
             } catch (e: Exception) {
                 e.printStackTrace()
                 _expenseList.value = UiState.Error(ErrorList.ServerError)
+                Log.d("Doing", e.toString())
             }
         }
     }

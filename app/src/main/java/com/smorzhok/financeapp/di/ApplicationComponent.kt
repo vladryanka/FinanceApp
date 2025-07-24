@@ -13,7 +13,8 @@ import dagger.Component
         DatabaseModule::class,
         RemoteDataModule::class,
         LocalDataModule::class,
-        WorkerBindingModule:: class
+        WorkerBindingModule:: class,
+        PreferenceModule::class
     ]
 )
 interface ApplicationComponent {

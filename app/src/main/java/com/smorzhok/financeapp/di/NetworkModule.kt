@@ -1,7 +1,7 @@
 package com.smorzhok.financeapp.di
 
-import com.smorzhok.financeapp.data.remote.FinanceApi
-import com.smorzhok.financeapp.data.remote.FinanceApiService
+import com.smorzhok.network.FinanceApi
+import com.smorzhok.network.FinanceApiService
 import dagger.Module
 import dagger.Provides
 

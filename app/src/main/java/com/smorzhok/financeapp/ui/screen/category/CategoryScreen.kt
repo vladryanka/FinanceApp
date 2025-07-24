@@ -1,5 +1,7 @@
 package com.smorzhok.financeapp.ui.screen.category
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,6 +23,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -31,9 +34,12 @@ import com.smorzhok.financeapp.R
 import com.smorzhok.financeapp.ui.commonitems.UiState
 import com.smorzhok.financeapp.ui.screen.commonComposable.ErrorWithRetry
 import com.smorzhok.financeapp.ui.screen.commonComposable.ListItem
+import com.smorzhok.financeapp.ui.screen.setting.performHapticFeedback
 
+@RequiresApi(Build.VERSION_CODES.Q)
 @Composable
 fun CategoryScreen(
+    hapticEffectType: String,
     viewModelFactory: ViewModelProvider.Factory,
     paddingValues: PaddingValues,
     onCategoryClicked: (Int) -> Unit
@@ -44,6 +50,8 @@ fun CategoryScreen(
 
     val filteredCategories by viewModel.filteredCategories.collectAsStateWithLifecycle()
     val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
+
+    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         viewModel.loadCategories()
@@ -62,7 +70,7 @@ fun CategoryScreen(
             leadingContent = {
                 BasicTextField(
                     value = searchQuery,
-                    onValueChange = {  viewModel.updateSearchQuery(it) },
+                    onValueChange = { viewModel.updateSearchQuery(it) },
                     singleLine = true,
                     textStyle = MaterialTheme.typography.bodyLarge.copy(
                         color = MaterialTheme.colorScheme.onSurface
@@ -90,7 +98,7 @@ fun CategoryScreen(
                 )
             },
             downDivider = true,
-            onClick = { },
+            onClick = { performHapticFeedback(context = context, effect = hapticEffectType) },
             backgroundColor = MaterialTheme.colorScheme.surfaceContainerHigh,
             verticalPadding = 16.0
         )
@@ -131,7 +139,10 @@ fun CategoryScreen(
                             },
                             trailingContent = {},
                             downDivider = true,
-                            onClick = { onCategoryClicked(item.id) },
+                            onClick = {
+                                performHapticFeedback(context = context, effect = hapticEffectType)
+                                onCategoryClicked(item.id)
+                            },
                             backgroundColor = MaterialTheme.colorScheme.surface,
                             verticalPadding = 22.0
                         )

@@ -9,11 +9,21 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import com.smorzhok.financeapp.data.model.colors.AppColorTheme
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = GreenDark,
+    secondary = SecondaryColorDark,
+    tertiary = TertiaryColorDark,
+
+    surface = SurfaceColorDark,
+    surfaceContainer = SurfaceContainerColorDark,
+    onSurface = OnSurfaceColorDark,
+    outlineVariant = OutlineVariantColorDark,
+    outline = OutlineColorDark,
+    surfaceVariant = SurfaceVariantDarkColor,
+    surfaceContainerHigh = SurfaceContainerHighDarkColor,
+    error = ErrorColorDark
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -28,13 +38,13 @@ private val LightColorScheme = lightColorScheme(
     outline = OutlineColorLight,
     surfaceVariant = SurfaceVariantLightColor,
     surfaceContainerHigh = SurfaceContainerHighLightColor,
-    error = ErrorColorLight
+    error = ErrorColor
 )
 
 @Composable
 fun FinanceAppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
+    colorTheme: AppColorTheme = AppColorTheme.GREEN,
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
@@ -44,8 +54,33 @@ fun FinanceAppTheme(
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
 
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+        darkTheme -> darkColorScheme(
+            primary = colorTheme.primary,
+            secondary = SecondaryColorDark,
+            tertiary = TertiaryColorDark,
+            surface = SurfaceColorDark,
+            surfaceContainer = SurfaceContainerColorDark,
+            onSurface = OnSurfaceColorDark,
+            outlineVariant = OutlineVariantColorDark,
+            outline = OutlineColorDark,
+            surfaceVariant = SurfaceVariantDarkColor,
+            surfaceContainerHigh = SurfaceContainerHighDarkColor,
+            error = ErrorColorDark
+        )
+
+        else -> lightColorScheme(
+            primary = colorTheme.primary,
+            secondary = SecondaryColorLight,
+            tertiary = TertiaryColorLight,
+            surface = SurfaceColorLight,
+            surfaceContainer = SurfaceContainerColorLight,
+            onSurface = OnSurfaceColorLight,
+            outlineVariant = OutlineVariantColorLight,
+            outline = OutlineColorLight,
+            surfaceVariant = SurfaceVariantLightColor,
+            surfaceContainerHigh = SurfaceContainerHighLightColor,
+            error = ErrorColor
+        )
     }
 
     MaterialTheme(

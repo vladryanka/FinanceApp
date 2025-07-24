@@ -1,5 +1,7 @@
 package com.smorzhok.financeapp.ui.screen.check.main_check
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,8 +37,9 @@ import com.smorzhok.financeapp.ui.formatter.formatPrice
 import com.smorzhok.financeapp.ui.screen.check.CheckScreenViewModel
 import com.smorzhok.financeapp.ui.screen.commonComposable.ErrorWithRetry
 import com.smorzhok.financeapp.ui.screen.commonComposable.ListItem
-import com.smorzhok.financeapp.ui.theme.Green
+import com.smorzhok.graphics.DailyBarChart
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CheckScreen(
     viewModelFactory: ViewModelProvider.Factory,
@@ -49,6 +52,7 @@ fun CheckScreen(
     )
 
     val checkState by viewModel.checkState.collectAsStateWithLifecycle()
+    val dailyStats by viewModel.dailyStats.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.loadAccount()
@@ -81,6 +85,8 @@ fun CheckScreen(
 
                 is UiState.Success -> {
                     val check = state.data
+                    val stats = dailyStats
+
                     Column {
                         ListItem(
                             leadingContent = {
@@ -95,9 +101,7 @@ fun CheckScreen(
                                             ),
                                         contentAlignment = Alignment.Center
                                     ) {
-                                        Text(
-                                            text = stringResource(R.string.money_icon)
-                                        )
+                                        Text(text = stringResource(R.string.money_icon))
                                     }
                                     Text(
                                         text = stringResource(R.string.balance),
@@ -121,6 +125,7 @@ fun CheckScreen(
                             backgroundColor = MaterialTheme.colorScheme.secondary,
                             verticalPadding = 16.0
                         )
+
                         ListItem(
                             leadingContent = {
                                 Text(
@@ -144,6 +149,17 @@ fun CheckScreen(
                             backgroundColor = MaterialTheme.colorScheme.secondary,
                             verticalPadding = 16.0
                         )
+
+                        if (stats.isNotEmpty()) {
+                            DailyBarChart(stats = stats)
+                        } else {
+                            Text(
+                                text = stringResource(R.string.no_data_for_graph),
+                                modifier = Modifier.padding(16.dp),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
                     }
                 }
 
@@ -169,7 +185,7 @@ fun CheckScreen(
                     bottom = paddingValues.calculateBottomPadding() + 14.dp
                 ),
             shape = CircleShape,
-            containerColor = Green,
+            containerColor = MaterialTheme.colorScheme.primary,
             elevation = FloatingActionButtonDefaults.elevation(0.dp)
         ) {
             Icon(

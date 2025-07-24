@@ -19,6 +19,12 @@ sealed class Screen(val route: String) {
             return "$route?isIncome=$isIncome"
         }
     }
+    object ColorSelection : Screen(ROUTE_COLOR_SELECTION)
+    object Haptics : Screen(ROUTE_HAPTICS)
+    object PinSetup : Screen(ROUTE_PINSETUP)
+    object Info : Screen(ROUTE_INFO)
+    object Language : Screen(ROUTE_LANGUAGE)
+    object Sync : Screen(ROUTE_SYNC)
 
     private companion object {
         const val ROUTE_EXPENSES = "expenses"
@@ -30,5 +36,11 @@ sealed class Screen(val route: String) {
         const val ROUTE_HISTORY = "history/{isIncome}"
         const val ROUTE_ANALYTICS = "analytics"
         const val ROUTE_ADD_TRANSACTION = "add_transaction"
+        const val ROUTE_COLOR_SELECTION = "color_selection"
+        private const val ROUTE_HAPTICS = "haptics"
+        private const val ROUTE_PINSETUP = "pin_setup"
+        private const val ROUTE_INFO = "info"
+        private const val ROUTE_LANGUAGE = "language"
+        private const val ROUTE_SYNC = "sync"
     }
 }

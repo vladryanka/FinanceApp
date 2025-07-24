@@ -1,5 +1,6 @@
 package com.smorzhok.financeapp.ui.screen.analytics
 
+import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -36,19 +38,23 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.smorzhok.financeapp.R
+import com.smorzhok.financeapp.domain.model.toModel
 import com.smorzhok.financeapp.ui.commonitems.UiState
 import com.smorzhok.financeapp.ui.commonitems.showDatePicker
 import com.smorzhok.financeapp.ui.formatter.formatLocalDateToMonthYear
 import com.smorzhok.financeapp.ui.formatter.formatPrice
 import com.smorzhok.financeapp.ui.screen.commonComposable.ErrorWithRetry
 import com.smorzhok.financeapp.ui.screen.commonComposable.ListItem
+import com.smorzhok.financeapp.ui.screen.setting.performHapticFeedback
 import com.smorzhok.financeapp.ui.theme.Green
+import com.smorzhok.graphics.CategoryPieChart
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AnalyticsScreen(
+    hapticEffectType: String,
     viewModelFactory: ViewModelProvider.Factory,
     paddingValues: PaddingValues,
     isIncome: Boolean
@@ -87,6 +93,7 @@ fun AnalyticsScreen(
                     ErrorWithRetry(
                         message = state.error.toString(),
                         onRetryClick = {
+                            performHapticFeedback(context = context, effect = hapticEffectType)
                             loadCategories(viewModel, fromDate, toDate, isIncome)
                         },
                         modifier = Modifier.align(Alignment.Center)
@@ -128,11 +135,18 @@ fun AnalyticsScreen(
                                             },
                                             context = context
                                         )
-                                    }
+                                    },
+                                    context = context,
+                                    hapticEffectType = hapticEffectType
                                 )
                             },
                             downDivider = true,
-                            onClick = { },
+                            onClick = {
+                                performHapticFeedback(
+                                    context = context,
+                                    effect = hapticEffectType
+                                )
+                            },
                             backgroundColor = MaterialTheme.colorScheme.surface,
                             verticalPadding = 4.0
                         )
@@ -159,11 +173,18 @@ fun AnalyticsScreen(
                                             minDate = fromDate.toEpochDay() * 24 * 60 * 60 * 1000,
                                             context = context
                                         )
-                                    }
+                                    },
+                                    context = context,
+                                    hapticEffectType = hapticEffectType
                                 )
                             },
                             downDivider = true,
-                            onClick = { },
+                            onClick = {
+                                performHapticFeedback(
+                                    context = context,
+                                    effect = hapticEffectType
+                                )
+                            },
                             backgroundColor = MaterialTheme.colorScheme.surface,
                             verticalPadding = 4.0
                         )
@@ -186,11 +207,28 @@ fun AnalyticsScreen(
                                 )
                             },
                             downDivider = true,
-                            onClick = {},
+                            onClick = {
+                                performHapticFeedback(
+                                    context = context,
+                                    effect = hapticEffectType
+                                )
+                            },
                             backgroundColor = MaterialTheme.colorScheme.surface,
                             verticalPadding = 16.0,
                         )
                     }
+
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            val data = categoryList.map { it.toModel() }
+                            CategoryPieChart(data = data,total = totalSum)
+                        }
+                    }
+
                     if (categoryList.isEmpty()) {
                         item {
                             Text(
@@ -245,7 +283,12 @@ fun AnalyticsScreen(
 
                                 },
                                 downDivider = true,
-                                onClick = {},
+                                onClick = {
+                                    performHapticFeedback(
+                                        context = context,
+                                        effect = hapticEffectType
+                                    )
+                                },
                                 backgroundColor = MaterialTheme.colorScheme.surface,
                                 verticalPadding = 10.5
                             )
@@ -274,10 +317,14 @@ private fun loadCategories(
 @Composable
 fun GreenChip(
     text: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    hapticEffectType: String, context: Context
 ) {
     AssistChip(
-        onClick = { onClick() },
+        onClick = {
+            performHapticFeedback(context = context, effect = hapticEffectType)
+            onClick()
+        },
         label = {
             Text(
                 text = text,

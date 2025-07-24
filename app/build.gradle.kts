@@ -23,6 +23,18 @@ android {
     namespace = "com.smorzhok.financeapp"
     compileSdk = 35
 
+    packaging {
+        resources {
+            excludes += listOf(
+                "META-INF/LICENSE.md",
+                "META-INF/LICENSE-notice.md",
+                "META-INF/DEPENDENCIES",
+                "META-INF/LICENSE",
+                "META-INF/NOTICE"
+            )
+        }
+    }
+
     defaultConfig {
         applicationId = "com.smorzhok.financeapp"
         minSdk = 24
@@ -63,6 +75,9 @@ android {
 
 dependencies {
 
+    implementation(project(":graphics"))
+    implementation(project(":network"))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -76,18 +91,14 @@ dependencies {
 
     implementation(libs.dagger)
     implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.androidx.junit.ktx)
+    implementation(libs.androidx.ui.test.junit4.android)
     kapt(libs.dagger.compiler)
     kapt(libs.androidx.room.compiler)
     implementation (libs.assisted.inject.annotations.dagger2)
     kapt (libs.assisted.inject.processor.dagger2)
 
-
     implementation(libs.retrofit)
-    implementation(libs.retrofit2.kotlinx.serialization.converter)
-    implementation(libs.okhttp)
-    implementation(libs.logging.interceptor)
-    implementation(libs.jackson.databind)
-    implementation(libs.kotlinx.serialization.json)
 
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.firebase.crashlytics.buildtools)
@@ -102,4 +113,13 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.core)
+    implementation (libs.androidx.security.crypto)
+
+    implementation(libs.androidx.startup.runtime)
+    androidTestImplementation(libs.androidx.runner)
+    testImplementation(libs.mockk)
+    androidTestImplementation(libs.mockk.android)
 }

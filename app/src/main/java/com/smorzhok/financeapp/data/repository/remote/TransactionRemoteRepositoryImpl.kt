@@ -2,10 +2,10 @@ package com.smorzhok.financeapp.data.repository.remote
 
 import com.smorzhok.financeapp.data.mapper.toDomain
 import com.smorzhok.financeapp.data.mapper.toTransactionRequest
-import com.smorzhok.financeapp.data.remote.FinanceApiService
 import com.smorzhok.financeapp.data.retryWithBackoff
 import com.smorzhok.financeapp.domain.model.Transaction
 import com.smorzhok.financeapp.domain.repository.remote.TransactionRemoteRepository
+import com.smorzhok.network.FinanceApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
