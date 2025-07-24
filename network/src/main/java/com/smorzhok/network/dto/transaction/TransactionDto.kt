@@ -1,7 +1,7 @@
-package com.smorzhok.financeapp.data.model.dto.transaction
+package com.smorzhok.network.dto.transaction
 
-import com.smorzhok.financeapp.data.model.dto.category.CategoryDto
-import com.smorzhok.financeapp.data.model.dto.account.AccountBrief
+import com.smorzhok.network.dto.category.CategoryDto
+import com.smorzhok.network.dto.account.AccountBrief
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

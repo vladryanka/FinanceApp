@@ -3,11 +3,6 @@ package com.smorzhok.financeapp.data.mapper
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.smorzhok.financeapp.R
-import com.smorzhok.financeapp.data.model.dto.account.AccountDto
-import com.smorzhok.financeapp.data.model.dto.account.AccountUpdateRequest
-import com.smorzhok.financeapp.data.model.dto.category.CategoryDto
-import com.smorzhok.financeapp.data.model.dto.transaction.TransactionDto
-import com.smorzhok.financeapp.data.model.dto.transaction.TransactionRequest
 import com.smorzhok.financeapp.data.database.entity.AccountEntity
 import com.smorzhok.financeapp.data.database.entity.CategoryEntity
 import com.smorzhok.financeapp.data.database.entity.TransactionEntity
@@ -15,6 +10,11 @@ import com.smorzhok.financeapp.domain.model.Account
 import com.smorzhok.financeapp.domain.model.Category
 import com.smorzhok.financeapp.domain.model.Transaction
 import com.smorzhok.financeapp.domain.model.TransactionEdit
+import com.smorzhok.network.dto.account.AccountDto
+import com.smorzhok.network.dto.account.AccountUpdateRequest
+import com.smorzhok.network.dto.category.CategoryDto
+import com.smorzhok.network.dto.transaction.TransactionDto
+import com.smorzhok.network.dto.transaction.TransactionRequest
 import java.time.OffsetDateTime
 
 fun TransactionDto.toDomain(): Transaction = Transaction(
@@ -136,6 +136,3 @@ fun Account.toEntity() = AccountEntity(
     balance = this.balance,
     currency = this.currency
 )
-
-
-

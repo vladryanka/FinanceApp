@@ -30,6 +30,8 @@ class ExpensesScreenViewModel @Inject constructor(
         viewModelScope.launch {
             _expenseList.value = UiState.Loading
 
+            Log.d("Doing", "мы тут")
+
             try {
                 val accounts = getAccountUseCase()
                 if (accounts.isEmpty()) {
@@ -50,11 +52,10 @@ class ExpensesScreenViewModel @Inject constructor(
                     else -> UiState.Error(ErrorList.ServerError)
                 }
 
-                Log.d("Doing", e.message())
-
             } catch (e: Exception) {
                 e.printStackTrace()
                 _expenseList.value = UiState.Error(ErrorList.ServerError)
+                Log.d("Doing", e.toString())
             }
         }
     }

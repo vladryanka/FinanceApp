@@ -1,4 +1,4 @@
-package com.smorzhok.financeapp.data.model.dto.transaction
+package com.smorzhok.network.dto.transaction
 
 import kotlinx.serialization.Serializable
 

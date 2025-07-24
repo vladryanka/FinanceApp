@@ -76,6 +76,7 @@ android {
 dependencies {
 
     implementation(project(":graphics"))
+    implementation(project(":network"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -97,13 +98,7 @@ dependencies {
     implementation (libs.assisted.inject.annotations.dagger2)
     kapt (libs.assisted.inject.processor.dagger2)
 
-
     implementation(libs.retrofit)
-    implementation(libs.retrofit2.kotlinx.serialization.converter)
-    implementation(libs.okhttp)
-    implementation(libs.logging.interceptor)
-    implementation(libs.jackson.databind)
-    implementation(libs.kotlinx.serialization.json)
 
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.firebase.crashlytics.buildtools)

@@ -1,6 +1,7 @@
-package com.smorzhok.financeapp.data.model.dto.account
+package com.smorzhok.network.dto.account
 
 import kotlinx.serialization.Serializable
+
 /*сущность с бэка AccountDto*/
 @Serializable
 data class AccountDto(

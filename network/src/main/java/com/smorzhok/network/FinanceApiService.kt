@@ -1,13 +1,13 @@
-package com.smorzhok.financeapp.data.remote
+package com.smorzhok.network
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
-import com.smorzhok.financeapp.data.model.dto.account.AccountDto
-import com.smorzhok.financeapp.data.model.dto.account.AccountHistoryResponse
-import com.smorzhok.financeapp.data.model.dto.account.AccountUpdateRequest
-import com.smorzhok.financeapp.data.model.dto.category.CategoryDto
-import com.smorzhok.financeapp.data.model.dto.transaction.TransactionDto
-import com.smorzhok.financeapp.data.model.dto.transaction.TransactionRequest
-import com.smorzhok.financeapp.data.model.dto.transaction.TransactionResponse
+import com.smorzhok.network.dto.account.AccountDto
+import com.smorzhok.network.dto.account.AccountHistoryResponse
+import com.smorzhok.network.dto.account.AccountUpdateRequest
+import com.smorzhok.network.dto.category.CategoryDto
+import com.smorzhok.network.dto.transaction.TransactionDto
+import com.smorzhok.network.dto.transaction.TransactionRequest
+import com.smorzhok.network.dto.transaction.TransactionResponse
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient

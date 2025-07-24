@@ -5,8 +5,8 @@ import androidx.work.Configuration
 import com.smorzhok.financeapp.BuildConfig
 import com.smorzhok.financeapp.data.datastore.LocaleManager
 import com.smorzhok.financeapp.data.datastore.LocalePreference
-import com.smorzhok.financeapp.data.remote.FinanceApi
 import com.smorzhok.financeapp.data.worker.DaggerWorkerFactory
+import com.smorzhok.network.FinanceApi
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 

@@ -12,7 +12,7 @@ import com.smorzhok.financeapp.data.database.FinanceDatabase
 import com.smorzhok.financeapp.data.mapper.toAccountUpdateRequest
 import com.smorzhok.financeapp.data.mapper.toDomain
 import com.smorzhok.financeapp.data.mapper.toTransactionRequest
-import com.smorzhok.financeapp.data.remote.FinanceApi
+import com.smorzhok.network.FinanceApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
