@@ -73,4 +73,5 @@
     <string name="text_handle_move">Long</string>
     <string name="enable_haptics">Enable Haptics</string>
     <string name="choose_effect">Choose Effect:</string>
+    <string name="no_data_for_graph">Data for graph is not found</string>
 </resources>

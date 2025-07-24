@@ -73,5 +73,6 @@
     <string name="text_handle_move">Длинный</string>
     <string name="enable_haptics">Включить хаптики</string>
     <string name="choose_effect">Выберите эффект:</string>
+    <string name="no_data_for_graph">Данные для графика не найдены</string>
 
 </resources>

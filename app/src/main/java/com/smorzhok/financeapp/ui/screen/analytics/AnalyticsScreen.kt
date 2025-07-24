@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -37,6 +38,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.smorzhok.financeapp.R
+import com.smorzhok.financeapp.domain.model.toModel
 import com.smorzhok.financeapp.ui.commonitems.UiState
 import com.smorzhok.financeapp.ui.commonitems.showDatePicker
 import com.smorzhok.financeapp.ui.formatter.formatLocalDateToMonthYear
@@ -45,6 +47,7 @@ import com.smorzhok.financeapp.ui.screen.commonComposable.ErrorWithRetry
 import com.smorzhok.financeapp.ui.screen.commonComposable.ListItem
 import com.smorzhok.financeapp.ui.screen.setting.performHapticFeedback
 import com.smorzhok.financeapp.ui.theme.Green
+import com.smorzhok.graphics.CategoryPieChart
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -214,6 +217,18 @@ fun AnalyticsScreen(
                             verticalPadding = 16.0,
                         )
                     }
+
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            val data = categoryList.map { it.toModel() }
+                            CategoryPieChart(data = data,total = totalSum)
+                        }
+                    }
+
                     if (categoryList.isEmpty()) {
                         item {
                             Text(

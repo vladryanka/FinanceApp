@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "FinanceApp"
 include(":app")
- 
+include(":graphics")
