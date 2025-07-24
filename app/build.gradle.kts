@@ -23,6 +23,18 @@ android {
     namespace = "com.smorzhok.financeapp"
     compileSdk = 35
 
+    packaging {
+        resources {
+            excludes += listOf(
+                "META-INF/LICENSE.md",
+                "META-INF/LICENSE-notice.md",
+                "META-INF/DEPENDENCIES",
+                "META-INF/LICENSE",
+                "META-INF/NOTICE"
+            )
+        }
+    }
+
     defaultConfig {
         applicationId = "com.smorzhok.financeapp"
         minSdk = 24
@@ -76,6 +88,8 @@ dependencies {
 
     implementation(libs.dagger)
     implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.androidx.junit.ktx)
+    implementation(libs.androidx.ui.test.junit4.android)
     kapt(libs.dagger.compiler)
     kapt(libs.androidx.room.compiler)
     implementation (libs.assisted.inject.annotations.dagger2)
@@ -108,4 +122,7 @@ dependencies {
     implementation (libs.androidx.security.crypto)
 
     implementation(libs.androidx.startup.runtime)
+    androidTestImplementation(libs.androidx.runner)
+    testImplementation(libs.mockk)
+    androidTestImplementation(libs.mockk.android)
 }
